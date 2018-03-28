@@ -1,0 +1,257 @@
+<div class="modal fade" id="addReminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Text Blast (File Upload)</h4>
+            </div>
+            <div class="modal-body">
+                <form id="uploadFileForm" method="post" enctype="multipart/form-data">
+                    <input name="file" id="file" type="file">
+                </form>
+                <span id="fileErrorMessage" class="error-text hidden"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button id="sendReminderBtn" type="button" class="btn btn-primary modal-btn" onclick="send_reminder()" data-loading-text="Preparing.." data-complete-text="Upload">Upload</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="uploadContactsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Import Contacts (File Upload)</h4>
+            </div>
+            <div class="modal-body">
+                <form id="uploadContactsForm" method="post" enctype="multipart/form-data">
+                    <input name="contactsFile" id="contactsFile" type="file">
+                </form>
+                <span id="contactsFileErrorMessage" class="error-text hidden"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button id="uploadContactsBtn" type="button" class="btn btn-primary modal-btn" onclick="upload_contacts()" data-loading-text="Preparing.." data-complete-text="Upload">Upload</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="viewReminderModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">File</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="addWaybillModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">New Waybill</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-container left">
+                    <input type="text" id="addWaybillDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date">
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addWaybillNumber" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                </div>
+                <div class="input-container left">
+                    <select id="addWaybillType" class="form-control">
+                        <option value="" selected disabled>Type</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Charge">Charge</option>
+                    </select>
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addWaybillRecipient" class="form-control floatlabel" data-class="input-label" placeholder="Recipient / Consigned To">
+                </div>
+                <div class="input-container left">
+                    <input type="text" id="addWaybillRecipientMsisdn" class="form-control floatlabel" data-class="input-label" placeholder="Recipient's contact number">
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addWaybillDestination" class="form-control floatlabel" data-class="input-label" placeholder="Destination City">
+                </div>
+                <div class="input-container whole">
+                    <input type="text" id="addWaybillAddress" class="form-control floatlabel" data-class="input-label" placeholder="Recipient Address">
+                </div>
+                <div class="input-container left">
+                    <input type="text" id="addWaybillShipper" class="form-control floatlabel" data-class="input-label" placeholder="Shipper">
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addWaybillShipperMsisdn" class="form-control floatlabel" data-class="input-label" placeholder="Shipper's contact number">
+                </div>
+                <span class="input-group-label">Package Content</span>
+                <table id="waybillItemTable" class="table">
+                    <thead>
+                        <tr>
+                            <th class="waybill-item-td">Item</th>
+                            <th class="waybill-quantity-td align-right">Quantity</th>
+                            <th class="waybill-unit-td align-right">Unit</th>
+                            <th class="waybill-price-td align-right">Price</th>
+                            <th class="waybill-delete-td"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addWaybillItemModal">Add Item</button>
+                <div class="waybill-payment-container">
+                    <div class="waybill-payment-left">
+                        <span class="waybill-payment"><strong>Total:</strong></span>
+                        <span class="waybill-payment">Amount Tendered:</span>
+                        <span class="waybill-payment">Change Due:</span>
+                    </div>
+                    <div class="waybill-payment-right">
+                        <span class="waybill-payment" id="waybillTotal">PHP 0</span>
+                        <span class="waybill-payment" id="waybillTendered">
+                            <span class="payment-php">PHP</span>
+                            <input type="text" id="waybillTenderedText" class="form-control" placeholder="0" onkeyup="compute_change()">
+                        </span>
+                        <span class="waybill-payment" id="waybillChange">PHP 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" onclick="clear_waybill_data()" data-loading-text="Closing.." data-complete-text="Close">Close</button>
+                <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="editWaybillModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">New Waybill</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- START OF DELETE ENTRIES -->
+
+<div class="modal fade" id="addWaybillItemModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Waybill Item</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="waybillItemName" class="form-control floatlabel" data-class="input-label" placeholder="Name">
+                <input type="text" id="waybillItemQuantity" class="form-control floatlabel" data-class="input-label" placeholder="Quantity">
+                <input type="text" id="waybillItemUnit" class="form-control floatlabel" data-class="input-label" placeholder="Unit">
+                <input type="text" id="waybillItemPrice" class="form-control floatlabel" data-class="input-label" placeholder="Price">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="save_waybill_item()" data-loading-text="Saving.." data-complete-text="Save">Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade confirm-delete-modal" id="deleteBlastsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <span class="confirm-delete-message">Are you sure you want to delete selected item/s?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="delete_blasts()" data-loading-text="Preparing.." data-complete-text="Delete">Delete</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade confirm-delete-modal" id="deleteRemindersModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <span class="confirm-delete-message">Are you sure you want to delete selected item/s?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="delete_reminders()" data-loading-text="Preparing.." data-complete-text="Delete">Delete</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade confirm-delete-modal" id="deleteContactsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <span class="confirm-delete-message">Are you sure you want to delete selected item/s?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="delete_contacts()" data-loading-text="Preparing.." data-complete-text="Delete">Delete</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade confirm-delete-modal" id="deleteGroupsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <span class="confirm-delete-message">Are you sure you want to delete selected item/s?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="delete_groups()" data-loading-text="Preparing.." data-complete-text="Delete">Delete</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade confirm-delete-modal" id="deleteMemberModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+                <span class="confirm-delete-message">Are you sure you want to remove this member from the group?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="delete_group_member()" data-loading-text="Preparing.." data-complete-text="Delete">Remove</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<!-- END OF DELETE ENTRIES -->

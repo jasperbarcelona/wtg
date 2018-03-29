@@ -759,6 +759,7 @@ a,a:hover,a:active,a:focus {
 
 #addWaybillModal .modal-body,
 #editWaybillModal .modal-body {
+	position: relative;
 	height: calc(100vh - 180px);
 	padding-top: 30px;
 	padding-left: 30px;
@@ -768,7 +769,8 @@ a,a:hover,a:active,a:focus {
 	background-color: #FFFFFF;
 }
 
-#addWaybillItemModal .modal-body {
+#addWaybillItemModal .modal-body,
+#addWaybillItemEditModal .modal-body {
 	padding-left: 30px;
 	padding-right: 30px;
 	overflow-y: scroll;
@@ -777,8 +779,9 @@ a,a:hover,a:active,a:focus {
 }
 
 #addWaybillModal .form-control:not(#waybillTenderedText),
-#editWaybillModal .form-control:not(#waybillTenderedText),
-#addWaybillItemModal .form-control {
+#editWaybillModal .form-control:not(#waybillTenderedEditText),
+#addWaybillItemModal .form-control,
+#addWaybillItemEditModal .form-control {
 	margin-bottom: 10px;
 	text-transform: capitalize;
 	outline: none !important;
@@ -787,7 +790,7 @@ a,a:hover,a:active,a:focus {
 	border-top: 0 !important;
 	border-left: 0 !important;
 	border-right: 0 !important;
-	border-bottom: 1px solid #999 !important;
+	border-bottom: 1px solid #999;
 	box-shadow: none !important;
 	border-radius: 0 !important;
 	font-size: 15px;
@@ -901,6 +904,43 @@ a,a:hover,a:active,a:focus {
 	padding-left: 4px;
 	font-size: 12px !important;
 	color: #494949 !important;
+}
+
+.input-container {
+	position: relative;
+}
+
+.input-container .form-control {
+	padding-right: 50px;
+}
+
+.input-container.left .error-icon-container {
+	right: 35px;
+}
+
+.input-container.right .error-icon-container {
+	right: 15px;
+}
+
+.input-container .error-icon-container {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	padding-bottom: 25px;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.error-icon-container i {
+	color: #d9534f !important;
+	font-size: 25px !important;
+	cursor: pointer;
 }
 
 .input-container:not(.whole) {
@@ -1455,10 +1495,14 @@ select {
 }
 
 .delete-waybill-item {
-	color: #3C85B6 !important;
+	color: #c9302c !important;
 	font-size: 16px !important;
 	padding: 0;
 	cursor: pointer;
+}
+
+.form-control:read-only {
+	background-color: #FFFFFF !important;
 }
 
 .delete-waybill-item:hover,
@@ -1662,15 +1706,19 @@ td {
 }
 
 #waybillTotal,
-#waybillChange {
+#waybillTotalEdit,
+#waybillChange,
+#waybillChangeEdit {
 	padding-right: 48px;
 }
 
-#waybillTendered {
+#waybillTendered,
+#waybillTenderedEdit {
 	padding-right: 35px;
 }
 
-#waybillTenderedText {
+#waybillTenderedText,
+#waybillTenderedEditText {
 	margin-top: -5px;
 	height: 30px !important;
 	text-align: right;

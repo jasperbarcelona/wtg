@@ -1,3 +1,4 @@
+{% if user_role == 'Administrator' %}
 <div class="input-container left">
     <input type="text" id="editWaybillDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date" value="{{ waybill.date_received }}">
 </div>
@@ -34,7 +35,7 @@
     <input type="text" id="editWaybillShipperMsisdn" class="form-control floatlabel" data-class="input-label" placeholder="Shipper's contact number" value="{{ waybill.sender_msisdn }}">
 </div>
 <span class="input-group-label">Package Content</span>
-<table id="waybillItemTable" class="table">
+<table id="waybillItemTableEdit" class="table">
     <thead>
         <tr>
             <th class="waybill-item-td">Item</th>
@@ -46,7 +47,84 @@
     </thead>
     <tbody>
         {% for entry in waybill_items %}
+        <tr id="{{ entry.id }}" class="waybill-item-tr">
+            <td class="waybill-item-td">{{ entry.item }}</td>
+            <td class="waybill-quantity-td align-right">{{ entry.quantity }}</td>
+            <td class="waybill-unit-td align-right">{{ entry.unit }}</td>
+            <td class="waybill-price-td align-right">{{ entry.price }}</td>
+            <td class="waybill-delete-td" onclick="delete_waybill_item_edit({{ entry.id }})">
+                <i class="material-icons delete-waybill-item">&#xE5CD;</i>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<button type="button" id="addWaybillItemEditBtn" class="btn btn-primary" data-toggle="modal" data-target="#addWaybillItemEditModal">Add Item</button>
+<div class="waybill-payment-container">
+    <div class="waybill-payment-left">
+        <span class="waybill-payment"><strong>Total:</strong></span>
+        <span class="waybill-payment">Amount Tendered:</span>
+        <span class="waybill-payment">Change Due:</span>
+    </div>
+    <div class="waybill-payment-right">
+        <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
+        <span class="waybill-payment" id="waybillTendered">
+            <span class="payment-php">PHP</span>
+            <input type="text" id="waybillTenderedEditText" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
+        </span>
+        <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
+    </div>
+</div>
+{% else %}
+<div class="input-container left">
+    <input type="text" id="editWaybillDate" readOnly="ReadOnly" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date" value="{{ waybill.date_received }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillNumber" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number" value="{{ waybill.waybill_no }}">
+</div>
+<div class="input-container left">
+    <select id="editWaybillType" disabled class="form-control">
+        {% if waybill.waybill_type == 'Cash' %}
+        <option value="Cash" selected>Cash</option>
+        <option value="Charge">Charge</option>
+        {% else %}
+        <option value="Cash">Cash</option>
+        <option value="Charge" selected="">Charge</option>
+        {% endif %}
+    </select>
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillRecipient" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Recipient / Consigned To" value="{{ waybill.recipient }}">
+</div>
+<div class="input-container left">
+    <input type="text" id="editWaybillRecipientMsisdn" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Recipient's contact number" value="{{ waybill.recipient_msisdn }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillDestination" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Destination City" value="{{ waybill.destination }}">
+</div>
+<div class="input-container whole">
+    <input type="text" id="editWaybillAddress" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Recipient Address" value="{{ waybill.recipient_address }}">
+</div>
+<div class="input-container left">
+    <input type="text" id="editWaybillShipper" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Shipper" value="{{ waybill.sender }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillShipperMsisdn" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Shipper's contact number" value="{{ waybill.sender_msisdn }}">
+</div>
+<span class="input-group-label">Package Content</span>
+<table id="waybillItemTableEdit" class="table">
+    <thead>
         <tr>
+            <th class="waybill-item-td">Item</th>
+            <th class="waybill-quantity-td align-right">Quantity</th>
+            <th class="waybill-unit-td align-right">Unit</th>
+            <th class="waybill-price-td align-right">Price</th>
+            <th class="waybill-delete-td"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in waybill_items %}
+        <tr id="{{ entry.id }}" class="waybill-item-tr">
             <td class="waybill-item-td">{{ entry.item }}</td>
             <td class="waybill-quantity-td align-right">{{ entry.quantity }}</td>
             <td class="waybill-unit-td align-right">{{ entry.unit }}</td>
@@ -56,7 +134,6 @@
         {% endfor %}
     </tbody>
 </table>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editWaybillItemModal">Add Item</button>
 <div class="waybill-payment-container">
     <div class="waybill-payment-left">
         <span class="waybill-payment"><strong>Total:</strong></span>
@@ -64,17 +141,122 @@
         <span class="waybill-payment">Change Due:</span>
     </div>
     <div class="waybill-payment-right">
-        <span class="waybill-payment" id="waybillTotal">PHP {{ waybill.total }}</span>
+        <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
         <span class="waybill-payment" id="waybillTendered">
             <span class="payment-php">PHP</span>
-            <input type="text" id="waybillTenderedText" class="form-control" placeholder="0" onkeyup="compute_change()" value="{{ waybill.tendered }}">
+            <input type="text" id="waybillTenderedText" readOnly="ReadOnly" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
         </span>
-        <span class="waybill-payment" id="waybillChange">PHP {{ waybill.change }}</span>
+        <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
     </div>
 </div>
+{% endif %}
 
 <script type="text/javascript">
     $('.form-control.floatlabel').floatlabel({
         labelEndTop:'-2px'
     });
+
+    $('.form-control').keyup(function(){
+        date = $('#editWaybillDate').val();
+        waybill_number = $('#editWaybillNumber').val();
+        waybill_type = $('#editWaybillType').val();
+        recipient = $('#editWaybillRecipient').val();
+        recipient_msisdn = $('#editWaybillRecipientMsisdn').val();
+        destination = $('#editWaybillDestination').val();
+        recipient_address = $('#editWaybillAddress').val();
+        sender = $('#editWaybillShipper').val();
+        sender_msisdn = $('#editWaybillShipperMsisdn').val();
+        tendered = $('#waybillTenderedEditText').val();
+
+        if ((date != '') && (waybill_number != '') && (waybill_type != '') && (recipient != '') &&
+           (recipient_msisdn != '') && (recipient_msisdn.length == 11) && (destination != '') &&
+           (sender != '') && (sender_msisdn != '') && (sender_msisdn.length == 11)) {
+            if ((waybill_type == 'Cash') && (tendered == '')) {
+                $('#editWaybillBtn').attr('disabled',true);
+            }
+            else {
+                $('#editWaybillBtn').attr('disabled',false);
+            }
+        }
+        else {
+                $('#editWaybillBtn').attr('disabled',true);
+        }
+    });
+
+    $('.form-control').change(function(){
+        date = $('#editWaybillDate').val();
+        waybill_number = $('#editWaybillNumber').val();
+        waybill_type = $('#editWaybillType').val();
+        recipient = $('#editWaybillRecipient').val();
+        recipient_msisdn = $('#editWaybillRecipientMsisdn').val();
+        destination = $('#editWaybillDestination').val();
+        recipient_address = $('#editWaybillAddress').val();
+        sender = $('#editWaybillShipper').val();
+        sender_msisdn = $('#editWaybillShipperMsisdn').val();
+        tendered = $('#waybillTenderedEditText').val();
+
+        if ((date != '') && (waybill_number != '') && (waybill_type != '') && (recipient != '') &&
+           (recipient_msisdn != '') && (recipient_msisdn.length == 11) && (destination != '') &&
+           (sender != '') && (sender_msisdn != '') && (sender_msisdn.length == 11)) {
+            if ((waybill_type == 'Cash') && (tendered == '')) {
+                $('#editWaybillBtn').attr('disabled',true);
+            }
+            else {
+                $('#editWaybillBtn').attr('disabled',false);
+            }
+        }
+        else {
+                $('#editWaybillBtn').attr('disabled',true);
+        }
+    });
+
+    $("#editWaybillType").change(function (e) {
+      if ($(this).val() == 'Charge') {
+        $('#waybillTenderedEditText').val('');
+        $('#waybillTenderedEditText').attr('disabled', true);
+      }
+      else {
+        $('#waybillTenderedEditText').attr('disabled', false);
+      }
+    });
+
+    $("#editWaybillRecipientMsisdn").keydown(function (e) {
+    // Allow: backspace, delete, tab, escape, enter and .
+    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+         // Allow: Ctrl/cmd+A
+        (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+         // Allow: Ctrl/cmd+C
+        (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+         // Allow: Ctrl/cmd+X
+        (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+         // Allow: home, end, left, right
+        (e.keyCode >= 35 && e.keyCode <= 39)) {
+             // let it happen, don't do anything
+             return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+    }
+});
+
+$("#editWaybillShipperMsisdn").keydown(function (e) {
+    // Allow: backspace, delete, tab, escape, enter and .
+    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+         // Allow: Ctrl/cmd+A
+        (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+         // Allow: Ctrl/cmd+C
+        (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
+         // Allow: Ctrl/cmd+X
+        (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
+         // Allow: home, end, left, right
+        (e.keyCode >= 35 && e.keyCode <= 39)) {
+             // let it happen, don't do anything
+             return;
+    }
+    // Ensure that it is a number and stop the keypress
+    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+        e.preventDefault();
+    }
+});
 </script>

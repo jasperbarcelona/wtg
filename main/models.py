@@ -81,7 +81,6 @@ class PackageItem(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     client_no = db.Column(db.String(32))
     waybill_id = db.Column(db.Integer())
-    waybill_no = db.Column(db.String(60))
     item = db.Column(db.String(60))
     quantity = db.Column(db.Integer())
     unit = db.Column(db.String(60))

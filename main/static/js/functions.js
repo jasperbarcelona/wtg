@@ -1752,6 +1752,28 @@ function save_waybill_item() {
     });
 }
 
+function save_waybill_item_edit() {
+  $('#saveWaybillItemEditBtn').button('loading');
+  name = $('#waybillItemNameEdit').val();
+  quantity = $('#waybillItemQuantityEdit').val();
+  unit = $('#waybillItemUnitEdit').val();
+  price = $('#waybillItemPriceEdit').val();
+  $.post('/waybill/item/edit',
+  {
+    name:name,
+    quantity:quantity,
+    unit:unit,
+    price:price
+  },
+    function(data){
+      $('#waybillItemTableEdit tbody').append(data['template']);
+      $('#waybillTotalEdit').html('PHP '+data['total']);
+      $('#waybillChangeEdit').html('PHP '+data['change']);
+      $('#addWaybillItemEditModal').modal('hide');
+      $('#saveWaybillItemEditBtn').button('complete');
+    });
+}
+
 function delete_waybill_item(item_id) {
   $.post('/waybill/item/remove',
   {
@@ -1760,6 +1782,18 @@ function delete_waybill_item(item_id) {
   function(data){
     $('tr#'+item_id).remove();
     $('#waybillTotal').html('PHP '+data['total']);
+  });
+}
+
+function delete_waybill_item_edit(item_id) {
+  $.post('/waybill/item/edit/remove',
+  {
+    item_id:item_id
+  },
+  function(data){
+    $('tr#'+item_id+'.waybill-item-tr').remove();
+    $('#waybillTotalEdit').html('PHP '+data['total']);
+    $('#waybillChangeEdit').html('PHP '+data['change']);
   });
 }
 
@@ -1810,14 +1844,25 @@ function save_waybill() {
 }
 
 function open_waybill(waybill_id) {
-  $('#saveWaybillBtn').button('loading');
   $.get('/waybill',
   {
     waybill_id:waybill_id
   },
   function(data){
-    $('#editWaybillModal .modal-body').html(data);
-    $('#editWaybillModal .form-control').change();
+    $('#editWaybillModal .modal-body').html(data['template']);
+    if (data['user_role'] == 'Administrator') {
+      $('#editWaybillBtn').show();
+    }
+    else {
+      $('#editWaybillBtn').hide();
+    }
+    if ($('#editWaybillType').val() == 'Charge') {
+      $('#waybillTenderedEditText').val('');
+      $('#waybillTenderedEditText').attr('disabled', true);
+    }
+    else {
+      $('#waybillTenderedEditText').attr('disabled', false);
+    }
     $('#editWaybillModal').modal('show');
   });
 }
@@ -1839,6 +1884,50 @@ function clear_waybill_data() {
 function compute_change() {
   total = parseInt($('#waybillTotal').html().substring(4));
   tendered = parseInt($('#waybillTenderedText').val());
-  change = tendered - total;
+  if ($('#waybillTenderedText').val() == '') {
+    change = 0;
+  }
+  else {
+    change = tendered - total;
+  }
   $('#waybillChange').html('PHP '+String(change));
+}
+
+function compute_change_edit() {
+  total = parseInt($('#waybillTotalEdit').html().substring(4));
+  tendered = parseInt($('#waybillTenderedEditText').val());
+  if ($('#waybillTenderedEditText').val() == '') {
+    change = 0;
+  }
+  else {
+    change = tendered - total;
+  }
+  $('#waybillChangeEdit').html('PHP '+String(change));
+}
+
+function validate_blank(element,value) {
+  error_icon_id = $(element).attr('data-error')
+  if (value == '') {
+    $(element).css("border-bottom", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+  else {
+    $(element).css("border-bottom", "1px solid #999");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+}
+
+function validate_msisdn(element,value) {
+  if ((value != '') && (value.length == 11)) {
+    $(element).css("border-bottom", "1px solid #999");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border-bottom", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
 }

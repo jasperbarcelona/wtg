@@ -32,7 +32,7 @@ def send_notification(client_no,status,waybill_no,msisdn):
     db.session.commit()
 
     if status == 'Received':
-        message = 'We have received your package, we will notify you once it has been shipped. Your reference number is %s.' % waybill_no
+        message = 'We have received your package, we will notify you once it has been shipped. Your waybill number is %s.' % waybill_no
 
     message_options = {
         'app_id': client.app_id,

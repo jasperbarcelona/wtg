@@ -1923,6 +1923,45 @@ def save_waybill_item():
         )
 
 
+@app.route('/waybill/item/edit',methods=['GET','POST'])
+def edit_waybill_item():
+    data = flask.request.form.to_dict()
+    waybill_item = PackageItem(
+        client_no=session['client_no'],
+        waybill_id=session['waybill_id'],
+        item=data['name'].title(),
+        quantity=data['quantity'],
+        unit=data['unit'].title(),
+        price=data['price'],
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+    db.session.add(waybill_item)
+    db.session.commit()
+
+    waybill = Package.query.filter_by(id=session['waybill_id']).first()
+    waybill.total = int(waybill_item.price) + int(waybill.total)
+    
+    if waybill.waybill_type == 'Cash':
+        waybill.change = int(waybill.tendered) - int(waybill.total)
+    else:
+        waybill.change = 0
+
+    db.session.commit()
+    
+    return jsonify(
+        template=flask.render_template(
+            'waybill_item_edit.html',
+            id=waybill_item.id,
+            name=data['name'].title(),
+            quantity=data['quantity'],
+            unit=data['unit'].title(),
+            price=data['price']
+            ),
+        total=waybill.total,
+        change=waybill.change
+        )
+
+
 @app.route('/waybill/save',methods=['GET','POST'])
 def save_waybill():
     data = flask.request.form.to_dict()
@@ -1951,7 +1990,6 @@ def save_waybill():
         waybill_item = PackageItem(
             client_no=session['client_no'],
             waybill_id=waybill.id,
-            waybill_no=waybill.waybill_no,
             item=item['name'],
             quantity=item['quantity'],
             unit=item['unit'],
@@ -1960,6 +1998,8 @@ def save_waybill():
             )
         db.session.add(waybill_item)
     db.session.commit()
+
+    session['waybill_items'] = []
 
     total_entries = Package.query.filter_by(client_no=session['client_no']).count()
     packages = Package.query.filter_by(client_no=session['client_no']).order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
@@ -2003,15 +2043,42 @@ def remove_waybill_item():
         ),201
 
 
+@app.route('/waybill/item/edit/remove',methods=['GET','POST'])
+def remove_waybill_item_edit():
+    item_id = flask.request.form.get('item_id')
+    waybill = Package.query.filter_by(id=session['waybill_id']).first()
+    waybill_item = PackageItem.query.filter_by(id=item_id).first()
+    
+    waybill.total = int(waybill.total) - int(waybill_item.price)
+    
+    if waybill.waybill_type == 'Cash':
+        waybill.change = int(waybill.tendered) - int(waybill.total)
+    else:
+        waybill.change = 0
+
+    db.session.delete(waybill_item)
+    db.session.commit()
+
+    return jsonify(
+        status='success',
+        total=waybill.total,
+        change=waybill.change
+        ),201
+
+
 @app.route('/waybill',methods=['GET','POST'])
 def open_waybill():
-    waybill_id = flask.request.args.get('waybill_id')
-    waybill = Package.query.filter_by(id=waybill_id).first()
-    waybill_items = PackageItem.query.filter_by(waybill_id=waybill_id).order_by(PackageItem.created_at)
-    return flask.render_template(
-        'waybill_info.html',
-        waybill=waybill,
-        waybill_items=waybill_items
+    session['waybill_id'] = flask.request.args.get('waybill_id')
+    waybill = Package.query.filter_by(id=session['waybill_id']).first()
+    waybill_items = PackageItem.query.filter_by(waybill_id=session['waybill_id']).order_by(PackageItem.created_at)
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    return jsonify(
+        template = flask.render_template(
+            'waybill_info.html',
+            waybill=waybill,
+            waybill_items=waybill_items,
+            user_role=user.role),
+        user_role = user.role
         )
 
 
@@ -2074,6 +2141,16 @@ def rebuild_database():
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 
+    package_item = PackageItem(
+        client_no='infinitrix',
+        waybill_id=1,
+        item='Sample Item',
+        quantity=3,
+        unit='Rolls',
+        price='1200',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
     cargo = Cargo(
         client_no='infinitrix',
         truck='UUE-918',
@@ -2088,6 +2165,7 @@ def rebuild_database():
     db.session.add(client)
     db.session.add(user)
     db.session.add(package)
+    db.session.add(package_item)
     db.session.add(cargo)
     db.session.commit()
 

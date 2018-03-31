@@ -1805,42 +1805,71 @@ function supply_date() {
   });
 }
 
+function open_forgotten_waybill_item () {
+  $('#forgotWaybillItemModal').modal('hide');
+  $('#addWaybillItemModal').modal('show');
+}
+
 function save_waybill() {
   $('#saveWaybillBtn').button('loading');
-  date = $('#addWaybillDate').val();
-  waybill_number = $('#addWaybillNumber').val();
   waybill_type = $('#addWaybillType').val();
-  recipient = $('#addWaybillRecipient').val();
-  recipient_msisdn = $('#addWaybillRecipientMsisdn').val();
-  destination = $('#addWaybillDestination').val();
-  recipient_address = $('#addWaybillAddress').val();
-  shipper = $('#addWaybillShipper').val();
-  shipper_msisdn = $('#addWaybillShipperMsisdn').val();
   total = $('#waybillTotal').html().substring(4);
   tendered = $('#waybillTenderedText').val();
-  change = $('#waybillChange').html().substring(4);
 
-  $.post('/waybill/save',
-  {
-    date:date,
-    waybill_number:waybill_number,
-    waybill_type:waybill_type,
-    recipient:recipient,
-    recipient_msisdn:recipient_msisdn,
-    destination:destination,
-    recipient_address:recipient_address,
-    shipper:shipper,
-    shipper_msisdn:shipper_msisdn,
-    total:total,
-    tendered:tendered,
-    change:change
-  },
-  function(data){
-    $('.content').html(data);
-    clear_waybill_data();
+  if ($('#waybillItemTable tbody tr').length == 0) {
+    $('#forgotWaybillItemModal').modal('show');
     $('#saveWaybillBtn').button('complete');
-    $('#addWaybillModal').modal('hide');
-  });
+  }
+
+  else if ((waybill_type == 'Cash') && (tendered == '')) {
+    $('.forgot-payment-message').html('Looks like you forgot to add payment (required for <strong>Cash Waybills</strong>). No worries, you can add payment below:');
+    $('#forgottenTotal').html($('#waybillTotal').html());
+    $('#forgottenTenderedText').val($('#waybillTenderedText').val());
+    $('#forgottenChange').html($('#waybillChange').html());
+    $('#forgotPaymentModal').modal('show');
+    $('#saveWaybillBtn').button('complete');
+  }
+  else if ((waybill_type == 'Cash') && (tendered < total)) {
+    $('.forgot-payment-message').html('Amount tendered cannot be smaller than total amount due. No worries, you can change it below:');
+    $('#forgottenTotal').html($('#waybillTotal').html());
+    $('#forgottenTenderedText').val($('#waybillTenderedText').val());
+    $('#forgottenChange').html($('#waybillChange').html());
+    $('#forgotPaymentModal').modal('show');
+    $('#saveWaybillBtn').button('complete');
+  }
+  else {
+    date = $('#addWaybillDate').val();
+    waybill_number = $('#addWaybillNumber').val();
+    recipient = $('#addWaybillRecipient').val();
+    recipient_msisdn = $('#addWaybillRecipientMsisdn').val();
+    destination = $('#addWaybillDestination').val();
+    recipient_address = $('#addWaybillAddress').val();
+    shipper = $('#addWaybillShipper').val();
+    shipper_msisdn = $('#addWaybillShipperMsisdn').val();
+    change = $('#waybillChange').html().substring(4);
+
+    $.post('/waybill/save',
+    {
+      date:date,
+      waybill_number:waybill_number,
+      waybill_type:waybill_type,
+      recipient:recipient,
+      recipient_msisdn:recipient_msisdn,
+      destination:destination,
+      recipient_address:recipient_address,
+      shipper:shipper,
+      shipper_msisdn:shipper_msisdn,
+      total:total,
+      tendered:tendered,
+      change:change
+    },
+    function(data){
+      $('.content').html(data);
+      clear_waybill_data();
+      $('#saveWaybillBtn').button('complete');
+      $('#addWaybillModal').modal('hide');
+    });
+  }
 }
 
 function open_waybill(waybill_id) {
@@ -1874,6 +1903,8 @@ function clear_waybill_data() {
   $.post('/waybill/item/clear',
   function(data){
     $('#waybillTotal').html('PHP 0');
+    $('#addWaybillModal .error-icon-container').addClass('hidden');
+    $('#addWaybillModal .form-control').css('border-bottom','1px solid #999');
     $('#addWaybillModal').modal('hide');
     $('#cancelWaybillBtn').button('complete');
     $('#addWaybillModal .modal-body').scrollTop(0);

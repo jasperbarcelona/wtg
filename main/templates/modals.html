@@ -125,10 +125,62 @@
                         <span class="waybill-payment" id="waybillTotal">PHP 0</span>
                         <span class="waybill-payment" id="waybillTendered">
                             <span class="payment-php">PHP</span>
-                            <input type="text" id="waybillTenderedText" onblur="validate_blank(this,this.value)" class="form-control" placeholder="0" onkeyup="compute_change()">
+                            <input type="text" id="waybillTenderedText" class="form-control" placeholder="0" onkeyup="compute_change()">
                         </span>
                         <span class="waybill-payment" id="waybillChange">PHP 0</span>
                     </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" onclick="clear_waybill_data()" data-loading-text="Closing.." data-complete-text="Close">Close</button>
+                <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()" disabled>Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="addCargoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">New Cargo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-container left">
+                    <input type="text" id="addCargoNumber" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorCargoNumber" class="form-control floatlabel" data-class="input-label" placeholder="Date">
+                    <div id="errorCargoNumber" class="error-icon-container hidden tooltip" title="This field is required."tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addCargoTruck" onblur="validate_blank(this,this.value)" data-error="errorCargoTruck" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoTruck" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container left">
+                    <input type="text" id="addCargoDriver" onblur="validate_blank(this,this.value)" data-error="errorCargoDriver" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoDriver" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addCargoOrigin" onblur="validate_blank(this,this.value)" data-error="errorCargoOrigin" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoOrigin" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container left">
+                    <input type="text" id="addCargoDestination" onblur="validate_blank(this,this.value)" data-error="errorCargoDestination" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoDestination" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addCargoDepartureDate" onblur="validate_blank(this,this.value)" data-error="errorCargoDepartureDate" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoDepartureDate" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container left">
+                    <input type="text" id="addCargoDepartureTime" onblur="validate_blank(this,this.value)" data-error="errorCargoDepartureTime" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoDepartureTime" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addCargoArrivalDate" onblur="validate_blank(this,this.value)" data-error="errorCargoArrivalDate" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoArrivalDate" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container left">
+                    <input type="text" id="addCargoArrivalTime" onblur="validate_blank(this,this.value)" data-error="errorCargoArrivalTime" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number">
+                    <div id="errorCargoArrivalTime" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -149,11 +201,12 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
-                <button type="button" id="editWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="edit_waybill()" disabled>Save</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
+
+
 
 <!-- START OF DELETE ENTRIES -->
 
@@ -197,35 +250,48 @@
     </div><!-- /.modal-dialog -->
 </div>
 
-<div class="modal fade confirm-delete-modal" id="deleteBlastsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade" id="forgotPaymentModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+                <h4 class="modal-title" id="gridSystemModalLabel">Oops!</h4>
             </div>
             <div class="modal-body">
-                <span class="confirm-delete-message">Are you sure you want to delete selected item/s?</span>
+                <span class="forgot-payment-message"></span>
+                <div class="forgotten-payment-left">
+                    <span class="forgotten-payment"><strong>Total:</strong></span>
+                    <span class="forgotten-payment">Amount Tendered:</span>
+                    <span class="forgotten-payment">Change Due:</span>
+                </div>
+                <div class="forgotten-payment-right">
+                    <span class="forgotten-payment" id="forgottenTotal">PHP 0</span>
+                    <span class="forgotten-payment" id="forgottenTendered">
+                        <span class="payment-php">PHP</span>
+                        <input type="text" id="forgottenTenderedText" class="form-control" placeholder="0" onkeyup="compute_change()">
+                    </span>
+                    <span class="forgotten-payment" id="forgottenChange">PHP 0</span>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary modal-btn" onclick="delete_blasts()" data-loading-text="Preparing.." data-complete-text="Delete">Delete</button>
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="add_forgotten_payment()">Done</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
 
-<div class="modal fade confirm-delete-modal" id="deleteRemindersModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade" id="forgotWaybillItemModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="gridSystemModalLabel">Confirm Delete</h4>
+                <h4 class="modal-title" id="gridSystemModalLabel">Oops!</h4>
             </div>
             <div class="modal-body">
-                <span class="confirm-delete-message">Are you sure you want to delete selected item/s?</span>
+                <span class="confirm-delete-message">Looks like you forgot to add the package content.</span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary modal-btn" onclick="delete_reminders()" data-loading-text="Preparing.." data-complete-text="Delete">Delete</button>
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary modal-btn" onclick="open_forgotten_waybill_item()">Add Content</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

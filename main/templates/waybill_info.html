@@ -1,81 +1,3 @@
-{% if user_role == 'Administrator' %}
-<div class="input-container left">
-    <input type="text" id="editWaybillDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date" value="{{ waybill.date_received }}">
-</div>
-<div class="input-container right">
-    <input type="text" id="editWaybillNumber" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number" value="{{ waybill.waybill_no }}">
-</div>
-<div class="input-container left">
-    <select id="editWaybillType" class="form-control">
-        {% if waybill.waybill_type == 'Cash' %}
-        <option value="Cash" selected>Cash</option>
-        <option value="Charge">Charge</option>
-        {% else %}
-        <option value="Cash">Cash</option>
-        <option value="Charge" selected="">Charge</option>
-        {% endif %}
-    </select>
-</div>
-<div class="input-container right">
-    <input type="text" id="editWaybillRecipient" class="form-control floatlabel" data-class="input-label" placeholder="Recipient / Consigned To" value="{{ waybill.recipient }}">
-</div>
-<div class="input-container left">
-    <input type="text" id="editWaybillRecipientMsisdn" class="form-control floatlabel" data-class="input-label" placeholder="Recipient's contact number" value="{{ waybill.recipient_msisdn }}">
-</div>
-<div class="input-container right">
-    <input type="text" id="editWaybillDestination" class="form-control floatlabel" data-class="input-label" placeholder="Destination City" value="{{ waybill.destination }}">
-</div>
-<div class="input-container whole">
-    <input type="text" id="editWaybillAddress" class="form-control floatlabel" data-class="input-label" placeholder="Recipient Address" value="{{ waybill.recipient_address }}">
-</div>
-<div class="input-container left">
-    <input type="text" id="editWaybillShipper" class="form-control floatlabel" data-class="input-label" placeholder="Shipper" value="{{ waybill.sender }}">
-</div>
-<div class="input-container right">
-    <input type="text" id="editWaybillShipperMsisdn" class="form-control floatlabel" data-class="input-label" placeholder="Shipper's contact number" value="{{ waybill.sender_msisdn }}">
-</div>
-<span class="input-group-label">Package Content</span>
-<table id="waybillItemTableEdit" class="table">
-    <thead>
-        <tr>
-            <th class="waybill-item-td">Item</th>
-            <th class="waybill-quantity-td align-right">Quantity</th>
-            <th class="waybill-unit-td align-right">Unit</th>
-            <th class="waybill-price-td align-right">Price</th>
-            <th class="waybill-delete-td"></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in waybill_items %}
-        <tr id="{{ entry.id }}" class="waybill-item-tr">
-            <td class="waybill-item-td">{{ entry.item }}</td>
-            <td class="waybill-quantity-td align-right">{{ entry.quantity }}</td>
-            <td class="waybill-unit-td align-right">{{ entry.unit }}</td>
-            <td class="waybill-price-td align-right">{{ entry.price }}</td>
-            <td class="waybill-delete-td" onclick="delete_waybill_item_edit({{ entry.id }})">
-                <i class="material-icons delete-waybill-item">&#xE5CD;</i>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<button type="button" id="addWaybillItemEditBtn" class="btn btn-primary" data-toggle="modal" data-target="#addWaybillItemEditModal">Add Item</button>
-<div class="waybill-payment-container">
-    <div class="waybill-payment-left">
-        <span class="waybill-payment"><strong>Total:</strong></span>
-        <span class="waybill-payment">Amount Tendered:</span>
-        <span class="waybill-payment">Change Due:</span>
-    </div>
-    <div class="waybill-payment-right">
-        <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
-        <span class="waybill-payment" id="waybillTendered">
-            <span class="payment-php">PHP</span>
-            <input type="text" id="waybillTenderedEditText" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
-        </span>
-        <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
-    </div>
-</div>
-{% else %}
 <div class="input-container left">
     <input type="text" id="editWaybillDate" readOnly="ReadOnly" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date" value="{{ waybill.date_received }}">
 </div>
@@ -83,15 +5,7 @@
     <input type="text" id="editWaybillNumber" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number" value="{{ waybill.waybill_no }}">
 </div>
 <div class="input-container left">
-    <select id="editWaybillType" disabled class="form-control">
-        {% if waybill.waybill_type == 'Cash' %}
-        <option value="Cash" selected>Cash</option>
-        <option value="Charge">Charge</option>
-        {% else %}
-        <option value="Cash">Cash</option>
-        <option value="Charge" selected="">Charge</option>
-        {% endif %}
-    </select>
+    <input type="text" id="editWaybillType" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Type" value="{{ waybill.waybill_type }}">
 </div>
 <div class="input-container right">
     <input type="text" id="editWaybillRecipient" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Recipient / Consigned To" value="{{ waybill.recipient }}">
@@ -103,7 +17,11 @@
     <input type="text" id="editWaybillDestination" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Destination City" value="{{ waybill.destination }}">
 </div>
 <div class="input-container whole">
+    {% if waybill.recipient_address == '' %}
+    <input type="text" id="editWaybillAddress" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Recipient Address" value="None">
+    {% else %}
     <input type="text" id="editWaybillAddress" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Recipient Address" value="{{ waybill.recipient_address }}">
+    {% endif %}
 </div>
 <div class="input-container left">
     <input type="text" id="editWaybillShipper" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Shipper" value="{{ waybill.sender }}">
@@ -144,12 +62,11 @@
         <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
         <span class="waybill-payment" id="waybillTendered">
             <span class="payment-php">PHP</span>
-            <input type="text" id="waybillTenderedText" readOnly="ReadOnly" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
+            <input type="text" id="waybillTenderedEditText" readOnly="ReadOnly" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
         </span>
         <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
     </div>
 </div>
-{% endif %}
 
 <script type="text/javascript">
     $('.form-control.floatlabel').floatlabel({

@@ -107,6 +107,10 @@ $('#createGroupModal').on('shown.bs.modal', function () {
     $('#addGroupName').focus();
 });
 
+$('#forgotPaymentModal').on('shown.bs.modal', function () {
+    $('#forgottenTenderedText').focus();
+});
+
 $('#addContactModal').on('shown.bs.modal', function () {
     $('#addContactName').focus();
 });
@@ -413,15 +417,10 @@ $('#addWaybillModal .form-control').keyup(function(){
     if ((date != '') && (waybill_number != '') && (waybill_type != '') && (recipient != '') &&
        (recipient_msisdn != '') && (recipient_msisdn.length == 11) && (destination != '') &&
        (sender != '') && (sender_msisdn != '') && (sender_msisdn.length == 11)) {
-        if ((waybill_type == 'Cash') && (tendered == '')) {
-            $('#saveWaybillBtn').attr('disabled',true);
-        }
-        else {
-            $('#saveWaybillBtn').attr('disabled',false);
-        }
+      $('#saveWaybillBtn').attr('disabled',false);
     }
     else {
-            $('#saveWaybillBtn').attr('disabled',true);
+      $('#saveWaybillBtn').attr('disabled',true);
     }
 });
 
@@ -440,15 +439,10 @@ $('#addWaybillModal .form-control').change(function(){
     if ((date != '') && (waybill_number != '') && (waybill_type != '') && (recipient != '') &&
        (recipient_msisdn != '') && (recipient_msisdn.length == 11) && (destination != '') &&
        (sender != '') && (sender_msisdn != '') && (sender_msisdn.length == 11)) {
-        if ((waybill_type == 'Cash') && (tendered == '')) {
-            $('#saveWaybillBtn').attr('disabled',true);
-        }
-        else {
-            $('#saveWaybillBtn').attr('disabled',false);
-        }
+      $('#saveWaybillBtn').attr('disabled',false);
     }
     else {
-            $('#saveWaybillBtn').attr('disabled',true);
+      $('#saveWaybillBtn').attr('disabled',true);
     }
 });
 

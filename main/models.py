@@ -101,6 +101,8 @@ class Cargo(db.Model):
     client_no = db.Column(db.String(32))
     truck = db.Column(db.String(60))
     driver = db.Column(db.String(100))
+    origin = db.Column(db.String(100))
+    destination = db.Column(db.String(100))
     departure_date = db.Column(db.String(20))
     departure_time = db.Column(db.String(20))
     arrival_date = db.Column(db.String(20))

@@ -1,7 +1,7 @@
 <div class="content-header">
 	<div class="content-right-btn-container">
 		<button class="btn control-btn" onclick="show_cargo('reset')"><i class="material-icons">&#xE5D5;</i></button>
-		<button id="addCargoBtn" class="btn control-btn" data-toggle="modal" data-target="#addCargoModal"><i class="material-icons md-30">add</i></button>
+		<button id="addCargoBtn" class="btn control-btn" data-toggle="modal" data-target="#addCargoModal" data-backdrop="static" data-keyboard="false" onclick="generate_cargo_number()"><i class="material-icons md-30">add</i></button>
 		<div class="pagination-btn-container">
 			<div class="pagination-label-container">
 				<span class="pagination-label"><strong id="paginationShowingCargos">{{ showing }}</strong></span>
@@ -31,12 +31,12 @@
 	<table class="table content-table">
 		<thead>
 			<tr>
-				<th class="cargo-truck-td">Truck</th>
-				<th class="cargo-driver-td">Driver</th>
+				<th class="cargo-truck-td">Cargo No.</th>
+				<th class="cargo-driver-td">Truck</th>
 				<th class="cargo-origin-td">Origin</th>
 				<th class="cargo-destination-td">Destination</th>
-				<th class="cargo-departure-date-td align-right">Departure Date</th>
-				<th class="cargo-arrival-date-td align-right">Arrival Date</th>
+				<th class="cargo-departure-date-td align-right">Departure</th>
+				<th class="cargo-arrival-date-td align-right">Arrival</th>
 			</tr>
 			<tr class="search-panel conversation">
 				<td class="cargo-truck-td">
@@ -61,11 +61,11 @@
 		</thead>
 		<tbody id="cargosTbody">
 			{% for entry in cargo %}
-			<tr>
-				<td class="cargo-truck-td">{{ entry.truck }}</td>
-				<td class="cargo-driver-td">{{ entry.driver }}</td>
-				<td class="cargo-origin-td align-right">{{ entry.origin }}</td>
-				<td class="cargo-destination-td align-right">{{ entry.destination }}</td>
+			<tr onclick="open_cargo({{ entry.id }})">
+				<td class="cargo-truck-td">{{ entry.cargo_no }}</td>
+				<td class="cargo-driver-td">{{ entry.truck }}</td>
+				<td class="cargo-origin-td">{{ entry.origin }}</td>
+				<td class="cargo-destination-td">{{ entry.destination }}</td>
 				<td class="cargo-departure-date-td align-right">{{ entry.departure_date }}</td>
 				<td class="cargo-arrival-date-td align-right">{{ entry.arrival_date }}</td>
 			</tr>

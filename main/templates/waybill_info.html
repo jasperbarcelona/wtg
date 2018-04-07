@@ -1,5 +1,5 @@
 <div class="input-container left">
-    <input type="text" id="editWaybillDate" readOnly="ReadOnly" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date" value="{{ waybill.date_received }}">
+    <input type="text" id="editWaybillDate" readOnly="ReadOnly" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date Received" value="{{ waybill.date_received }}">
 </div>
 <div class="input-container right">
     <input type="text" id="editWaybillNumber" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Waybill Number" value="{{ waybill.waybill_no }}">
@@ -46,7 +46,7 @@
             <td class="waybill-item-td">{{ entry.item }}</td>
             <td class="waybill-quantity-td align-right">{{ entry.quantity }}</td>
             <td class="waybill-unit-td align-right">{{ entry.unit }}</td>
-            <td class="waybill-price-td align-right">{{ entry.price }}</td>
+            <td class="waybill-price-td align-right">PHP {{ entry.price }}</td>
             <td class="waybill-delete-td"></td>
         </tr>
         {% endfor %}
@@ -72,108 +72,4 @@
     $('.form-control.floatlabel').floatlabel({
         labelEndTop:'-2px'
     });
-
-    $('.form-control').keyup(function(){
-        date = $('#editWaybillDate').val();
-        waybill_number = $('#editWaybillNumber').val();
-        waybill_type = $('#editWaybillType').val();
-        recipient = $('#editWaybillRecipient').val();
-        recipient_msisdn = $('#editWaybillRecipientMsisdn').val();
-        destination = $('#editWaybillDestination').val();
-        recipient_address = $('#editWaybillAddress').val();
-        sender = $('#editWaybillShipper').val();
-        sender_msisdn = $('#editWaybillShipperMsisdn').val();
-        tendered = $('#waybillTenderedEditText').val();
-
-        if ((date != '') && (waybill_number != '') && (waybill_type != '') && (recipient != '') &&
-           (recipient_msisdn != '') && (recipient_msisdn.length == 11) && (destination != '') &&
-           (sender != '') && (sender_msisdn != '') && (sender_msisdn.length == 11)) {
-            if ((waybill_type == 'Cash') && (tendered == '')) {
-                $('#editWaybillBtn').attr('disabled',true);
-            }
-            else {
-                $('#editWaybillBtn').attr('disabled',false);
-            }
-        }
-        else {
-                $('#editWaybillBtn').attr('disabled',true);
-        }
-    });
-
-    $('.form-control').change(function(){
-        date = $('#editWaybillDate').val();
-        waybill_number = $('#editWaybillNumber').val();
-        waybill_type = $('#editWaybillType').val();
-        recipient = $('#editWaybillRecipient').val();
-        recipient_msisdn = $('#editWaybillRecipientMsisdn').val();
-        destination = $('#editWaybillDestination').val();
-        recipient_address = $('#editWaybillAddress').val();
-        sender = $('#editWaybillShipper').val();
-        sender_msisdn = $('#editWaybillShipperMsisdn').val();
-        tendered = $('#waybillTenderedEditText').val();
-
-        if ((date != '') && (waybill_number != '') && (waybill_type != '') && (recipient != '') &&
-           (recipient_msisdn != '') && (recipient_msisdn.length == 11) && (destination != '') &&
-           (sender != '') && (sender_msisdn != '') && (sender_msisdn.length == 11)) {
-            if ((waybill_type == 'Cash') && (tendered == '')) {
-                $('#editWaybillBtn').attr('disabled',true);
-            }
-            else {
-                $('#editWaybillBtn').attr('disabled',false);
-            }
-        }
-        else {
-                $('#editWaybillBtn').attr('disabled',true);
-        }
-    });
-
-    $("#editWaybillType").change(function (e) {
-      if ($(this).val() == 'Charge') {
-        $('#waybillTenderedEditText').val('');
-        $('#waybillTenderedEditText').attr('disabled', true);
-      }
-      else {
-        $('#waybillTenderedEditText').attr('disabled', false);
-      }
-    });
-
-    $("#editWaybillRecipientMsisdn").keydown(function (e) {
-    // Allow: backspace, delete, tab, escape, enter and .
-    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-         // Allow: Ctrl/cmd+A
-        (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-         // Allow: Ctrl/cmd+C
-        (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
-         // Allow: Ctrl/cmd+X
-        (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
-         // Allow: home, end, left, right
-        (e.keyCode >= 35 && e.keyCode <= 39)) {
-             // let it happen, don't do anything
-             return;
-    }
-    // Ensure that it is a number and stop the keypress
-    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-        e.preventDefault();
-    }
-});
-
-$("#editWaybillShipperMsisdn").keydown(function (e) {
-    // Allow: backspace, delete, tab, escape, enter and .
-    if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
-         // Allow: Ctrl/cmd+A
-        (e.keyCode == 65 && (e.ctrlKey === true || e.metaKey === true)) ||
-         // Allow: Ctrl/cmd+C
-        (e.keyCode == 67 && (e.ctrlKey === true || e.metaKey === true)) ||
-         // Allow: Ctrl/cmd+X
-        (e.keyCode == 88 && (e.ctrlKey === true || e.metaKey === true)) ||
-         // Allow: home, end, left, right
-        (e.keyCode >= 35 && e.keyCode <= 39)) {
-             // let it happen, don't do anything
-             return;
-    }
-    // Ensure that it is a number and stop the keypress
-    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-        e.preventDefault();
-    }
-});
 </script>

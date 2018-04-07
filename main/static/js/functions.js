@@ -18,7 +18,7 @@ function show_inbound(slice_from) {
 function show_cargo(slice_from) {
   $('.panel-nav-item').removeClass('active');
   $('#navCargo').addClass('active');
-  $.get('/cargo',
+  $.get('/cargos',
   {
     slice_from:slice_from
   },
@@ -1879,20 +1879,18 @@ function open_waybill(waybill_id) {
   },
   function(data){
     $('#editWaybillModal .modal-body').html(data['template']);
-    if (data['user_role'] == 'Administrator') {
-      $('#editWaybillBtn').show();
-    }
-    else {
-      $('#editWaybillBtn').hide();
-    }
-    if ($('#editWaybillType').val() == 'Charge') {
-      $('#waybillTenderedEditText').val('');
-      $('#waybillTenderedEditText').attr('disabled', true);
-    }
-    else {
-      $('#waybillTenderedEditText').attr('disabled', false);
-    }
     $('#editWaybillModal').modal('show');
+  });
+}
+
+function open_cargo(cargo_id) {
+  $.get('/cargo',
+  {
+    cargo_id:cargo_id
+  },
+  function(data){
+    $('#editCargoModal .modal-body').html(data['template']);
+    $('#editCargoModal').modal('show');
   });
 }
 
@@ -1903,6 +1901,7 @@ function clear_waybill_data() {
   $.post('/waybill/item/clear',
   function(data){
     $('#waybillTotal').html('PHP 0');
+    $('#waybillChange').html('PHP 0');
     $('#addWaybillModal .error-icon-container').addClass('hidden');
     $('#addWaybillModal .form-control').css('border-bottom','1px solid #999');
     $('#addWaybillModal').modal('hide');
@@ -1924,16 +1923,35 @@ function compute_change() {
   $('#waybillChange').html('PHP '+String(change));
 }
 
-function compute_change_edit() {
-  total = parseInt($('#waybillTotalEdit').html().substring(4));
-  tendered = parseInt($('#waybillTenderedEditText').val());
-  if ($('#waybillTenderedEditText').val() == '') {
+function compute_forgotten_change() {
+  total = parseInt($('#forgottenTotal').html().substring(4));
+  tendered = parseInt($('#forgottenTenderedText').val());
+  if ($('#forgottenTenderedText').val() == '') {
     change = 0;
+    $('#forgottenPaymentBtn').attr('disabled',true);
   }
   else {
     change = tendered - total;
+    if (change < 0) {
+      $('#forgottenPaymentBtn').attr('disabled',true);
+    }
+    else {
+      $('#forgottenPaymentBtn').attr('disabled',false);
+    }
   }
-  $('#waybillChangeEdit').html('PHP '+String(change));
+  $('#forgottenChange').html('PHP '+String(change));
+}
+
+function add_forgotten_payment() {
+  tendered = $('#forgottenTenderedText').val();
+  change = $('#forgottenChange').html();
+  $('#waybillTenderedText').val(tendered);
+  $('#waybillChange').html(change);
+  $('#forgotPaymentModal').modal('hide');
+  $('#forgottenTenderedText').val('');
+  $('#forgottenTotal').html('PHP 0');
+  $('#forgottenChange').html('PHP 0');
+  save_waybill();
 }
 
 function validate_blank(element,value) {
@@ -1961,4 +1979,146 @@ function validate_msisdn(element,value) {
     $('#'+error_icon_id).removeClass('hidden');
     $('#'+error_icon_id).removeClass('tooltip');
   }
+}
+
+function add_cargo_item(event,waybill_no) {
+  event.preventDefault();
+  waybill_no = $('#addCargoItemWaybillNumber').val();
+  $.post('/cargo/item/add',
+  {
+    waybill_no:waybill_no
+  },
+  function(data){
+    if (data['status'] == 'success') {
+      $('#cargoItemError').fadeOut();
+      $('#addCargoItemTable tbody').prepend(data['template']);
+      $('#addCargoItemWaybillNumber').val('');
+      $('#addCargoWaybillBtn').attr('disabled', true);
+      setTimeout(function(){
+        $('#addCargoItemTable tbody tr#'+data['waybill_id']).animate(
+          {
+            'background-color':'#FFFFFF',
+            'color': '#373A3C'
+          },800);
+      },300);
+    }
+    else {
+      $('#cargoItemError').fadeIn();
+      $('#cargoItemError .snackbar-message').html(data['message']);
+      setTimeout(function(){
+        $('#cargoItemError').fadeOut();
+      },5000);
+    }
+  });
+}
+
+function delete_cargo_item(waybill_id,waybill_no) {
+  $.post('/cargo/item/delete',
+  {
+    waybill_no:waybill_no
+  },
+  function(data){
+    $('#addCargoItemTable tbody tr#'+waybill_id).remove();
+  });
+}
+
+function save_cargo_items() {
+  $('#saveCargoItemsBtn').button('loading');
+  $.post('/cargo/items/save',
+  function(data){
+    $('#cargoItemTable tbody').html(data['template']);
+    $('#addCargoItemWaybillNumber').val('');
+    $('#addCargoItemTable tbody').html('');
+    $('#addCargoItemModal').modal('hide');
+    $('#saveCargoItemsBtn').button('complete');
+  });
+}
+
+function supply_cargo_items() {
+  $.post('/cargo/items',
+  function(data){
+    $('#addCargoItemTable tbody').html(data['template']);
+  });
+}
+
+function clear_cargo_items() {
+  $('#cancelCargoBtn').button('loading');
+  $('#addCargoModal .form-control').val('');
+  $('#addCargoModal .form-control').change();
+  $.post('/cargo/item/clear',
+  function(data){
+    $('#addCargoModal .error-icon-container').addClass('hidden');
+    $('#addCargoModal .form-control').css('border-bottom','1px solid #999');
+    $('#cancelCargoBtn').button('complete');
+    $('#addCargoModal').modal('hide');
+    $('#addCargoModal .modal-body').scrollTop(0);
+    $('.cargo-item').remove();
+  });
+}
+
+function generate_cargo_number() {
+  $.post('/cargo/truck',
+  function(data){
+    $('#addCargoNumber').val(data['cargo_number']);
+    $('#addCargoOrigin').val('Manila');
+    $('#addCargoNumber').change();
+    setTimeout(function(){
+      $('#addCargoTruck').focus();
+    },500);
+  });
+}
+
+function save_cargo() {
+  $('#saveCargoBtn').button('loading');
+
+  cargo_number = $('#addCargoNumber').val();
+  truck = $('#addCargoTruck').val();
+  driver = $('#addCargoDriver').val();
+  crew = $('#addCargoCrew').val();
+  origin = $('#addCargoOrigin').val();
+  destination = $('#addCargoDestination').val();
+  departure_date = $('#addCargoDepartureDate').val();
+  departure_time = $('#addCargoDepartureTime').val();
+  arrival_date = $('#addCargoArrivalDate').val();
+  arrival_time = $('#addCargoArrivalTime').val();
+
+  $.post('/cargo/save',
+  {
+    cargo_number:cargo_number,
+    truck:truck,
+    driver:driver,
+    crew:crew,
+    origin:origin,
+    destination:destination,
+    departure_date:departure_date,
+    departure_time:departure_time,
+    arrival_date:arrival_date,
+    arrival_time:arrival_time
+  },
+  function(data){
+    $('#saveCargoBtn').button('complete');
+    if (data['status'] == 'success') {
+      $('.content').html(data['template']);
+      clear_cargo_items();
+      $('#addCargoModal').modal('hide');
+    }
+    else {
+      $('#cargoItemError').fadeIn();
+      $('#cargoItemError .snackbar-message').html(data['message']);
+      setTimeout(function(){
+        $('#cargoItemError').fadeOut();
+      },5000);
+    }
+  });
+}
+
+function receive_cargo(cargo_id) {
+  $.get('/cargo/items/receive',
+  {
+    cargo_id:cargo_id
+  },
+  function(data){
+    $('#receiveCargoItemsTable').html(data['template']);
+    $('#receiveCargoModal').modal('show');
+  });
 }

@@ -12,8 +12,7 @@ $(window).load(function(){
 profile_options = 'closed'
 
 $('#profile-options').hide();
-$('#replyError').hide();
-$('#replySuccess').hide();
+$('.snackbar').hide();
 
 $('.form-control.floatlabel').floatlabel({
     labelEndTop:'-2px'
@@ -21,6 +20,12 @@ $('.form-control.floatlabel').floatlabel({
 
 $(".datepicker").datepicker({
     dateFormat: "MM dd, yy"
+});
+
+$('.clockpicker').clockpicker({
+    twelvehour: true,
+    donetext: 'Done',
+    autoclose: false
 });
 
 $('.tooltip').tooltipster({
@@ -92,8 +97,8 @@ $('#closeMessage').on('click', function (e) {
 })();
 
 (function() {
-  $('#closeReplyError').on('click', function(e){
-    $('#replyError').fadeOut();
+  $('#closeCargoItemError').on('click', function(e){
+    $('#cargoItemError').fadeOut();
   });
 })();
 
@@ -128,11 +133,30 @@ $('#saveContactModal').on('hidden.bs.modal', function () {
 $('#addWaybillItemModal').on('hidden.bs.modal', function () {
   $('#addWaybillItemModal .form-control').val('');
   $('#addWaybillItemModal .form-control').change();
+  $('#addWaybillItemModal .error-icon-container').addClass('hidden');
+  $('#addWaybillItemModal .form-control').css('border-bottom','1px solid #999');
 });
 
-$('#editWaybillModal').on('hidden.bs.modal', function () {
-  $('#editWaybillBtn').button('complete');
-  $('#editWaybillBtn').attr('disabled', true);
+$('#addWaybillItemModal .form-control').on('keyup', function () {
+  name = $('#waybillItemName').val();
+  quantity = $('#waybillItemQuantity').val();
+  unit = $('#waybillItemUnit').val();
+  price = $('#waybillItemPrice').val();
+  if ((name != '') && (quantity != '') && (unit != '') && (price != '')) {
+    $('#saveWaybillItemBtn').attr('disabled',false);
+  }
+  else {
+    $('#saveWaybillItemBtn').attr('disabled',true);
+  }
+});
+
+$('#addCargoItemWaybillNumber').on('keyup', function () {
+  if ($(this).val() != '') {
+    $('#addCargoWaybillBtn').attr('disabled',false);
+  }
+  else {
+    $('#addCargoWaybillBtn').attr('disabled',true);
+  }
 });
 
 $('#addWaybillItemEditModal').on('hidden.bs.modal', function () {
@@ -142,6 +166,10 @@ $('#addWaybillItemEditModal').on('hidden.bs.modal', function () {
 
 $('#addWaybillModal').on('shown.bs.modal', function () {
   $('#addWaybillNumber').focus();
+});
+
+$('#addCargoItemModal').on('shown.bs.modal', function () {
+  $('#addCargoItemWaybillNumber').focus();
 });
 
 $('#addWaybillItemModal').on('shown.bs.modal', function () {
@@ -209,31 +237,6 @@ $('#searchRecipientName').keypress(function(e){
     if (e.which == 13) {
       search_contact_recipients();
     }
-});
-
-$('.conversations-check').on('click', function () {
-  var entry_id = $(this).attr('data-id');
-  if ($(this).hasClass('checked')) {
-    $(this).removeClass('checked');
-    $(this).html('&#xE835;');
-    deselect_conversation(entry_id);
-  }
-  else {
-    $(this).addClass('checked');
-    $(this).html('&#xE834;');
-    select_conversation(entry_id);
-  }
-});
-
-$('.conversations-star').on('click', function () {
-  if ($(this).hasClass('checked')) {
-    $(this).removeClass('checked');
-    $(this).html('&#xE83A;');
-  }
-  else {
-    $(this).addClass('checked');
-    $(this).html('&#xE838;');
-  }
 });
 
 $('.blasts-check').on('click', function () {
@@ -443,6 +446,46 @@ $('#addWaybillModal .form-control').change(function(){
     }
     else {
       $('#saveWaybillBtn').attr('disabled',true);
+    }
+});
+
+$('#addCargoModal .form-control').keyup(function(){
+    cargo_number = $('#addCargoNumber').val();
+    truck = $('#addCargoTruck').val();
+    driver = $('#addCargoDriver').val();
+    crew = $('#addCargoCrew').val();
+    origin = $('#addCargoOrigin').val();
+    destination = $('#addCargoDestination').val();
+    departure_date = $('#addCargoDepartureDate').val();
+    departure_time = $('#addCargoDepartureTime').val();
+
+    if ((cargo_number != '') && (truck != '') && (driver != '') && (crew != '') &&
+       (origin != '') && (destination != '') &&
+       (departure_date != '') && (departure_time != '')) {
+      $('#saveCargoBtn').attr('disabled',false);
+    }
+    else {
+      $('#saveCargoBtn').attr('disabled',true);
+    }
+});
+
+$('#addCargoModal .form-control').change(function(){
+    cargo_number = $('#addCargoNumber').val();
+    truck = $('#addCargoTruck').val();
+    driver = $('#addCargoDriver').val();
+    crew = $('#addCargoCrew').val();
+    origin = $('#addCargoOrigin').val();
+    destination = $('#addCargoDestination').val();
+    departure_date = $('#addCargoDepartureDate').val();
+    departure_time = $('#addCargoDepartureTime').val();
+
+    if ((cargo_number != '') && (truck != '') && (driver != '') && (crew != '') &&
+       (origin != '') && (destination != '') &&
+       (departure_date != '') && (departure_time != '')) {
+      $('#saveCargoBtn').attr('disabled',false);
+    }
+    else {
+      $('#saveCargoBtn').attr('disabled',true);
     }
 });
 

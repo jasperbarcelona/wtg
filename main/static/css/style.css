@@ -361,11 +361,7 @@ a,a:hover,a:active,a:focus {
 	text-align: right;
 }
 
-.icon-td i,
-.blast-icon-td i,
-.contact-icon-td i,
-.user-icon-td i,
-.group-icon-td i {
+.delete-icon-td i {
 	font-size: 16px !important;
 	margin-right: 10px;
 	padding: 0;
@@ -403,6 +399,10 @@ a,a:hover,a:active,a:focus {
 	border: 1px solid #ddd;
 }
 
+#receiveCargoItemsTable tbody tr {
+	cursor: pointer;
+}
+
 #messageContainer.minimized .message-recipients-container,
 #messageContainer.minimized .message-body-container,
 #messageContainer.minimized #minimizeMessage,
@@ -421,6 +421,12 @@ a,a:hover,a:active,a:focus {
 	background-color: #494949;
 	color: #FFFFFF;
 	cursor: pointer;
+	-webkit-user-select: none;
+  	-moz-user-select: none;
+  	-ms-user-select: none;
+}
+
+.active-cargo {
 	-webkit-user-select: none;
   	-moz-user-select: none;
   	-ms-user-select: none;
@@ -753,11 +759,22 @@ a,a:hover,a:active,a:focus {
 }
 
 #addWaybillModal .modal-dialog,
+#addCargoModal .modal-dialog,
+#receiveCargoModal .modal-dialog,
+#editCargoModal .modal-dialog,
 #editWaybillModal .modal-dialog {
 	width: 900px;
 }
 
+#addCargoItemModal .modal-dialog {
+	width: 800px;
+}
+
 #addWaybillModal .modal-body,
+#addCargoModal .modal-body,
+#editCargoModal .modal-body,
+#receiveCargoModal .modal-body,
+#addCargoItemModal .modal-body,
 #editWaybillModal .modal-body {
 	position: relative;
 	height: calc(100vh - 180px);
@@ -790,6 +807,9 @@ a,a:hover,a:active,a:focus {
 }
 
 #addWaybillModal .form-control:not(#waybillTenderedText),
+#addCargoModal .form-control,
+#editCargoModal .form-control,
+#receiveCargoModal .form-control,
 #editWaybillModal .form-control:not(#waybillTenderedEditText),
 #addWaybillItemModal .form-control,
 #addWaybillItemEditModal .form-control {
@@ -805,6 +825,28 @@ a,a:hover,a:active,a:focus {
 	box-shadow: none !important;
 	border-radius: 0 !important;
 	font-size: 15px;
+}
+
+#addCargoTruck {
+	text-transform: none !important;
+}
+
+#addCargoItemWaybillNumber {
+	float: left;
+	width: 50% !important;
+	margin-bottom: 20px;
+}
+
+#addCargoWaybillForm {
+	float: left;
+	width: 100%;
+}
+
+#addCargoWaybillBtn {
+	float: left;
+	padding-left: 30px;
+	padding-right: 30px;
+	margin-left: 10px !important;
 }
 
 .search-panel td {
@@ -929,7 +971,8 @@ a,a:hover,a:active,a:focus {
 	right: 35px;
 }
 
-.input-container.right .error-icon-container {
+.input-container.right .error-icon-container,
+.input-container.whole .error-icon-container {
 	right: 15px;
 }
 
@@ -1019,10 +1062,10 @@ select {
 
 .snackbar {
 	position: fixed;
-	top: 100px;
+	bottom: 100px;
 	left: 0;
 	width: 100%;
-	z-index: 3;
+	z-index: 99999;
 	display: -webkit-flex;
 	display: flex;
 	-webkit-flex-direction: column;
@@ -1034,7 +1077,7 @@ select {
 }
 
 .snackbar-error > div {
-	background-color: #3C85B6;
+	background-color: #d9534f;
 }
 
 .error-text {
@@ -1055,6 +1098,7 @@ select {
 .snackbar > div {
 	position: relative;
 	color: #FFFFFF;
+	font-weight: bold;
 	border-radius: 4px;
 	padding: 7px 10px;
 	display: -webkit-flex;
@@ -1077,7 +1121,7 @@ select {
 }
 
 .snackbar-message {
-	margin-right: 100px;
+	margin-right: 50px;
 }
 
 .blast-icon-td,
@@ -1501,11 +1545,29 @@ select {
 	justify-content: center;
 }
 
-.item-star.checked {
-	color: #f0ad4e !important;
+.active-waybill {
+	cursor: pointer;
 }
 
-.delete-waybill-item {
+.active-cargo:not(.checked):hover {
+	background-color: #eee !important;
+}
+
+.active-cargo.checked {
+	color: #FFFFFF;
+	background-color: #337ab7;
+}
+
+.active-cargo.checked .cargo-item-check {
+	color: #FFFFFF !important;
+}
+
+#selectAllCargo.checked .all-item-check {
+	color: #337ab7 !important;
+}
+
+.delete-waybill-item,
+.cargo-item-waybill-delete-td {
 	color: #c9302c !important;
 	font-size: 16px !important;
 	padding: 0;
@@ -1527,7 +1589,10 @@ select {
 
 .delete-waybill-item:hover,
 .delete-waybill-item:focus,
-.delete-waybill-item:active {
+.delete-waybill-item:active,
+.cargo-item-waybill-delete-td:hover,
+.cargo-item-waybill-delete-td:focus,
+.cargo-item-waybill-delete-td:active {
 	color: #c9302c !important;
 }
 
@@ -1614,13 +1679,7 @@ select {
   	outline: none !important;
 }
 
-.inbound-star,
-.inbound-check,
-.blasts-check,
-.reminders-check,
-.contacts-check,
-.groups-check,
-.users-check {
+.cargo-item-check {
 	-webkit-user-select: none;
   	-moz-user-select: none;
   	-ms-user-select: none;
@@ -1681,17 +1740,17 @@ td {
 }
 
 .waybill-item-td {
-	width: calc(35% - 10px);
+	width: 393px;
 }
 .waybill-quantity-td {
-	width: calc(20% - 10px);
+	width: 165px;
 }
 .waybill-unit-td {
-	width: calc(20% - 10px);
+	width: 166px;
 }
 
 .waybill-price-td {
-	width: calc(20% - 10px);
+	width: 166px;
 }
 
 .waybill-payment-container {
@@ -1782,4 +1841,88 @@ td {
 	height: 30px !important;
 	text-align: right;
 	padding-left: 40px !important;
+}
+
+.cargo-waybill-td {
+	width: 15%;
+}
+
+.cargo-item-td {
+	width: 32.5%;
+}
+
+.cargo-recipient-td {
+	width: 30%;
+}
+
+.cargo-quantity-td {
+	width: 10%;
+}
+
+.cargo-unit-td {
+	width: 22.5%;
+}
+
+.receive-cargo-waybill-td {
+	width: 15%;
+}
+
+.receive-cargo-item-td {
+	width: 30%;
+}
+
+.receive-cargo-recipient-td {
+	width: 30%;
+}
+
+.receive-cargo-quantity-td {
+	width: 10%;
+}
+
+.receive-cargo-unit-td {
+	width: 20%;
+}
+
+.cargo-item-waybill-number-td {
+	width: 20%;
+}
+
+.cargo-item-waybill-type-td {
+	width: 20%;
+}
+
+.cargo-item-waybill-destination-td {
+	width: 25%;
+}
+
+.cargo-item-waybill-recipient-td {
+	width: 30%;
+}
+
+.cargo-item-waybill-delete-td {
+	width: 5%;
+}
+
+#cargoItemTable th,
+#cargoItemTable td {
+	font-size: 13px !important;
+}
+ 
+#waybillItemTable th,
+#waybillItemTableEdit th,
+#waybillItemTable td,
+#waybillItemTableEdit td {
+	font-size: 13px !important;
+}
+
+#selectAllCargo {
+	cursor: pointer;
+	-webkit-user-select: none;
+  	-moz-user-select: none;
+  	-ms-user-select: none;
+}
+
+#selectAllCargo i {
+	float: left;
+	margin-bottom: 3px !important;
 }

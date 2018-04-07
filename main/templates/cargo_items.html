@@ -1,0 +1,11 @@
+{% for waybill in cargo_items %}
+<tr id="{{ waybill.id }}">
+    <td class="cargo-item-waybill-number-td">{{ waybill.waybill_no }}</td>
+    <td class="cargo-item-waybill-type-td">{{ waybill.waybill_type }}</td>
+    <td class="cargo-item-waybill-destination-td">{{ waybill.destination }}</td>
+    <td class="cargo-item-waybill-recipient-td">{{ waybill.recipient }}</td>
+    <td class="cargo-item-waybill-delete-td" onclick="delete_cargo_item({{ waybill.id }}, {{ waybill.waybill_no }})">
+    	<i class="material-icons cargo-item-waybill-delete-td">&#xE5CD;</i>
+    </td>
+</tr>
+{% endfor %}

@@ -75,13 +75,18 @@ class Package(db.Model):
     total = db.Column(db.String(50))
     tendered = db.Column(db.String(50))
     change = db.Column(db.String(50))
+    date_created = db.Column(db.String(20))
+    time_created = db.Column(db.String(20))
+    created_by_id = db.Column(db.Integer())
+    created_by = db.Column(db.String(100))
     created_at = db.Column(db.String(50))
 
 class PackageItem(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     client_no = db.Column(db.String(32))
     waybill_id = db.Column(db.Integer())
-    item = db.Column(db.String(60))
+    waybill_no = db.Column(db.String(32))
+    item = db.Column(db.Text())
     quantity = db.Column(db.Integer())
     unit = db.Column(db.String(60))
     price = db.Column(db.String(60))
@@ -99,8 +104,10 @@ class Notification(db.Model):
 class Cargo(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     client_no = db.Column(db.String(32))
+    cargo_no = db.Column(db.String(60))
     truck = db.Column(db.String(60))
     driver = db.Column(db.String(100))
+    crew = db.Column(db.Text())
     origin = db.Column(db.String(100))
     destination = db.Column(db.String(100))
     departure_date = db.Column(db.String(20))
@@ -108,6 +115,22 @@ class Cargo(db.Model):
     arrival_date = db.Column(db.String(20))
     arrival_time = db.Column(db.String(20))
     load_size = db.Column(db.Integer())
+    date_created = db.Column(db.String(20))
+    time_created = db.Column(db.String(20))
+    created_by_id = db.Column(db.Integer())
+    created_by = db.Column(db.String(100))
+    created_at = db.Column(db.String(50))
+
+class CargoItem(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    client_no = db.Column(db.String(32))
+    cargo_id = db.Column(db.Integer())
+    cargo_no = db.Column(db.String(60))
+    waybill_no = db.Column(db.String(60))
+    item = db.Column(db.Text())
+    quantity = db.Column(db.Integer())
+    recipient = db.Column(db.String(100))
+    unit = db.Column(db.String(60))
     created_at = db.Column(db.String(50))
 
 class Batch(db.Model):

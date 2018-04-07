@@ -1,0 +1,24 @@
+{% for waybill in waybills %}
+<tr id="{{ waybill.id }}" class="active-waybill">
+	<td class="cargo-item-waybill-number-td">{{ waybill.waybill_no }}</td>
+	<td class="cargo-item-waybill-type-td">{{ waybill.waybill_type }}</td>
+	<td class="cargo-item-waybill-destination-td">{{ waybill.destination }}</td>
+	<td class="cargo-item-waybill-recipient-td">{{ waybill.recipient }}</td>
+</tr>
+{% endfor %}
+
+<script type="text/javascript">
+	$('.active-waybill').on('click', function () {
+	  var entry_id = $(this).attr('data-id');
+	  if ($(this).hasClass('checked')) {
+	    $(this).removeClass('checked');
+	    $(this).find('.cargo-item-check i').html('&#xE835;');
+	    deselect_conversation(entry_id);
+	  }
+	  else {
+	    $(this).addClass('checked');
+	    $(this).find('.cargo-item-check i').html('&#xE834;');
+	    select_conversation(entry_id);
+	  }
+	});
+</script>

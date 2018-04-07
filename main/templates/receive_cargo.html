@@ -1,0 +1,54 @@
+<thead>
+    <tr>
+        <th class="delete-icon-td" id="selectAllCargo"><i class="material-icons all-item-check">&#xE835;</i></th>
+        <th class="cargo-waybill-td">Waybill No.</th>
+        <th class="cargo-recipient-td">Consigned To</th>
+        <th class="cargo-item-td">Item</th>
+        <th class="cargo-quantity-td align-right">Quantity</th>
+        <th class="cargo-unit-td align-right">Unit</th>
+    </tr>
+</thead>
+<tbody>
+    {% for item in cargo_items %}
+    <tr id="{{ item.id }}" class="active-cargo">
+        <td class="delete-icon-td">
+            <i class="material-icons cargo-item-check">&#xE835;</i>
+        </td>
+        <td class="cargo-waybill-td">{{ item.waybill_no }}</td>
+        <td class="cargo-recipient-td">{{ item.recipient }}</td>
+        <td class="cargo-item-td">{{ item.item }}</td>
+        <td class="cargo-quantity-td align-right">{{ item.quantity }}</td>
+        <td class="cargo-unit-td align-right">{{ item.unit }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+<script type="text/javascript">
+    $('.active-cargo').on('click', function () {
+        if ($(this).hasClass('checked')) {
+            $(this).removeClass('checked');
+            $(this).find('.cargo-item-check').html('&#xE835;');
+            $('#selectAllCargo').removeClass('checked');
+            $('#selectAllCargo').find('.all-item-check').html('&#xE835;');
+        }
+        else {
+            $(this).addClass('checked');
+            $(this).find('.cargo-item-check').html('&#xE834;');
+        }
+    });
+
+    $('#selectAllCargo').on('click', function () {
+        if ($(this).hasClass('checked')) {
+            $(this).removeClass('checked');
+            $('.active-cargo').removeClass('checked');
+            $('.active-cargo').find('.cargo-item-check').html('&#xE835;');
+            $(this).find('.all-item-check').html('&#xE835;');
+        }
+        else {
+            $(this).addClass('checked');
+            $('.active-cargo').addClass('checked');
+            $('.active-cargo').find('.cargo-item-check').html('&#xE834;');
+            $(this).find('.all-item-check').html('&#xE834;');
+        }
+});
+</script>

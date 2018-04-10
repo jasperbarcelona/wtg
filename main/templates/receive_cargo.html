@@ -30,10 +30,12 @@
             $(this).find('.cargo-item-check').html('&#xE835;');
             $('#selectAllCargo').removeClass('checked');
             $('#selectAllCargo').find('.all-item-check').html('&#xE835;');
+            validate_cargo_receipt();
         }
         else {
             $(this).addClass('checked');
             $(this).find('.cargo-item-check').html('&#xE834;');
+            validate_cargo_receipt();
         }
     });
 
@@ -43,12 +45,27 @@
             $('.active-cargo').removeClass('checked');
             $('.active-cargo').find('.cargo-item-check').html('&#xE835;');
             $(this).find('.all-item-check').html('&#xE835;');
+            validate_cargo_receipt();
         }
         else {
             $(this).addClass('checked');
             $('.active-cargo').addClass('checked');
             $('.active-cargo').find('.cargo-item-check').html('&#xE834;');
             $(this).find('.all-item-check').html('&#xE834;');
+            validate_cargo_receipt();
         }
-});
+    });
+
+    function validate_cargo_receipt() {
+        date = $('#receiveCargoArrivalDate').val();
+        time = $('#receiveCargoArrivalTime').val();
+        received_cargo_items = $('.active-cargo.checked').length;
+
+        if ((date != '') && (time != '') && (received_cargo_items != 0)) {
+            $('#saveCargoReceiptBtn').attr('disabled', false);
+        }
+        else {
+            $('#saveCargoReceiptBtn').attr('disabled', true);
+        }
+    }
 </script>

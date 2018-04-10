@@ -178,11 +178,11 @@
             </div>
             <div class="modal-body">
                 <div class="input-container left">
-                    <input type="text" id="receiveCargoArrivalDate" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorCargoReceiveArrivalDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Arrival Date">
+                    <input type="text" id="receiveCargoArrivalDate" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_cargo_receipt();" data-error="errorCargoReceiveArrivalDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Arrival Date" onkeyup="validate_cargo_receipt()">
                     <div id="errorCargoReceiveArrivalDate" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container right">
-                    <input type="text" id="receiveCargoArrivalTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorCargoReceiveArrivalTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Arrival Time">
+                    <input type="text" id="receiveCargoArrivalTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_cargo_receipt();" data-error="errorCargoReceiveArrivalTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Arrival Time" onkeyup="validate_cargo_receipt()">
                     <div id="errorCargoReceiveArrivalTime" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <table id="receiveCargoItemsTable" class="table">
@@ -190,7 +190,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
-                <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()" disabled>Save</button>
+                <button type="button" id="saveCargoReceiptBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Receive" onclick="save_cargo_receipt()" disabled>Receive</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

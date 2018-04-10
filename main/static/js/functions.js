@@ -2122,3 +2122,12 @@ function receive_cargo(cargo_id) {
     $('#receiveCargoModal').modal('show');
   });
 }
+
+function save_cargo_receipt() {
+  cargo_items = [];
+  date = $('#receiveCargoArrivalDate').val();
+  time = $('#receiveCargoArrivalTime').val();
+  $( ".active-cargo.checked" ).each(function( index ) {
+    types.push($(this).attr('id'));
+  });
+}

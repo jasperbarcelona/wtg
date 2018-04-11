@@ -131,7 +131,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" onclick="clear_waybill_data()" data-loading-text="Closing.." data-complete-text="Close">Close</button>
+                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" onclick="clear_waybill_data()" data-loading-text="Closing.." data-complete-text="Cancel">Cancel</button>
                 <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()" disabled>Save</button>
             </div>
         </div><!-- /.modal-content -->
@@ -147,8 +147,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
-                <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()" disabled>Save</button>
+                <button type="button" id="closeWaybillBtn" class="btn btn-primary modal-btn" data-dismiss="modal">Close</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -163,8 +162,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
-                <button type="button" id="saveWaybillBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_waybill()" disabled>Save</button>
+                <button type="button" id="closeCargoBtn" class="btn btn-primary modal-btn" data-dismiss="modal">Close</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -177,11 +175,11 @@
                 <h4 class="modal-title" id="gridSystemModalLabel">Receive Cargo</h4>
             </div>
             <div class="modal-body">
-                <div class="input-container left">
+                <div class="input-container whole">
                     <input type="text" id="receiveCargoArrivalDate" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_cargo_receipt();" data-error="errorCargoReceiveArrivalDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Arrival Date" onkeyup="validate_cargo_receipt()">
                     <div id="errorCargoReceiveArrivalDate" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
-                <div class="input-container right">
+                <div class="input-container whole">
                     <input type="text" id="receiveCargoArrivalTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_cargo_receipt();" data-error="errorCargoReceiveArrivalTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Arrival Time" onkeyup="validate_cargo_receipt()">
                     <div id="errorCargoReceiveArrivalTime" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
@@ -189,8 +187,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
-                <button type="button" id="saveCargoReceiptBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Receive" onclick="save_cargo_receipt()" disabled>Receive</button>
+                <button type="button" id="cancelCargoReceiptBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" id="saveCargoReceiptBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Receive" onclick="receive_cargo()" disabled>Receive</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -235,12 +233,6 @@
                     <input type="text" id="addCargoDepartureTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorCargoDepartureTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Departure Time">
                     <div id="errorCargoDepartureTime" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
-                <div class="input-container left">
-                    <input type="text" id="addCargoArrivalDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Arrival Date">
-                </div>
-                <div class="input-container right">
-                    <input type="text" id="addCargoArrivalTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Arrival Time">
-                </div>
                 <span class="input-group-label">Cargo Content</span>
                 <table id="cargoItemTable" class="table">
                     <thead>
@@ -258,7 +250,7 @@
                 <button id="addCargoItemBtn" class="btn btn-primary" data-toggle="modal" data-target="#addCargoItemModal" onclick="supply_cargo_items()" data-backdrop="static" data-keyboard="false">Manage Items</button>
             </div>
             <div class="modal-footer">
-                <button type="button" id="cancelCargoBtn" class="btn btn-danger modal-btn" onclick="clear_cargo_items()" data-loading-text="Closing.." data-complete-text="Close">Close</button>
+                <button type="button" id="cancelCargoBtn" class="btn btn-danger modal-btn" onclick="clear_cargo_items()" data-loading-text="Closing.." data-complete-text="Cancel">Cancel</button>
                 <button type="button" id="saveCargoBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Save" onclick="save_cargo()" disabled>Save</button>
             </div>
         </div><!-- /.modal-content -->
@@ -379,7 +371,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
                 <button id="forgottenPaymentBtn" type="button" class="btn btn-primary modal-btn" disabled onclick="add_forgotten_payment()">Done</button>
             </div>
         </div><!-- /.modal-content -->
@@ -396,7 +388,7 @@
                 <span class="confirm-delete-message">Looks like you forgot to add the package content.</span>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary modal-btn" onclick="open_forgotten_waybill_item()">Add Content</button>
             </div>
         </div><!-- /.modal-content -->

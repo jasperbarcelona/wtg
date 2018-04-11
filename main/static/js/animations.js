@@ -2,12 +2,12 @@ $(document).ready(function(){
 
 initialize_selected_entries();
 
-$(window).load(function(){
+/*$(window).load(function(){
   check_upload_progress();
   setTimeout(function() {
     $('#mainPreloader').fadeOut();
   }, 3000);
-});
+});*/
 
 profile_options = 'closed'
 
@@ -118,6 +118,10 @@ $('#forgotPaymentModal').on('shown.bs.modal', function () {
 
 $('#addContactModal').on('shown.bs.modal', function () {
     $('#addContactName').focus();
+});
+
+$('.modal').on('shown.bs.modal', function () {
+    $(this).find('.modal-body').scrollTop(0);
 });
 
 $('#saveContactModal').on('hidden.bs.modal', function () {

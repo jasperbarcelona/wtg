@@ -59,8 +59,12 @@
     </tbody>
 </table>
 <span class="input-group-label">Actions</span>
-<button id="addCargoItemBtn" class="btn btn-primary" onclick="receive_cargo({{ cargo.id }})">Receive</button>
-<button id="addCargoItemBtn" class="btn btn-danger" data-toggle="modal" data-target="#addCargoItemModal">Delete</button>
+<div class="actions-btn-container">
+    {% if cargo.arrival_date == '' %}
+    <button class="btn btn-primary action-btn" data-toggle="modal" data-target="#receiveCargoModal">Receive</button>
+    {% endif %}
+    <button class="btn btn-danger action-btn">Delete</button>
+</div>
 
 <script type="text/javascript">
     $('.form-control.floatlabel').floatlabel({

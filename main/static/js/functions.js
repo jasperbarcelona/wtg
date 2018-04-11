@@ -2079,8 +2079,6 @@ function save_cargo() {
   destination = $('#addCargoDestination').val();
   departure_date = $('#addCargoDepartureDate').val();
   departure_time = $('#addCargoDepartureTime').val();
-  arrival_date = $('#addCargoArrivalDate').val();
-  arrival_time = $('#addCargoArrivalTime').val();
 
   $.post('/cargo/save',
   {
@@ -2091,9 +2089,7 @@ function save_cargo() {
     origin:origin,
     destination:destination,
     departure_date:departure_date,
-    departure_time:departure_time,
-    arrival_date:arrival_date,
-    arrival_time:arrival_time
+    departure_time:departure_time
   },
   function(data){
     $('#saveCargoBtn').button('complete');
@@ -2112,7 +2108,7 @@ function save_cargo() {
   });
 }
 
-function receive_cargo(cargo_id) {
+/*function receive_cargo(cargo_id) {
   $.get('/cargo/items/receive',
   {
     cargo_id:cargo_id
@@ -2121,13 +2117,66 @@ function receive_cargo(cargo_id) {
     $('#receiveCargoItemsTable').html(data['template']);
     $('#receiveCargoModal').modal('show');
   });
+}*/
+
+function validate_cargo_receipt() {
+    date = $('#receiveCargoArrivalDate').val();
+    time = $('#receiveCargoArrivalTime').val();
+
+    if ((date != '') && (time != '')) {
+        $('#saveCargoReceiptBtn').attr('disabled', false);
+    }
+    else {
+        $('#saveCargoReceiptBtn').attr('disabled', true);
+    }
 }
 
-function save_cargo_receipt() {
+function receive_cargo() {
+  $('#saveCargoReceiptBtn').button('loading');
   cargo_items = [];
   date = $('#receiveCargoArrivalDate').val();
   time = $('#receiveCargoArrivalTime').val();
-  $( ".active-cargo.checked" ).each(function( index ) {
-    types.push($(this).attr('id'));
+  $.post('/cargo/items/receive',
+  {
+    date:date,
+    time:time,
+    cargo_items:cargo_items
+  },
+  function(data){
+    $('#editCargoModal .modal-body').html(data['template']);
+    $('#cargosTbody').find('#'+data['cargo_id']).find('.cargo-arrival-date-td').html(data['arrival_date']);
+    $('#receiveCargoModal .form-control').val('');
+    $('#receiveCargoModal .form-control').change();
+    $('.active-cargo').removeClass('checked');
+    $('#receiveCargoModal').modal('hide');
+
+    $('#blastOverlay .blast-overlay-body').html(data['overlay_template']);
+    $('#blastOverlay').removeClass('hidden');
+    $('body').css('overflow-y','hidden');
+    if (data['pending'] != 0) {
+      refresh_blast_progress(data['batch_id']);
+    }
+    else {
+      $('#blastOverlay').addClass('hidden');
+      $('#blastOverlay .blast-overlay-body').html('');
+    }
+    $('#saveCargoReceiptBtn').button('complete');
   });
+}
+
+function refresh_blast_progress(batch_id) {
+  $.post('/blast/progress',
+    {
+      batch_id:batch_id
+    },
+    function(data){
+      $('#blastOverlay .blast-overlay-body').html(data['template']);
+      if (data['pending'] != 0) {
+        refresh_blast_progress(batch_id);
+      }
+      else {
+        $('#blastOverlay').addClass('hidden');
+        $('#blastOverlay .blast-overlay-body').html('');
+      }
+    });
 }

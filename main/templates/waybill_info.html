@@ -29,6 +29,25 @@
 <div class="input-container right">
     <input type="text" id="editWaybillShipperMsisdn" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Shipper's contact number" value="{{ waybill.sender_msisdn }}">
 </div>
+<span class="input-group-label">Cargo Info</span>
+<div class="input-container left">
+    <input type="text" id="editWaybillCargoNumber" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Cargo Number" value="{{ waybill.cargo_no }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillCargoTruck" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Truck" value="{{ waybill.truck }}">
+</div>
+<div class="input-container left">
+    <input type="text" id="editWaybillDepartureDate" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Departure Date" value="{{ waybill.departure_date }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillDepartureTime" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Departure Time" value="{{ waybill.departure_time }}">
+</div>
+<div class="input-container left">
+    <input type="text" id="editWaybillArrivalDate" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Arrival Date" value="{{ waybill.arrival_date }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillArrivalTime" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Arrival Time" value="{{ waybill.arrival_time }}">
+</div>
 <span class="input-group-label">Package Content</span>
 <table id="waybillItemTableEdit" class="table">
     <thead>
@@ -62,14 +81,28 @@
         <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
         <span class="waybill-payment" id="waybillTendered">
             <span class="payment-php">PHP</span>
-            <input type="text" id="waybillTenderedEditText" readOnly="ReadOnly" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
+            <input type="text" id="waybillTenderedEditText" readOnly="ReadOnly" class="form-control" title="Click 'Add Payment' button below to add tendered amount." placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
         </span>
         <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
     </div>
+</div>
+<span class="input-group-label">Actions</span>
+<div class="actions-btn-container">
+    {% if waybill.tendered == '' %}
+    <button class="btn btn-primary action-btn" data-toggle="modal" data-target="#addPaymentModal">Add Payment</button>
+    {% endif %}
+    <button class="btn btn-danger action-btn">Delete</button>
 </div>
 
 <script type="text/javascript">
     $('.form-control.floatlabel').floatlabel({
         labelEndTop:'-2px'
+    });
+
+    $('#waybillTenderedEditText').tooltipster({
+       animation: 'grow',
+       delay: 200,
+       theme: 'tooltipster-shadow',
+       trigger: 'hover'
     });
 </script>

@@ -55,17 +55,4 @@
             validate_cargo_receipt();
         }
     });
-
-    function validate_cargo_receipt() {
-        date = $('#receiveCargoArrivalDate').val();
-        time = $('#receiveCargoArrivalTime').val();
-        received_cargo_items = $('.active-cargo.checked').length;
-
-        if ((date != '') && (time != '') && (received_cargo_items != 0)) {
-            $('#saveCargoReceiptBtn').attr('disabled', false);
-        }
-        else {
-            $('#saveCargoReceiptBtn').attr('disabled', true);
-        }
-    }
 </script>

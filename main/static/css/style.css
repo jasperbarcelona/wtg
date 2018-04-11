@@ -760,7 +760,6 @@ a,a:hover,a:active,a:focus {
 
 #addWaybillModal .modal-dialog,
 #addCargoModal .modal-dialog,
-#receiveCargoModal .modal-dialog,
 #editCargoModal .modal-dialog,
 #editWaybillModal .modal-dialog {
 	width: 900px;
@@ -773,7 +772,6 @@ a,a:hover,a:active,a:focus {
 #addWaybillModal .modal-body,
 #addCargoModal .modal-body,
 #editCargoModal .modal-body,
-#receiveCargoModal .modal-body,
 #addCargoItemModal .modal-body,
 #editWaybillModal .modal-body {
 	position: relative;
@@ -787,6 +785,7 @@ a,a:hover,a:active,a:focus {
 }
 
 #forgotPaymentModal .modal-body,
+#receiveCargoModal .modal-body,
 #forgotWaybillItemModal .modal-body {
 	position: relative;
 	padding-top: 30px;
@@ -804,6 +803,12 @@ a,a:hover,a:active,a:focus {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	background-color: #FFFFFF;
+}
+
+.actions-btn-container {
+	width: 100%;
+	margin-left: -2px;
+	text-align: left;
 }
 
 #addWaybillModal .form-control:not(#waybillTenderedText),
@@ -1380,7 +1385,7 @@ select {
 	position: absolute;
 	left: 0;
 	top: 0;
-	z-index: 10;
+	z-index: 999999999;
 	height: 100vh;
 	width: 100%;
 	background: rgba(0,0,0,0.6);
@@ -1407,7 +1412,7 @@ select {
 }
 
 .blast-progress {
-	font-size: 20px;
+	font-size: 16px;
 }
 
 .blast-overlay-label-container {
@@ -1841,6 +1846,14 @@ td {
 	height: 30px !important;
 	text-align: right;
 	padding-left: 40px !important;
+}
+
+#waybillTenderedEditText {
+	cursor: not-allowed;
+}
+
+.action-btn {
+	width: 150px !important;
 }
 
 .cargo-waybill-td {

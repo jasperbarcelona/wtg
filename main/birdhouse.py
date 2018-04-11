@@ -34,7 +34,7 @@ from email.mime.text import MIMEText as text
 import os
 import schedule
 from werkzeug.utils import secure_filename
-from tasks import send_notification
+from tasks import send_notification, send_arrival_notifications
 import db_conn
 from db_conn import db, app
 from models import *
@@ -69,6 +69,8 @@ admin.add_view(SchoolAdmin(Cargo, db.session))
 admin.add_view(SchoolAdmin(CargoItem, db.session))
 admin.add_view(SchoolAdmin(Notification, db.session))
 admin.add_view(SchoolAdmin(AdminUser, db.session))
+admin.add_view(SchoolAdmin(ArrivalBatch, db.session))
+admin.add_view(SchoolAdmin(ArrivalNotification, db.session))
 
 def nocache(view):
     @wraps(view)
@@ -178,17 +180,6 @@ def index():
     user = AdminUser.query.filter_by(id=session['user_id']).first()
     total_entries = Package.query.filter_by(client_no=session['client_no']).count()
     packages = Package.query.filter_by(client_no=session['client_no']).order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
-    contacts = Contact.query.filter_by(client_no=session['client_no']).order_by(Contact.name)
-    contact_count = Contact.query.filter_by(client_no=session['client_no']).count()
-    customers_count = Contact.query.filter_by(client_no=session['client_no'], contact_type='Customer').count()
-    staff_count = Contact.query.filter_by(client_no=session['client_no'], contact_type='Staff').count()
-    origins = db.session.query(Package.origin.distinct().label("origin")).all()
-    destinations = db.session.query(Package.origin.distinct().label("destination")).all()
-    groups = []
-    for _ in origins:
-        groups.append(_.origin)
-    for _ in destinations:
-        groups.append(_.destination)
 
     if total_entries < 50:
         return flask.render_template(
@@ -196,30 +187,20 @@ def index():
         client_name=session['client_name'],
         user_name=session['user_name'],
         packages=packages,
-        contacts=contacts,
         limit=total_entries,
         total_entries=total_entries,
         prev_btn='disabled',
         next_btn='disabled',
-        contact_count=contact_count,
-        customers_count=customers_count,
-        staff_count=staff_count,
-        groups=groups
     )
     return flask.render_template(
         'index.html',
         client_name=session['client_name'],
         user_name=session['user_name'],
         packages=packages,
-        contacts=contacts,
         limit=total_entries,
         total_entries=total_entries,
         prev_btn='disabled',
         next_btn='enabled',
-        contact_count=contact_count,
-        customers_count=customers_count,
-        staff_count=staff_count,
-        groups=groups
     )
 
 
@@ -236,7 +217,7 @@ def authenticate_user():
     data = flask.request.form.to_dict()
     client = Client.query.filter_by(client_no=data['client_no']).first()
     if not client or client == None:
-        return jsonify(status='failed', error='Invalid client number.')
+        return jsonify(status='failed', error='Invalid client ID.')
     user = AdminUser.query.filter_by(email=data['user_email'],password=data['user_password']).first()
     if not user or user == None:
         return jsonify(status='failed', error='Invalid email or password.')
@@ -1080,79 +1061,6 @@ def open_conversation():
         ),200
 
 
-@app.route('/conversation/receive',methods=['GET','POST'])
-def receive_message():
-    data = request.json['inboundSMSMessageList']['inboundSMSMessage'][0]
-    contact = Contact.query.filter_by(msisdn='0%s'%data['senderAddress'][-10:]).first()
-    conversation = Package.query.filter_by(msisdn='0%s'%data['senderAddress'][-10:]).first()
-    if not conversation or conversation == None:
-        if contact:
-            conversation = Package(
-                client_no='at-ic2017',
-                contact_name=contact.name,
-                msisdn=contact.msisdn,
-                display_name=contact.name,
-                )
-        else:
-            conversation = Package(
-                client_no='at-ic2017',
-                msisdn='0%s'%data['senderAddress'][-10:],
-                display_name='0%s'%data['senderAddress'][-10:],
-                )
-        db.session.add(conversation)
-        db.session.commit()
-
-    message = PackageItem(
-        conversation_id=conversation.id,
-        message_type='inbound',
-        date=datetime.datetime.now().strftime('%B %d, %Y'),
-        time=time.strftime("%I:%M%p"),
-        content=data['message'],
-        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-        )
-
-    db.session.add(message)
-    db.session.commit()
-
-    conversation.status='unread'
-    conversation.latest_content=message.content
-    conversation.latest_date=message.date
-    conversation.latest_time=message.time
-    conversation.created_at=message.created_at
-    db.session.commit()
-
-    content = 'Thank you for using our hotline. We will try to get back to you as soon as possible.'
-    message_options = {
-            'app_id': ALSONS_APP_ID,
-            'app_secret': ALSONS_APP_SECRET,
-            'message': content,
-            'address': conversation.msisdn,
-            'passphrase': ALSONS_PASSPHRASE,
-        }
-    r = requests.post(IPP_URL%ALSONS_SHORTCODE,message_options)  
-    if r.status_code != 201:
-        reply = PackageItem(
-            conversation_id=conversation.id,
-            message_type='outbound',
-            date=datetime.datetime.now().strftime('%B %d, %Y'),
-            time=time.strftime("%I:%M%p"),
-            content=content,
-            outbound_sender_name='System',
-            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-            )
-        db.session.add(reply)
-        db.session.commit()
-        conversation.latest_content = content
-        conversation.latest_date = reply.date
-        conversation.latest_time = reply.time
-        conversation.created_at = reply.created_at
-        db.session.commit()
-
-    return jsonify(
-        status='success'
-        ),201
-
-
 @app.route('/conversation/reply',methods=['GET','POST'])
 def send_reply():
     message_content = flask.request.form.get('content')
@@ -1654,53 +1562,11 @@ def send_text_blast():
 @app.route('/blast/progress', methods=['GET', 'POST'])
 def get_blast_progress():
     batch_id = flask.request.form.get('batch_id')
-    batch = Batch.query.filter_by(id=batch_id).first()
+    batch = ArrivalBatch.query.filter_by(id=batch_id).first()
     return jsonify(
         pending=batch.pending,
         template=flask.render_template('blast_status.html', batch=batch)
         )
-
-
-@app.route('/reminder/progress', methods=['GET', 'POST'])
-def get_reminder_progress():
-    batch_id = flask.request.form.get('batch_id')
-    batch = ReminderBatch.query.filter_by(id=batch_id).first()
-    return jsonify(
-        pending=batch.pending,
-        template=flask.render_template('reminder_status.html', batch=batch)
-        )
-
-
-@app.route('/contacts/progress', methods=['GET', 'POST'])
-def get_contact_upload_progress():
-    batch_id = flask.request.form.get('batch_id')
-    batch = ContactBatch.query.filter_by(id=int(batch_id)).first()
-    return jsonify(
-        batch_id=batch.id,
-        pending=batch.pending,
-        template=flask.render_template('contact_upload_status.html', batch=batch)
-        )
-
-
-@app.route('/blast/summary', methods=['GET', 'POST'])
-def display_blast_summary():
-    batch_id = flask.request.form.get('batch_id')
-    batch = Batch.query.filter_by(id=batch_id).first()
-    return flask.render_template('blast_report.html', batch=batch)
-
-
-@app.route('/reminder/summary', methods=['GET', 'POST'])
-def display_reminder_summary():
-    batch_id = flask.request.form.get('batch_id')
-    batch = ReminderBatch.query.filter_by(id=batch_id).first()
-    return flask.render_template('reminder_report.html', batch=batch)
-
-
-@app.route('/contacts/summary', methods=['GET', 'POST'])
-def display_contact_upload_summary():
-    batch_id = flask.request.form.get('batch_id')
-    batch = ContactBatch.query.filter_by(id=batch_id).first()
-    return flask.render_template('contact_report.html', batch=batch)
 
 
 @app.route('/inbound/search',methods=['GET','POST'])
@@ -1930,7 +1796,7 @@ def save_waybill_item():
 @app.route('/cargo/item/add',methods=['GET','POST'])
 def add_cargo_item():
     waybill_no = flask.request.form.get('waybill_no')
-    waybill = Package.query.filter_by(waybill_no=waybill_no,status='Received').first()
+    waybill = Package.query.filter_by(waybill_no=waybill_no,status='Pending').first()
     if not waybill or waybill == None:
         return jsonify(
                 status='failed',
@@ -1979,10 +1845,69 @@ def get_cargo_items():
 
 @app.route('/cargo/items/receive',methods=['GET','POST'])
 def receive_cargo_items():
-    cargo_id = flask.request.args.get('cargo_id')
-    cargo_items = CargoItem.query.filter_by(cargo_id=cargo_id).order_by(CargoItem.created_at)
+    data = flask.request.form.to_dict()
+    cargo = Cargo.query.filter_by(id=session['cargo_id']).first()
+    cargo.arrival_date = data['date']
+    cargo.arrival_time = data['time']
+    cargo.received_by_id = session['user_id']
+    cargo.received_by = session['user_name']
+    db.session.commit()
+
+    batch = ArrivalBatch(
+        client_no=session['client_no'],
+        cargo_no=cargo.cargo_no,
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    db.session.add(batch)
+    db.session.commit()
+
+    cargo_waybills = CargoItem.query.filter_by(cargo_id=cargo.id).distinct(CargoItem.waybill_no).all()
+
+    for cargo_waybill in cargo_waybills:
+        waybill = Package.query.filter_by(waybill_no=cargo_waybill.waybill_no).first()
+        waybill.status = 'Arrived'
+        waybill.arrival_date = cargo.arrival_date
+        waybill.arrival_time = cargo.arrival_time
+        waybill.received_by_id = cargo.received_by_id
+        waybill.received_by = cargo.received_by
+
+        existing = ArrivalNotification.query.filter_by(waybill_no=cargo_waybill.waybill_no).first()
+        if not existing or existing == None:
+            notification = ArrivalNotification(
+                client_no=session['client_no'],
+                batch_id=batch.id,
+                cargo_no=cargo.cargo_no,
+                waybill_no=waybill.waybill_no,
+                notification_type='Arrived',
+                recipient_msisdn=waybill.recipient_msisdn,
+                sender_msisdn=waybill.sender_msisdn
+                )
+            db.session.add(notification)
+
+    db.session.commit()
+
+    batch.batch_size = ArrivalNotification.query.filter_by(batch_id=batch.id).count()
+    db.session.commit()
+
+    send_arrival_notifications.delay(session['client_no'],batch.id)
+
+    cargo_items = CargoItem.query.filter_by(cargo_id=session['cargo_id']).order_by(CargoItem.created_at)
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
     return jsonify(
-        template=flask.render_template('receive_cargo.html', cargo_items=cargo_items)
+        template = flask.render_template(
+            'cargo_info.html',
+            cargo=cargo,
+            cargo_items=cargo_items,
+            user_role=user.role),
+        user_role = user.role,
+        cargo_id = cargo.id,
+        arrival_date = cargo.arrival_date,
+        pending=batch.pending,
+        batch_id=batch.id,
+        overlay_template=flask.render_template('blast_status.html', batch=batch)
         )
 
 
@@ -2095,13 +2020,7 @@ def save_cargo():
         return jsonify(
             status='failed',
             message='Cargo no. %s already exists.' % data['cargo_number']
-            )
-
-    if data['arrival_date'] != '' and parse_date(data['departure_date']) > parse_date(data['arrival_date']):
-        return jsonify(
-            status='failed',
-            message='Arrival date can\'t be ahead of departure date.'
-            )        
+            )      
 
     cargo = Cargo(
         client_no=session['client_no'],
@@ -2113,8 +2032,6 @@ def save_cargo():
         destination=data['destination'].title(),
         departure_date=data['departure_date'],
         departure_time=data['departure_time'],
-        arrival_date=data['arrival_date'],
-        arrival_time=data['arrival_time'],
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
         created_by_id=session['user_id'],
@@ -2128,6 +2045,10 @@ def save_cargo():
     for item in session['cargo_waybill_items']:
         waybill = Package.query.filter_by(waybill_no=item['waybill_no']).first()
         waybill.status='En Route'
+        waybill.cargo_no=cargo.cargo_no
+        waybill.truck=cargo.truck
+        waybill.departure_date=cargo.departure_date
+        waybill.departure_time=cargo.departure_time
         db.session.commit()
         cargo_item = CargoItem(
             client_no=session['client_no'],
@@ -2306,7 +2227,7 @@ def rebuild_database():
         origin='Manila',
         destination='Sorsogon',
         sender='Leanza Etorma',
-        sender_msisdn='09772312533',
+        sender_msisdn='09176214704',
         recipient='Jasper Barcelona',
         recipient_address='Maharlika',
         recipient_msisdn='09176214704',
@@ -2315,7 +2236,70 @@ def rebuild_database():
         total='1200',
         tendered='2000',
         change='800',
-        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
+
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        departure_time=time.strftime("%I:%M%p"),
+        cargo_no='042018-1',
+        truck='UUE-918',
+        date_created=datetime.datetime.now().strftime('%B %d, %Y'),
+        time_created=time.strftime("%I:%M%p"),
+        created_by_id=1,
+        created_by='Jasper Barcelona'
+        )
+
+    package1 = Package(
+        client_no='infinitrix',
+        waybill_no='4321',
+        waybill_type='Cash',
+        origin='Manila',
+        destination='Legazpi',
+        sender='Janno Armamento',
+        sender_msisdn='09176214704',
+        recipient='Caith Armamento',
+        recipient_address='Maharlika',
+        recipient_msisdn='09176214704',
+        date_received=datetime.datetime.now().strftime('%B %d, %Y'),
+        time_received=time.strftime("%I:%M%p"),
+        total='1800',
+        tendered='2000',
+        change='200',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        departure_time=time.strftime("%I:%M%p"),
+        cargo_no='042018-1',
+        truck='UUE-918',
+        date_created=datetime.datetime.now().strftime('%B %d, %Y'),
+        time_created=time.strftime("%I:%M%p"),
+        created_by_id=1,
+        created_by='Jasper Barcelona'
+        )
+
+    package2 = Package(
+        client_no='infinitrix',
+        waybill_no='5678',
+        waybill_type='Cash',
+        origin='Manila',
+        destination='Legazpi',
+        sender='Merto Isuzu',
+        sender_msisdn='09176214704',
+        recipient='Kretz Dy',
+        recipient_address='Maharlika',
+        recipient_msisdn='09176214704',
+        date_received=datetime.datetime.now().strftime('%B %d, %Y'),
+        time_received=time.strftime("%I:%M%p"),
+        total='1200',
+        tendered='2000',
+        change='800',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        departure_time=time.strftime("%I:%M%p"),
+        cargo_no='042018-1',
+        truck='UUE-918',
+        date_created=datetime.datetime.now().strftime('%B %d, %Y'),
+        time_created=time.strftime("%I:%M%p"),
+        created_by_id=1,
+        created_by='Jasper Barcelona'
         )
 
     package_item = PackageItem(
@@ -2329,26 +2313,54 @@ def rebuild_database():
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 
+    package_item1 = PackageItem(
+        client_no='infinitrix',
+        waybill_id=2,
+        waybill_no='4321',
+        item='Sample Item 2',
+        quantity=4,
+        unit='Cartons',
+        price='1800',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    package_item2 = PackageItem(
+        client_no='infinitrix',
+        waybill_id=3,
+        waybill_no='5678',
+        item='Another Item',
+        quantity=3,
+        unit='Bundles',
+        price='1200',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
     cargo = Cargo(
         client_no='infinitrix',
+        cargo_no='042018-1',
         truck='UUE-918',
         driver='Delfin Barcelona',
-        departure_date='February 20, 2018',
+        crew='Yaya',
+        origin='Manila',
+        destination='Legazpi',
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
         departure_time=time.strftime("%I:%M%p"),
-        arrival_date='February 21, 2018',
-        arrival_time=time.strftime("%I:%M%p"),
-        load_size=4,
-        date_created='April 21, 2018',
+        date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
         created_by_id=1,
         created_by='Jasper Barcelona',
-        created_at=datetime.datetime.now().strftime('%Y-%m-20 %H:%M:%S:%f')
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 
     db.session.add(client)
     db.session.add(user)
     db.session.add(package)
+    db.session.add(package1)
+    db.session.add(package2)
     db.session.add(package_item)
+    db.session.add(package_item1)
+    db.session.add(package_item2)
+    db.session.add(cargo)
     db.session.commit()
 
     return jsonify(

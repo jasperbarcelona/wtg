@@ -1747,6 +1747,12 @@ function save_waybill_item() {
     function(data){
       $('#waybillItemTable tbody').append(data['template']);
       $('#waybillTotal').html('PHP '+data['total']);
+      if (data['item_count'] == 1){
+        $('#addWaybillTotal').html('Package Content ('+data['item_count']+' item)');
+      }
+      else {
+        $('#addWaybillTotal').html('Package Content ('+data['item_count']+' items)');
+      }
       $('#addWaybillItemModal').modal('hide');
       $('#saveWaybillItemBtn').button('complete');
     });
@@ -1782,6 +1788,12 @@ function delete_waybill_item(item_id) {
   function(data){
     $('tr#'+item_id).remove();
     $('#waybillTotal').html('PHP '+data['total']);
+    if (data['item_count'] == 1){
+      $('#addWaybillTotal').html('Package Content ('+data['item_count']+' item)');
+    }
+    else {
+      $('#addWaybillTotal').html('Package Content ('+data['item_count']+' items)');
+    }
   });
 }
 
@@ -1864,10 +1876,19 @@ function save_waybill() {
       change:change
     },
     function(data){
-      $('.content').html(data);
-      clear_waybill_data();
+      if (data['status'] == 'success') {
+        $('.content').html(data['template']);
+        clear_waybill_data();
+        $('#addWaybillModal').modal('hide');
+      }
+      else {
+        $('#cargoItemError').fadeIn();
+        $('#cargoItemError .snackbar-message').html(data['message']);
+        setTimeout(function(){
+          $('#cargoItemError').fadeOut();
+        },5000);
+      }
       $('#saveWaybillBtn').button('complete');
-      $('#addWaybillModal').modal('hide');
     });
   }
 }
@@ -1902,6 +1923,7 @@ function clear_waybill_data() {
   function(data){
     $('#waybillTotal').html('PHP 0');
     $('#waybillChange').html('PHP 0');
+    $('#addWaybillTotal').html('Package Content (0 items)');
     $('#addWaybillModal .error-icon-container').addClass('hidden');
     $('#addWaybillModal .form-control').css('border-bottom','1px solid #999');
     $('#addWaybillModal').modal('hide');
@@ -1992,6 +2014,7 @@ function add_cargo_item(event,waybill_no) {
     if (data['status'] == 'success') {
       $('#cargoItemError').fadeOut();
       $('#addCargoItemTable tbody').prepend(data['template']);
+      $('#totalCargoItems').html('Total Waybills: '+String(data['item_count']));
       $('#addCargoItemWaybillNumber').val('');
       $('#addCargoWaybillBtn').attr('disabled', true);
       setTimeout(function(){
@@ -2018,6 +2041,7 @@ function delete_cargo_item(waybill_id,waybill_no) {
     waybill_no:waybill_no
   },
   function(data){
+    $('#totalCargoItems').html('Total Waybills: '+String(data['item_count']));
     $('#addCargoItemTable tbody tr#'+waybill_id).remove();
   });
 }
@@ -2027,6 +2051,12 @@ function save_cargo_items() {
   $.post('/cargo/items/save',
   function(data){
     $('#cargoItemTable tbody').html(data['template']);
+    if (data['item_count'] == 1){
+      $('#addCargoTotal').html('Cargo Content ('+data['item_count']+' item)');
+    }
+    else {
+      $('#addCargoTotal').html('Cargo Content ('+data['item_count']+' items)');
+    }
     $('#addCargoItemWaybillNumber').val('');
     $('#addCargoItemTable tbody').html('');
     $('#addCargoItemModal').modal('hide');
@@ -2038,11 +2068,14 @@ function supply_cargo_items() {
   $.post('/cargo/items',
   function(data){
     $('#addCargoItemTable tbody').html(data['template']);
+    $('#totalCargoItems').html('Total Waybills: '+String(data['item_count']));
   });
 }
 
 function clear_cargo_items() {
   $('#cancelCargoBtn').button('loading');
+  $('#totalCargoItems').html('Total Waybills: 0');
+  $('#addCargoTotal').html('Cargo Content (0 items)');
   $('#addCargoModal .form-control').val('');
   $('#addCargoModal .form-control').change();
   $.post('/cargo/item/clear',
@@ -2166,17 +2199,24 @@ function receive_cargo() {
 
 function refresh_blast_progress(batch_id) {
   $.post('/blast/progress',
-    {
-      batch_id:batch_id
-    },
-    function(data){
-      $('#blastOverlay .blast-overlay-body').html(data['template']);
-      if (data['pending'] != 0) {
-        refresh_blast_progress(batch_id);
-      }
-      else {
-        $('#blastOverlay').addClass('hidden');
-        $('#blastOverlay .blast-overlay-body').html('');
-      }
-    });
+  {
+    batch_id:batch_id
+  },
+  function(data){
+    $('#blastOverlay .blast-overlay-body').html(data['template']);
+    if (data['pending'] != 0) {
+      refresh_blast_progress(batch_id);
+    }
+    else {
+      $('#blastOverlay').addClass('hidden');
+      $('#blastOverlay .blast-overlay-body').html('');
+    }
+  });
+}
+
+function supply_cargo_notifications() {
+  $.post('/cargo/notifications',
+  function(data){
+    $('#cargoNotificationsModal .modal-body').html(data['template']);
+  });
 }

@@ -1,0 +1,32 @@
+<span class="cargo-notifications-label">Cargo Number: {{ cargo.cargo_no }}</span>
+<span class="cargo-notifications-retry link underline">Resend failed notifications</span>
+<table class="table">
+	<thead>
+		<tr>
+			<th class="cargo-notification-td">Waybill No.</th>
+			<th class="cargo-notification-td">Recipient Mobile</th>
+			<th class="cargo-notification-td">Notification Status</th>
+			<th class="cargo-notification-td">Sender Mobile</th>
+			<th class="cargo-notification-td">Notification Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for notification in notifications %}
+		<tr>
+			<td class="cargo-notification-td">{{ notification.waybill_no }}</td>
+			<td class="cargo-notification-td">{{ notification.recipient_msisdn }}</td>
+			{% if notification.recipient_notification_status == 'Failed' %}
+			<td class="cargo-notification-td failed">{{ notification.recipient_notification_status }}</td>
+			{% else %}
+			<td class="cargo-notification-td">{{ notification.recipient_notification_status }}</td>
+			{% endif %}
+			<td class="cargo-notification-td">{{ notification.sender_msisdn }}</td>
+			{% if notification.sender_notification_status == 'Failed' %}
+			<td class="cargo-notification-td failed">{{ notification.sender_notification_status }}</td>
+			{% else %}
+			<td class="cargo-notification-td">{{ notification.sender_notification_status }}</td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

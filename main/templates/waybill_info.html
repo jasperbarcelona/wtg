@@ -48,7 +48,11 @@
 <div class="input-container right">
     <input type="text" id="editWaybillArrivalTime" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Arrival Time" value="{{ waybill.arrival_time }}">
 </div>
-<span class="input-group-label">Package Content</span>
+{% if item_count == 1 %}
+<span class="input-group-label">Package Content ({{ item_count }} item)</span>
+{% else %}
+<span class="input-group-label">Package Content ({{ item_count }} items)</span>
+{% endif %}
 <table id="waybillItemTableEdit" class="table">
     <thead>
         <tr>
@@ -81,7 +85,11 @@
         <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
         <span class="waybill-payment" id="waybillTendered">
             <span class="payment-php">PHP</span>
+            {% if waybill.tendered == '' %}
             <input type="text" id="waybillTenderedEditText" readOnly="ReadOnly" class="form-control" title="Click 'Add Payment' button below to add tendered amount." placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
+            {% else %}
+            <input type="text" id="waybillTenderedEditText" readOnly="ReadOnly" class="form-control" placeholder="0" onkeyup="compute_change_edit()" value="{{ waybill.tendered }}">
+            {% endif %}
         </span>
         <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
     </div>

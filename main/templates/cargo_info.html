@@ -28,10 +28,15 @@
 <div class="input-container right">
     <input type="text" id="editCargoArrivalTime" readOnly="ReadOnly" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Arrival Time" value="{{ cargo.arrival_time }}">
 </div>
-<span class="input-group-label">Cargo Content</span>
+{% if item_count == 1 %}
+<span class="input-group-label">Cargo Content ({{ item_count }} item)</span>
+{% else %}
+<span class="input-group-label">Cargo Content ({{ item_count }} items)</span>
+{% endif %}
 <table id="cargoItemTable" class="table">
     <thead>
         <tr>
+            <th class="receive-cargo-number-td">#</th>
             <th class="receive-cargo-waybill-td">Waybill No.</th>
             <th class="receive-cargo-recipient-td">Consigned To</th>
             <th class="receive-cargo-item-td">Item</th>
@@ -44,6 +49,7 @@
         {% for item in cargo_items %}
         <tr id="{{ item.id }}" class="edit-cargo-item">
             {% if item.waybill_no != past_waybill_no %}
+            <td class="receive-cargo-number-td">{{ loop.index }}</td>
             <td class="receive-cargo-waybill-td">{{ item.waybill_no }}</td>
             <td class="receive-cargo-recipient-td">{{ item.recipient }}</td>
             {% else %}

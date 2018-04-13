@@ -761,6 +761,7 @@ a,a:hover,a:active,a:focus {
 #addWaybillModal .modal-dialog,
 #addCargoModal .modal-dialog,
 #editCargoModal .modal-dialog,
+#cargoNotificationsModal .modal-dialog,
 #editWaybillModal .modal-dialog {
 	width: 900px;
 }
@@ -773,6 +774,7 @@ a,a:hover,a:active,a:focus {
 #addCargoModal .modal-body,
 #editCargoModal .modal-body,
 #addCargoItemModal .modal-body,
+#cargoNotificationsModal .modal-body,
 #editWaybillModal .modal-body {
 	position: relative;
 	height: calc(100vh - 180px);
@@ -1033,11 +1035,54 @@ select {
 	color: #494949;
 }
 
+.cargo-notifications-label {
+	float: left;
+	width: 60%;
+	font-size: 16px;
+	margin-bottom: 20px;
+	color: #494949;
+}
+
+.cargo-notifications-retry {
+	float: right;
+	text-align: right;
+	font-size: 16px;
+	margin-bottom: 20px;
+	color: #494949;
+}
+
+#totalCargoItems {
+	float: right;
+	text-align: right;
+	font-size: 16px;
+	margin-bottom: 20px;
+	color: #494949;
+}
+
 #addContactMsisdn,
 #editContactMsisdn,
 .contact-type-picker,
 .edit-contact-type-picker {
 	margin-bottom: 40px !important;
+}
+
+.notification-link {
+	position: absolute;
+	right: 10px;
+	top: 8px;
+	color: #FFFFFF;
+}
+
+.dropdown-menu {
+	text-align: left !important;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 20px;
+}
+
+.dropdown-item {
+	color: #373A3C;
 }
 
 .pipe-separator {
@@ -1086,7 +1131,7 @@ select {
 }
 
 .error-text {
-	color: #3C85B6;
+	color: #d9534f;
 	font-weight: bold;
 }
 
@@ -1876,16 +1921,20 @@ td {
 	width: 22.5%;
 }
 
+.receive-cargo-number-td {
+	width: 5%;
+}
+
 .receive-cargo-waybill-td {
 	width: 15%;
 }
 
 .receive-cargo-item-td {
-	width: 30%;
+	width: 27.5%;
 }
 
 .receive-cargo-recipient-td {
-	width: 30%;
+	width: 27.5%;
 }
 
 .receive-cargo-quantity-td {
@@ -1938,4 +1987,12 @@ td {
 #selectAllCargo i {
 	float: left;
 	margin-bottom: 3px !important;
+}
+
+.cargo-notification-td {
+	width: 20%;
+}
+
+.cargo-notification-td.failed {
+	color: #d9534f;
 }

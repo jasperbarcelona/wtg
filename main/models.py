@@ -111,6 +111,7 @@ class ArrivalNotification(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     client_no = db.Column(db.String(32))
     batch_id = db.Column(db.Integer())
+    cargo_id = db.Column(db.Integer())
     cargo_no = db.Column(db.String(32))
     waybill_no = db.Column(db.String(60))
     notification_type = db.Column(db.String(30))
@@ -157,6 +158,7 @@ class CargoItem(db.Model):
 
 class ArrivalBatch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    cargo_id = db.Column(db.Integer())
     client_no = db.Column(db.String(32))
     cargo_no = db.Column(db.String(32))
     batch_size = db.Column(db.Integer())

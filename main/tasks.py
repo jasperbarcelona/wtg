@@ -45,16 +45,16 @@ def send_notification(client_no,status,waybill_no,msisdn):
     try:
         r = requests.post(IPP_URL%client.shortcode,message_options)           
         if r.status_code == 201:
-            notification.status = 'success'
+            notification.status = 'Success'
             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         else:
-            notification.status = 'failed'
+            notification.status = 'Failed'
             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
         db.session.commit()
 
     except requests.exceptions.ConnectionError as e:
-        notification.status = 'failed'
+        notification.status = 'Failed'
         notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         db.session.commit()
 
@@ -87,38 +87,39 @@ def send_arrival_notifications(client_no,batch_id):
         try:
             r = requests.post(IPP_URL%client.shortcode,recipient_message_options)           
             if r.status_code == 201:
-                notification.recipient_notification_status = 'success'
+                notification.recipient_notification_status = 'Success'
                 notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
             else:
-                notification.recipient_notification_status = 'failed'
+                notification.recipient_notification_status = 'Failed'
                 notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
             db.session.commit()
 
         except requests.exceptions.ConnectionError as e:
-            notification.recipient_notification_status = 'failed'
+            notification.recipient_notification_status = 'Failed'
             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
             db.session.commit()
 
         try:
-            r = requests.post(IPP_URL%client.shortcode,sender_message_options)           
-            if r.status_code == 201:
-                notification.sender_notification_status = 'success'
+            n = requests.post(IPP_URL%client.shortcode,sender_message_options)           
+            if n.status_code == 201:
+                notification.sender_notification_status = 'Success'
                 notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
             else:
-                notification.sender_notification_status = 'failed'
+                notification.sender_notification_status = 'Failed'
                 notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
             db.session.commit()
 
         except requests.exceptions.ConnectionError as e:
-            notification.sender_notification_status = 'failed'
+            notification.sender_notification_status = 'Failed'
             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
             db.session.commit()
 
-        notification.overall_status = 'done'
-    batch.done = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='done').count()
-    batch.pending = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='pending').count()
-    db.session.commit()
+        notification.overall_status = 'Done'
+        db.session.commit()
+        batch.done = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='Done').count()
+        batch.pending = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='Pending').count()
+        db.session.commit()
 
     return

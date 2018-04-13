@@ -197,7 +197,7 @@ def index():
         client_name=session['client_name'],
         user_name=session['user_name'],
         packages=packages,
-        limit=total_entries,
+        limit=session['inbound_limit'],
         total_entries=total_entries,
         prev_btn='disabled',
         next_btn='enabled',
@@ -1569,6 +1569,19 @@ def get_blast_progress():
         )
 
 
+@app.route('/cargo/notifications', methods=['GET', 'POST'])
+def get_cargo_notifications():
+    cargo = Cargo.query.filter_by(id=session['cargo_id']).first()
+    notifications = ArrivalNotification.query.filter_by(cargo_id=session['cargo_id']).all()
+    return jsonify(
+        template=flask.render_template(
+            'cargo_notifications.html',
+            notifications=notifications,
+            cargo=cargo
+            )
+        )
+
+
 @app.route('/inbound/search',methods=['GET','POST'])
 def search_from_inbound():
     data = flask.request.args.to_dict()
@@ -1789,7 +1802,8 @@ def save_waybill_item():
             unit=data['unit'].title(),
             price=data['price']
             ),
-        total=total
+        total=total,
+        item_count=len(session['waybill_items'])
         )
 
 
@@ -1830,8 +1844,9 @@ def add_cargo_item():
         status='success',
         template=flask.render_template(
             'cargo_item.html',
-            waybill=waybill
+            waybill=waybill,
             ),
+        item_count=len(session['cargo_items']),
         waybill_id=waybill.id
         )
 
@@ -1839,7 +1854,8 @@ def add_cargo_item():
 @app.route('/cargo/items',methods=['GET','POST'])
 def get_cargo_items():
     return jsonify(
-        template=flask.render_template('cargo_items.html',cargo_items=session['cargo_items'])
+        template=flask.render_template('cargo_items.html',cargo_items=session['cargo_items']),
+        item_count=len(session['cargo_items'])
         )
 
 
@@ -1855,6 +1871,7 @@ def receive_cargo_items():
 
     batch = ArrivalBatch(
         client_no=session['client_no'],
+        cargo_id=cargo.id,
         cargo_no=cargo.cargo_no,
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
@@ -1879,6 +1896,7 @@ def receive_cargo_items():
             notification = ArrivalNotification(
                 client_no=session['client_no'],
                 batch_id=batch.id,
+                cargo_id=cargo.id,
                 cargo_no=cargo.cargo_no,
                 waybill_no=waybill.waybill_no,
                 notification_type='Arrived',
@@ -1888,19 +1906,22 @@ def receive_cargo_items():
             db.session.add(notification)
 
     db.session.commit()
-
-    batch.batch_size = ArrivalNotification.query.filter_by(batch_id=batch.id).count()
+    batch_size = ArrivalNotification.query.filter_by(batch_id=batch.id).count()
+    batch.batch_size = batch_size
+    batch.pending = batch_size
     db.session.commit()
 
     send_arrival_notifications.delay(session['client_no'],batch.id)
 
     cargo_items = CargoItem.query.filter_by(cargo_id=session['cargo_id']).order_by(CargoItem.created_at)
+    item_count = CargoItem.query.filter_by(cargo_id=session['cargo_id']).count()
     user = AdminUser.query.filter_by(id=session['user_id']).first()
     return jsonify(
         template = flask.render_template(
             'cargo_info.html',
             cargo=cargo,
             cargo_items=cargo_items,
+            item_count=item_count,
             user_role=user.role),
         user_role = user.role,
         cargo_id = cargo.id,
@@ -1917,7 +1938,7 @@ def delete_cargo_item():
     for item in session['cargo_items']:
         if item['waybill_no'] == waybill_no:
             session['cargo_items'].remove(item)
-    return jsonify(status='success')
+    return jsonify(status='success',item_count=len(session['cargo_items']),)
 
 
 @app.route('/cargo/items/save',methods=['GET','POST'])
@@ -1926,6 +1947,7 @@ def save_cargo_items():
     for waybill_item in session['cargo_items']:
         waybill = Package.query.filter_by(waybill_no=waybill_item['waybill_no']).first()
         waybill_items = PackageItem.query.filter_by(waybill_id=waybill.id).all()
+        item_count = PackageItem.query.filter_by(waybill_id=waybill.id).count()
         for item in waybill_items:
             session['cargo_waybill_items'].append({
                 'waybill_no':item.waybill_no,
@@ -1935,13 +1957,20 @@ def save_cargo_items():
                 'recipient':waybill.recipient,
                 })
     return jsonify(
-        template=flask.render_template('cargo_waybill_items.html',cargo_items=session['cargo_waybill_items'])
+        template=flask.render_template('cargo_waybill_items.html',cargo_items=session['cargo_waybill_items']),
+        item_count=len(session['cargo_waybill_items'])
         )
 
 
 @app.route('/waybill/save',methods=['GET','POST'])
 def save_waybill():
     data = flask.request.form.to_dict()
+    existing = Package.query.filter_by(waybill_no=data['waybill_number']).first()
+    if existing or existing != None:
+        return jsonify(
+            status='failed',
+            message='Waybill number %s already exists.' % data['waybill_number']
+            )
     waybill = Package(
         client_no=session['client_no'],
         waybill_no=data['waybill_number'],
@@ -2002,13 +2031,16 @@ def save_waybill():
     send_notification.delay(session['client_no'],waybill.status,waybill.waybill_no,waybill.sender_msisdn)
     send_notification.delay(session['client_no'],waybill.status,waybill.waybill_no,waybill.recipient_msisdn)
 
-    return flask.render_template(
-        'inbound.html',
-        packages=packages,
-        showing=showing,
-        total_entries=total_entries,
-        prev_btn=prev_btn,
-        next_btn=next_btn,
+    return jsonify(
+        status='success',
+        template=flask.render_template(
+            'inbound.html',
+            packages=packages,
+            showing=showing,
+            total_entries=total_entries,
+            prev_btn=prev_btn,
+            next_btn=next_btn,
+            )
     )
 
 
@@ -2080,9 +2112,6 @@ def save_cargo():
             prev_btn = 'enabled'
             next_btn='disabled'
 
-    send_notification.delay(session['client_no'],waybill.status,waybill.waybill_no,waybill.sender_msisdn)
-    send_notification.delay(session['client_no'],waybill.status,waybill.waybill_no,waybill.recipient_msisdn)
-
     return jsonify(
         status='success',
         template = flask.render_template(
@@ -2105,7 +2134,8 @@ def remove_waybill_item():
     total = sum(float(item['price']) for item in session['waybill_items'])
     return jsonify(
         status='success',
-        total=total
+        total=total,
+        item_count=len(session['waybill_items'])
         ),201
 
 
@@ -2137,11 +2167,13 @@ def open_waybill():
     session['waybill_id'] = flask.request.args.get('waybill_id')
     waybill = Package.query.filter_by(id=session['waybill_id']).first()
     waybill_items = PackageItem.query.filter_by(waybill_id=session['waybill_id']).order_by(PackageItem.created_at)
+    item_count = PackageItem.query.filter_by(waybill_id=session['waybill_id']).count()
     user = AdminUser.query.filter_by(id=session['user_id']).first()
     return jsonify(
         template = flask.render_template(
             'waybill_info.html',
             waybill=waybill,
+            item_count=item_count,
             waybill_items=waybill_items,
             user_role=user.role),
         user_role = user.role
@@ -2153,12 +2185,14 @@ def open_cargo():
     session['cargo_id'] = flask.request.args.get('cargo_id')
     cargo = Cargo.query.filter_by(id=session['cargo_id']).first()
     cargo_items = CargoItem.query.filter_by(cargo_id=session['cargo_id']).order_by(CargoItem.created_at)
+    item_count = CargoItem.query.filter_by(cargo_id=session['cargo_id']).count()
     user = AdminUser.query.filter_by(id=session['user_id']).first()
     return jsonify(
         template = flask.render_template(
             'cargo_info.html',
             cargo=cargo,
             cargo_items=cargo_items,
+            item_count=item_count,
             user_role=user.role),
         user_role = user.role
         )
@@ -2226,8 +2260,8 @@ def rebuild_database():
         waybill_type='Cash',
         origin='Manila',
         destination='Sorsogon',
-        sender='Leanza Etorma',
-        sender_msisdn='09176214704',
+        sender='John Doe',
+        sender_msisdn='09279604172',
         recipient='Jasper Barcelona',
         recipient_address='Maharlika',
         recipient_msisdn='09176214704',
@@ -2237,11 +2271,6 @@ def rebuild_database():
         tendered='2000',
         change='800',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
-
-        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
-        departure_time=time.strftime("%I:%M%p"),
-        cargo_no='042018-1',
-        truck='UUE-918',
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
         created_by_id=1,
@@ -2254,9 +2283,9 @@ def rebuild_database():
         waybill_type='Cash',
         origin='Manila',
         destination='Legazpi',
-        sender='Janno Armamento',
-        sender_msisdn='09176214704',
-        recipient='Caith Armamento',
+        sender='Kretz Dy',
+        sender_msisdn='09279604172',
+        recipient='Merto Isuzu',
         recipient_address='Maharlika',
         recipient_msisdn='09176214704',
         date_received=datetime.datetime.now().strftime('%B %d, %Y'),
@@ -2265,10 +2294,6 @@ def rebuild_database():
         tendered='2000',
         change='200',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
-        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
-        departure_time=time.strftime("%I:%M%p"),
-        cargo_no='042018-1',
-        truck='UUE-918',
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
         created_by_id=1,
@@ -2281,9 +2306,9 @@ def rebuild_database():
         waybill_type='Cash',
         origin='Manila',
         destination='Legazpi',
-        sender='Merto Isuzu',
-        sender_msisdn='09176214704',
-        recipient='Kretz Dy',
+        sender='Lebron James',
+        sender_msisdn='092796041',
+        recipient='Kobe Byrant',
         recipient_address='Maharlika',
         recipient_msisdn='09176214704',
         date_received=datetime.datetime.now().strftime('%B %d, %Y'),
@@ -2292,10 +2317,6 @@ def rebuild_database():
         tendered='2000',
         change='800',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
-        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
-        departure_time=time.strftime("%I:%M%p"),
-        cargo_no='042018-1',
-        truck='UUE-918',
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
         created_by_id=1,
@@ -2360,7 +2381,7 @@ def rebuild_database():
     db.session.add(package_item)
     db.session.add(package_item1)
     db.session.add(package_item2)
-    db.session.add(cargo)
+    # db.session.add(cargo)
     db.session.commit()
 
     return jsonify(

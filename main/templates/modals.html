@@ -99,7 +99,7 @@
                     <input type="text" id="addWaybillShipperMsisdn" data-error="shipperMsisdn" onblur="validate_blank(this,this.value); validate_msisdn(this,this.value);" class="form-control floatlabel" data-class="input-label" placeholder="Shipper's contact number">
                     <div id="shipperMsisdn" class="error-icon-container hidden tooltip" title="Must be exactly 11 characters."><i class="material-icons">&#xE001;</i></div>
                 </div>
-                <span class="input-group-label">Package Content</span>
+                <span id="addWaybillTotal" class="input-group-label">Package Content (0 items)</span>
                 <table id="waybillItemTable" class="table">
                     <thead>
                         <tr>
@@ -158,6 +158,27 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="gridSystemModalLabel">Cargo Info</h4>
+                <div class="notification-link dropdown">
+                    <span id="cargoNotificationsBtn" class="link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">&#xE5D4;</i></span>
+                    <div class="dropdown-menu" aria-labelledby="cargoNotificationsBtn">
+                        <span class="dropdown-item link" data-toggle="modal" data-target="#cargoNotificationsModal" onclick="supply_cargo_notifications()">Notification report</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeCargoBtn" class="btn btn-primary modal-btn" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="cargoNotificationsModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Cargo Notifications</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -233,7 +254,7 @@
                     <input type="text" id="addCargoDepartureTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorCargoDepartureTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Departure Time">
                     <div id="errorCargoDepartureTime" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
-                <span class="input-group-label">Cargo Content</span>
+                <span id="addCargoTotal" class="input-group-label">Cargo Content (0 items)</span>
                 <table id="cargoItemTable" class="table">
                     <thead>
                         <tr>
@@ -267,6 +288,7 @@
                 <form id="addCargoWaybillForm" onsubmit="add_cargo_item(event,this.value)">
                     <input type="text" id="addCargoItemWaybillNumber" class="form-control" placeholder="Waybill Number" autocomplete="off">
                     <button type="submit" id="addCargoWaybillBtn" class="btn btn-primary" disabled>Add</button>
+                    <span id="totalCargoItems">Total Waybills: 0</span>
                 </form>
                 <table id="addCargoItemTable" class="table">
                     <thead>

@@ -15,6 +15,7 @@ wsgiref==0.1.2
 psycopg2==2.7.1
 schedule==0.3.2
 gunicorn==19.4.5
+celery==4.1.0
 html5lib==1.0b8
 xlrd==1.0.0
-celery==4.1.0
+pdfkit==0.6.1

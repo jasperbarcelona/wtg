@@ -1,5 +1,12 @@
 <span class="cargo-notifications-label">Cargo Number: {{ cargo.cargo_no }}</span>
+{% if notifications[0] %}
 <span class="cargo-notifications-retry link underline">Resend failed notifications</span>
+{% else %}
+<div id="emptyCargoNotification" class="empty-notification">
+	<span class="empty-notification-label">Cargo has not been received yet.</span>
+	<span class="empty-notification-sub-label">(Notifications will be sent once cargo has been received at the warehouse)</span><br/>
+</div>
+{% endif %}
 <table class="table">
 	<thead>
 		<tr>

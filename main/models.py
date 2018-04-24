@@ -74,17 +74,21 @@ class Package(db.Model):
     arrival_time = db.Column(db.String(20),default='')
     departure_date = db.Column(db.String(20),default='')
     departure_time = db.Column(db.String(20),default='')
+    payment_date = db.Column(db.String(20),default='--')
     cargo_no = db.Column(db.String(32),default='')
     truck = db.Column(db.String(60),default='')
-    total = db.Column(db.String(50))
+    total = db.Column(db.String(50), default='0')
     tendered = db.Column(db.String(50), default='')
-    change = db.Column(db.String(50))
+    change = db.Column(db.String(50), default='0')
     date_created = db.Column(db.String(20))
     time_created = db.Column(db.String(20))
     created_by_id = db.Column(db.Integer())
     created_by = db.Column(db.String(100))
     received_by_id = db.Column(db.Integer(),default=None)
     received_by = db.Column(db.String(100),default='')
+    payment_received_by_id = db.Column(db.Integer(),default=None)
+    payment_received_by = db.Column(db.String(100),default='--')
+    notes = db.Column(db.Text(),default='')
     created_at = db.Column(db.String(50))
 
 class PackageItem(db.Model):
@@ -142,6 +146,7 @@ class Cargo(db.Model):
     created_by = db.Column(db.String(100))
     received_by_id = db.Column(db.Integer(),default=None)
     received_by = db.Column(db.String(100),default='')
+    notes = db.Column(db.Text(),default='')
     created_at = db.Column(db.String(50))
 
 class CargoItem(db.Model):
@@ -201,7 +206,7 @@ class OutboundMessage(db.Model):
     time = db.Column(db.String(10))
     contact_name = db.Column(db.String(100))
     msisdn = db.Column(db.String(30))
-    status = db.Column(db.String(30),default='pending')
+    status = db.Column(db.String(30),default='Pending')
     created_at = db.Column(db.String(50))
 
 class ReminderMessage(db.Model):
@@ -212,5 +217,19 @@ class ReminderMessage(db.Model):
     contact_name = db.Column(db.String(100), default='Unknown')
     content = db.Column(db.Text())
     msisdn = db.Column(db.String(30))
-    status = db.Column(db.String(30),default='pending')
+    status = db.Column(db.String(30),default='Pending')
+    created_at = db.Column(db.String(50))
+
+class Report(db.Model, Serializer):
+    id = db.Column(db.Integer,primary_key=True)
+    client_no = db.Column(db.String(32))
+    name = db.Column(db.String(60))
+    report_type = db.Column(db.String(60))
+    from_date = db.Column(db.String(30))
+    to_date = db.Column(db.String(30))
+    generated_by = db.Column(db.String(60))
+    generated_by_id = db.Column(db.Integer())
+    date = db.Column(db.String(50))
+    time = db.Column(db.String(30))
+    status = db.Column(db.String(30),default='Pending')
     created_at = db.Column(db.String(50))

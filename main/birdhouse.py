@@ -34,7 +34,7 @@ from email.mime.text import MIMEText as text
 import os
 import schedule
 from werkzeug.utils import secure_filename
-from tasks import send_notification, send_arrival_notifications
+from tasks import send_notification, send_arrival_notifications, create_pdf
 import db_conn
 from db_conn import db, app
 from models import *
@@ -71,6 +71,7 @@ admin.add_view(SchoolAdmin(Notification, db.session))
 admin.add_view(SchoolAdmin(AdminUser, db.session))
 admin.add_view(SchoolAdmin(ArrivalBatch, db.session))
 admin.add_view(SchoolAdmin(ArrivalNotification, db.session))
+admin.add_view(SchoolAdmin(Report, db.session))
 
 def nocache(view):
     @wraps(view)
@@ -1982,7 +1983,7 @@ def save_waybill():
         recipient=data['recipient'].title(),
         recipient_address=data['recipient_address'].title(),
         recipient_msisdn=data['recipient_msisdn'],
-        date_received=datetime.datetime.now().strftime('%B %d, %Y'),
+        date_received=data['date'],
         time_received=time.strftime("%I:%M%p"),
         total=data['total'],
         tendered=data['tendered'],
@@ -1991,6 +1992,10 @@ def save_waybill():
         time_created=time.strftime("%I:%M%p"),
         created_by_id=session['user_id'],
         created_by=session['user_name'],
+        notes=data['notes'],
+        payment_date=data['date'],
+        payment_received_by_id=session['user_id'],
+        payment_received_by=session['user_name'],
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
     db.session.add(waybill)
@@ -2068,6 +2073,7 @@ def save_cargo():
         time_created=time.strftime("%I:%M%p"),
         created_by_id=session['user_id'],
         created_by=session['user_name'],
+        notes=data['notes'],
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 
@@ -2137,6 +2143,31 @@ def remove_waybill_item():
         total=total,
         item_count=len(session['waybill_items'])
         ),201
+
+
+@app.route('/waybill/payment/add',methods=['GET','POST'])
+def add_waybill_payment():
+    data = flask.request.form.to_dict()
+    waybill = Package.query.filter_by(id=session['waybill_id']).first()
+    waybill.tendered = data['tendered']
+    waybill.change = data['change']
+    waybill.payment_date = data['date']
+    waybill.payment_received_by_id = session['user_id']
+    waybill.payment_received_by = session['user_name']
+    db.session.commit()
+
+    waybill_items = PackageItem.query.filter_by(waybill_id=waybill.id).order_by(PackageItem.created_at)
+    item_count = PackageItem.query.filter_by(waybill_id=waybill.id).count()
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    return jsonify(
+        template = flask.render_template(
+            'waybill_info.html',
+            waybill=waybill,
+            item_count=item_count,
+            waybill_items=waybill_items,
+            user_role=user.role),
+        user_role = user.role
+        )
 
 
 @app.route('/waybill/item/edit/remove',methods=['GET','POST'])
@@ -2226,6 +2257,51 @@ def supply_date():
         date = datetime.datetime.now().strftime('%B %d, %Y')
         )
 
+@app.route('/report/cargo/print',methods=['GET','POST'])
+def print_cargo_report():
+    cargo = Cargo.query.filter_by(id=session['cargo_id']).first()
+    cargo_items = CargoItem.query.filter_by(cargo_id=cargo.id).all()
+    report = Report(
+        client_no=session['client_no'],
+        name=cargo.cargo_no,
+        report_type='Cargo',
+        generated_by=session['user_name'],
+        generated_by_id=session['user_id'],
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+    db.session.add(report)
+    db.session.commit()
+
+    try:
+        create_pdf.delay(
+            report.id,
+            flask.render_template(
+                'print_cargo.html',
+                report=report,
+                cargo=cargo,
+                cargo_items=cargo_items,
+                staff_name=session['user_name'],
+                date=report.date,
+                time=report.time
+                )
+            )
+        return flask.render_template(
+                'print_cargo.html',
+                report=report,
+                cargo=cargo,
+                cargo_items=cargo_items,
+                staff_name=session['user_name'],
+                date=report.date,
+                time=report.time
+                )
+
+    except requests.exceptions.ConnectionError as e:
+        report.status = 'failed'
+        db.session.commit()
+        return jsonify(status='failed',message='Could not generate report. Please Contact support.'),201
+
 
 @app.route('/db/rebuild',methods=['GET','POST'])
 def rebuild_database():
@@ -2251,13 +2327,13 @@ def rebuild_database():
         role='Administrator',
         status='Active',
         join_date=datetime.datetime.now().strftime('%B %d, %Y'),
-        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
 
     package = Package(
         client_no='infinitrix',
         waybill_no='1234',
-        waybill_type='Cash',
+        waybill_type='Charge',
         origin='Manila',
         destination='Sorsogon',
         sender='John Doe',
@@ -2268,11 +2344,10 @@ def rebuild_database():
         date_received=datetime.datetime.now().strftime('%B %d, %Y'),
         time_received=time.strftime("%I:%M%p"),
         total='1200',
-        tendered='2000',
-        change='800',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
+        notes='This is a sample note.',
         created_by_id=1,
         created_by='Jasper Barcelona'
         )
@@ -2296,6 +2371,9 @@ def rebuild_database():
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
+        payment_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        payment_received_by_id=1,
+        payment_received_by='Jasper Barcelona',
         created_by_id=1,
         created_by='Jasper Barcelona'
         )
@@ -2319,6 +2397,9 @@ def rebuild_database():
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
+        payment_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        payment_received_by_id=1,
+        payment_received_by='Jasper Barcelona',
         created_by_id=1,
         created_by='Jasper Barcelona'
         )

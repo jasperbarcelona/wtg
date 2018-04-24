@@ -1,3 +1,8 @@
+<div class="modal-creator-container">
+    <span id="waybillCreatedBy" class="created-by">Created by {{ waybill.created_by }}</span><br/>
+    <span id="waybillCreatedOn" class="created-on">{{ waybill.date_created }} | {{ waybill.time_created }}</span>
+</div>
+<span class="input-group-label">Waybill Info</span>
 <div class="input-container left">
     <input type="text" id="editWaybillDate" readOnly="ReadOnly" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date Received" value="{{ waybill.date_received }}">
 </div>
@@ -80,6 +85,8 @@
         <span class="waybill-payment"><strong>Total:</strong></span>
         <span class="waybill-payment">Amount Tendered:</span>
         <span class="waybill-payment">Change Due:</span>
+        <span class="waybill-payment">Payment Date:</span>
+        <span class="waybill-payment">Cashier:</span>
     </div>
     <div class="waybill-payment-right">
         <span class="waybill-payment" id="waybillTotalEdit">PHP {{ waybill.total }}</span>
@@ -92,12 +99,16 @@
             {% endif %}
         </span>
         <span class="waybill-payment" id="waybillChangeEdit">PHP {{ waybill.change }}</span>
+        <span class="waybill-payment" id="waybillPaymentDate">{{ waybill.payment_date }}</span>
+        <span class="waybill-payment" id="waybillPaymentCashier">{{ waybill.payment_received_by }}</span>
     </div>
 </div>
+<span class="input-group-label">Additional Notes</span>
+<textarea id="editWaybillNotes" disabled>{{ waybill.notes }}</textarea>
 <span class="input-group-label">Actions</span>
 <div class="actions-btn-container">
     {% if waybill.tendered == '' %}
-    <button class="btn btn-primary action-btn" data-toggle="modal" data-target="#addPaymentModal">Add Payment</button>
+    <button class="btn btn-primary action-btn" onclick="add_payment_data()">Add Payment</button>
     {% endif %}
     <button class="btn btn-danger action-btn">Delete</button>
 </div>

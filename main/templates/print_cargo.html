@@ -1,0 +1,108 @@
+<html>
+	<head>
+		<style type="text/css">
+
+			html, body {
+			    width: 210mm;
+			    height: 297mm;
+			    background-color: #FFFFFF;
+			    padding: 0;
+			    margin: 0;
+			    font-family: OpenSans;
+		 	}
+
+		 	.table {
+		 		width: 100%;
+		 		border: 1px solid #ddd;
+		 	}
+
+		 	td {
+		 		font-size: 14px;
+		 		border-bottom: 1px solid #999;
+		 		padding-top: 10px;
+		 		padding-bottom: 10px;
+		 	}
+
+		 	.head-row {
+		 		padding-top: 5px;
+		 		padding-bottom: 3px;
+		 	}
+
+		 	.bottom-row {
+		 		padding-top: 5px;
+		 		padding-bottom: 3px;
+		 	}
+
+		 	.small {
+		 		font-size: 14px;
+		 	}
+
+		 	.print-header {
+		 		width: 100%;
+		 		text-align: center;
+		 	}
+
+		 	.align-right {
+		 		text-align: right;
+		 	}
+
+		 	.bold {
+		 		font-weight: bold;
+		 	}
+
+		 	.header-item {
+		 		float: left;
+		 		width: 100%;
+		 		text-align: center;
+		 	}
+
+		 	.report-type {
+		 		margin-bottom: 10px;
+		 	}
+
+		 	.creator {
+		 		margin-bottom: 5px;
+		 	}
+
+		 	.datetime {
+		 		margin-bottom: 20px;
+		 	}
+		</style>
+	</head>
+	<body>
+		<div class="print-header">
+			<h2>Infinitrix Cargo Express, Inc.</h2>
+			<div class="header-item report-type">
+				<span><strong>Packing List</strong> for cargo no. <strong>{{ cargo.cargo_no }}</strong></span>
+			</div>
+			<div class="header-item creator">
+				<span class="small">Prepared by <strong>{{ report.generated_by }}</strong></span>
+			</div>
+			<div class="header-item datetime">
+				<span class="small">on {{ report.date }} at {{ report.time }}</span>
+			</div>
+		</div>	
+		<table class="table">
+			<thead>
+				<tr class="head-row">
+					<td class="report-quantity-td bold">Quantity</td>
+					<td class="report-unit-td bold">Unit</td>
+					<td class="report-desc-td bold">Description</td>
+					<td class="report-recipient-td bold">Consigned To</td>
+					<td class="report-waybill-td align-right bold">Waybill Number</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for entry in cargo_items %}
+				<tr class="bottom-row">
+					<td class="report-quantity-td">{{ entry.quantity }}</td>
+					<td class="report-unit-td">{{ entry.unit }}</td>
+					<td class="report-desc-td">{{ entry.item }}</td>
+					<td class="report-recipient-td">{{ entry.recipient }}</td>
+					<td class="report-waybill-td align-right">{{ entry.waybill_no }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</body>
+</html>

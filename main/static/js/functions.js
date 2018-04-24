@@ -1858,6 +1858,7 @@ function save_waybill() {
     recipient_address = $('#addWaybillAddress').val();
     shipper = $('#addWaybillShipper').val();
     shipper_msisdn = $('#addWaybillShipperMsisdn').val();
+    notes = $('#waybillNotes').val();
     change = $('#waybillChange').html().substring(4);
 
     $.post('/waybill/save',
@@ -1873,7 +1874,8 @@ function save_waybill() {
       shipper_msisdn:shipper_msisdn,
       total:total,
       tendered:tendered,
-      change:change
+      change:change,
+      notes:notes
     },
     function(data){
       if (data['status'] == 'success') {
@@ -1962,6 +1964,26 @@ function compute_forgotten_change() {
     }
   }
   $('#forgottenChange').html('PHP '+String(change));
+}
+
+function compute_add_payment_change() {
+  total = parseInt($('#addPaymentTotal').html().substring(4));
+  tendered = parseInt($('#addPaymentTenderedText').val());
+  date = $('#addPaymentDateText').val();
+  if ($('#addPaymentTenderedText').val() == '') {
+    change = 0;
+    $('#addPaymentBtn').attr('disabled',true);
+  }
+  else {
+    change = tendered - total;
+    if ((change > 0) && (date != '')) {
+      $('#addPaymentBtn').attr('disabled',false);
+    }
+    else {
+      $('#addPaymentBtn').attr('disabled',true);
+    }
+  }
+  $('#addPaymentChange').html('PHP '+String(change));
 }
 
 function add_forgotten_payment() {
@@ -2112,6 +2134,7 @@ function save_cargo() {
   destination = $('#addCargoDestination').val();
   departure_date = $('#addCargoDepartureDate').val();
   departure_time = $('#addCargoDepartureTime').val();
+  notes = $('#cargoNotes').val();
 
   $.post('/cargo/save',
   {
@@ -2122,7 +2145,8 @@ function save_cargo() {
     origin:origin,
     destination:destination,
     departure_date:departure_date,
-    departure_time:departure_time
+    departure_time:departure_time,
+    notes:notes
   },
   function(data){
     $('#saveCargoBtn').button('complete');
@@ -2218,5 +2242,47 @@ function supply_cargo_notifications() {
   $.post('/cargo/notifications',
   function(data){
     $('#cargoNotificationsModal .modal-body').html(data['template']);
+  });
+}
+
+function add_payment_data() {
+  $('#addPaymentWaybillNumber').html($('#editWaybillNumber').val());
+  $('#addPaymentTotal').html($('#waybillTotalEdit').html());
+  $('#addPaymentTenderedText').val($('#waybillTenderedText').val());
+  $('#addPaymentChange').html($('#waybillChangeEdit').html());
+  $.post('/date',
+  function(data){
+    $('#addPaymentDateText').val(data['date']);
+    $('#addPaymentModal').modal('show');
+  });
+}
+
+function add_payment() {
+  $('#addPaymentBtn').button('loading');
+  tendered = parseInt($('#addPaymentTenderedText').val());
+  date = $('#addPaymentDateText').val();
+  change = $('#addPaymentChange').html().substring(4);
+  $.post('/waybill/payment/add',
+    {
+      tendered:tendered,
+      date:date,
+      change:change
+    },
+  function(data){
+    $('#editWaybillModal .modal-body').html(data['template']);
+    $('#addPaymentTenderedText').val('');
+    $('#addPaymentDateText').val('')
+    $('#addPaymentTotal').html('PHP 0');
+    $('#addPaymentChange').html('PHP 0');
+    $('#addPaymentModal').modal('hide');
+    $('#addPaymentBtn').button('complete');
+  });
+}
+
+function print_cargo_items() {
+  $.post('/report/cargo/print',
+  function(data){
+    /*$('#cargoActions').append('<a href="../static/reports/'+data['filename']+'.pdf" id="downloadCargoBtn" download>download</a>')*/
+    $('body').html(data)
   });
 }

@@ -4,6 +4,7 @@ from db_conn import db
 from models import *
 import requests
 import uuid
+from xhtml2pdf import pisa
 from cStringIO import StringIO
 from dateutil.parser import parse as parse_date
 import datetime
@@ -13,6 +14,7 @@ from flask import jsonify
 import random
 import string
 import xlrd
+import pdfkit
 
 app = Celery('tasks', broker='amqp://admin:password@rabbitmq/birdhouse')
 
@@ -123,3 +125,17 @@ def send_arrival_notifications(client_no,batch_id):
         db.session.commit()
 
     return
+
+@app.task
+def create_pdf(report_id,pdf_data):
+    report = Report.query.filter_by(id=report_id).first()
+    try:
+        pdfkit.from_string(pdf_data, 'static/reports/%s.pdf'%report.name)
+        report.status = 'Success'
+        db.session.commit()
+        return
+
+    except requests.exceptions.ConnectionError as e:
+        report.status = 'Failed'
+        db.session.commit()
+        return

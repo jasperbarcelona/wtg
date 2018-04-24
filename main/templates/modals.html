@@ -60,6 +60,7 @@
                 <h4 class="modal-title" id="gridSystemModalLabel">New Waybill</h4>
             </div>
             <div class="modal-body">
+                <span class="input-group-no-margin">Waybill Info</span>
                 <div class="input-container left">
                     <input type="text" id="addWaybillDate" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date Received">
                     <div id="errorDate" class="error-icon-container hidden tooltip" title="This field is required."tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
@@ -129,6 +130,8 @@
                         <span class="waybill-payment" id="waybillChange">PHP 0</span>
                     </div>
                 </div>
+                <span class="input-group-label">Additional Notes</span>
+                <textarea id="waybillNotes"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" id="cancelWaybillBtn" class="btn btn-danger modal-btn" onclick="clear_waybill_data()" data-loading-text="Closing.." data-complete-text="Cancel">Cancel</button>
@@ -142,7 +145,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="gridSystemModalLabel">Waybill Info</h4>
+                <h4 class="modal-title" id="gridSystemModalLabel">Waybill</h4>
             </div>
             <div class="modal-body">
             </div>
@@ -157,7 +160,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="gridSystemModalLabel">Cargo Info</h4>
+                <h4 class="modal-title" id="gridSystemModalLabel">Cargo</h4>
                 <div class="notification-link dropdown">
                     <span id="cargoNotificationsBtn" class="link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">&#xE5D4;</i></span>
                     <div class="dropdown-menu" aria-labelledby="cargoNotificationsBtn">
@@ -183,7 +186,7 @@
             <div class="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" id="closeCargoBtn" class="btn btn-primary modal-btn" data-dismiss="modal">Close</button>
+                <button type="button" id="closeCargoNotificationsBtn" class="btn btn-primary modal-btn" data-dismiss="modal">Close</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
@@ -222,6 +225,7 @@
                 <h4 class="modal-title" id="gridSystemModalLabel">New Cargo</h4>
             </div>
             <div class="modal-body">
+                <span class="input-group-no-margin">Cargo Info</span>
                 <div class="input-container left">
                     <input type="text" id="addCargoNumber" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorCargoNumber" class="form-control floatlabel" data-class="input-label" placeholder="Cargo Number">
                     <div id="errorCargoNumber" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
@@ -269,6 +273,8 @@
                     </tbody>
                 </table>
                 <button id="addCargoItemBtn" class="btn btn-primary" data-toggle="modal" data-target="#addCargoItemModal" onclick="supply_cargo_items()" data-backdrop="static" data-keyboard="false">Manage Items</button>
+                <span class="input-group-label">Additional Notes</span>
+                <textarea id="cargoNotes"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" id="cancelCargoBtn" class="btn btn-danger modal-btn" onclick="clear_cargo_items()" data-loading-text="Closing.." data-complete-text="Cancel">Cancel</button>
@@ -412,6 +418,43 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary modal-btn" onclick="open_forgotten_waybill_item()">Add Content</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="addPaymentModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Add Payment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="add-payment-left">
+                    <span class="add-payment">Waybill No:</span>
+                    <span class="add-payment">Payment Date:</span>
+                    <div class="add-payment-separator"></div>
+                    <span class="add-payment"><strong>Total:</strong></span>
+                    <span class="add-payment">Amount Tendered:</span>
+                    <span class="add-payment">Change Due:</span>
+                </div>
+                <div class="add-payment-right">
+                    <span class="add-payment" id="addPaymentWaybillNumber"></span>
+                    <span class="add-payment" id="addPaymentDate">
+                        <input type="text" id="addPaymentDateText" class="form-control datepicker" onkeyup="compute_add_payment_change()" onchange="compute_add_payment_change()">
+                    </span>
+                    <div class="add-payment-separator"></div>
+                    <span class="add-payment" id="addPaymentTotal">PHP 0</span>
+                    <span class="add-payment" id="addPaymentTendered">
+                        <span class="payment-php">PHP</span>
+                        <input type="text" id="addPaymentTenderedText" class="form-control" placeholder="0" onkeyup="compute_add_payment_change()">
+                    </span>
+                    <span class="add-payment" id="addPaymentChange">PHP 0</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button id="addPaymentBtn" type="button" class="btn btn-primary modal-btn" disabled onclick="add_payment()" data-loading-text="Saving.." data-complete-text="Done">Done</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

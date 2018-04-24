@@ -116,6 +116,10 @@ $('#forgotPaymentModal').on('shown.bs.modal', function () {
     $('#forgottenTenderedText').focus();
 });
 
+$('#addPaymentModal').on('shown.bs.modal', function () {
+    $('#addPaymentTenderedText').focus();
+});
+
 $('#addContactModal').on('shown.bs.modal', function () {
     $('#addContactName').focus();
 });

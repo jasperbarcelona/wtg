@@ -1,3 +1,8 @@
+<div class="modal-creator-container">
+    <span id="cargoCreatedBy" class="created-by">Created by {{ cargo.created_by }}</span><br/>
+    <span id="cargoCreatedOn" class="created-on">{{ cargo.date_created }} | {{ cargo.time_created }}</span>
+</div>
+<span class="input-group-label">Cargo Info</span>
 <div class="input-container left">
     <input type="text" id="editCargoNumber" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Cargo Number" value="{{ cargo.cargo_no }}">
 </div>
@@ -64,11 +69,14 @@
         {% endfor %}
     </tbody>
 </table>
+<span class="input-group-label">Additional Notes</span>
+<textarea id="editCargoNotes" disabled>{{ cargo.notes }}</textarea>
 <span class="input-group-label">Actions</span>
-<div class="actions-btn-container">
+<div id="cargoActions" class="actions-btn-container">
     {% if cargo.arrival_date == '' %}
     <button class="btn btn-primary action-btn" data-toggle="modal" data-target="#receiveCargoModal">Receive</button>
     {% endif %}
+    <button class="btn btn-primary action-btn" onclick="print_cargo_items()">Print</button>
     <button class="btn btn-danger action-btn">Delete</button>
 </div>
 

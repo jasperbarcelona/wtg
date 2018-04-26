@@ -2081,3 +2081,103 @@ td {
 	width: 100%;
 	background-color: #eee;
 }
+
+#downloadOverlay {
+	position: absolute;
+	z-index: 9999999;
+	bottom: 30px;
+	right: 30px;
+	width: 400px;
+	border: 1px solid #494949;
+}
+
+.download-header {
+	width: 100%;
+	background-color: #494949;
+	color: #FFFFFF;
+	height: 40px;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+	justify-content: left;
+	padding-left: 10px;
+}
+
+.download-body {
+	width: 100%;
+	min-height: 70px;
+	max-height: 200px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	background-color: #fff;	
+}
+
+.download-item {
+	height: 70px;
+	width: 100%;
+	border-bottom: 1px solid #ddd;
+}
+
+.download-icon-container {
+	float: left;
+	height: 100%;
+	width: 15%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+	justify-content: left;
+	padding-bottom: 8px;
+}
+
+.download-name-container {
+	float: left;
+	height: 100%;
+	width: 75%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+	justify-content: left;
+}
+
+.download-action-container {
+	float: left;
+	height: 100%;
+	width: 10%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+	justify-content: left;
+	cursor: pointer;
+}
+
+.report-svg {
+	height: 35px;
+}
+
+.report-svg .check {
+	display: none;
+}
+
+.report-download-link {
+	color: #666 !important
+}
+
+.report-download-link:hover {
+	color: #373A3C !important
+}

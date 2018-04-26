@@ -2287,20 +2287,26 @@ def print_cargo_report():
                 time=report.time
                 )
             )
-        return flask.render_template(
-                'print_cargo.html',
-                report=report,
-                cargo=cargo,
-                cargo_items=cargo_items,
-                staff_name=session['user_name'],
-                date=report.date,
-                time=report.time
-                )
+        return jsonify(
+            status='success',
+            template=flask.render_template('download_item.html',report=report),
+            report_id=report.id
+            )
 
     except requests.exceptions.ConnectionError as e:
         report.status = 'failed'
         db.session.commit()
         return jsonify(status='failed',message='Could not generate report. Please Contact support.'),201
+
+
+@app.route('/report/status',methods=['GET','POST'])
+def get_report_status():
+    report_id = flask.request.form.get('report_id')
+    report = Report.query.filter_by(id=report_id).first()
+    return jsonify(
+        status='success',
+        report_status=report.status
+        )
 
 
 @app.route('/db/rebuild',methods=['GET','POST'])

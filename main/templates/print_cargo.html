@@ -17,10 +17,10 @@
 		 	}
 
 		 	td {
-		 		font-size: 14px;
-		 		border-bottom: 1px solid #999;
-		 		padding-top: 10px;
-		 		padding-bottom: 10px;
+		 		font-size: 12px;
+		 		border: 1px solid #999 !important;
+		 		padding-top: 5px;
+		 		padding-bottom: 5px;
 		 	}
 
 		 	.head-row {
@@ -67,21 +67,50 @@
 		 	.datetime {
 		 		margin-bottom: 20px;
 		 	}
+
+		 	.cargo-info {
+		 		float: left;
+		 		font-size: 12px;
+		 		margin-right: 20px;
+		 		margin-bottom: 10px;
+		 	}
+
+		 	.report-quantity-td {
+		 		width: 5%;
+		 	}
+
+			.report-unit-td {
+				width: 10%;
+			}
+
+			.report-desc-td {
+				width: 37.5%;
+			}
+
+			.report-recipient-td {
+				width: 35.5%;
+			}
+
+			.report-waybill-td {
+				width: 12%;
+			}
+
 		</style>
 	</head>
 	<body>
 		<div class="print-header">
-			<h2>Infinitrix Cargo Express, Inc.</h2>
 			<div class="header-item report-type">
 				<span><strong>Packing List</strong> for cargo no. <strong>{{ cargo.cargo_no }}</strong></span>
 			</div>
 			<div class="header-item creator">
-				<span class="small">Prepared by <strong>{{ report.generated_by }}</strong></span>
+				<span class="small">Printed by <strong>{{ report.generated_by }}</strong></span>
 			</div>
 			<div class="header-item datetime">
 				<span class="small">on {{ report.date }} at {{ report.time }}</span>
 			</div>
-		</div>	
+		</div>
+		<span class="cargo-info"><strong>Truck:</strong> {{ cargo.truck }}</span>
+		<span class="cargo-info"><strong>Driver:</strong> {{ cargo.driver }}</span>
 		<table class="table">
 			<thead>
 				<tr class="head-row">

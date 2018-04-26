@@ -1,0 +1,56 @@
+<div id="{{ report.id }}" class="download-item">
+	<div class="download-icon-container">
+		<svg class="report-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="57px" height="67px" viewBox="0 -10 60 67" version="1.1">
+			<defs>
+				<clipPath id="barMask1">
+					<rect x="10.2" y="13.2" width="24.6" height="6"/>
+				</clipPath>
+				<clipPath id="barMask2">
+					<rect x="10.2" y="25.2" width="24.6" height="6"/>
+				</clipPath>
+				<clipPath id="barMask3">
+					<rect x="22.2" y="37.2" width="12.6" height="6"/>
+				</clipPath>
+				<filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
+					<feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+					<feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+					<feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.105451766 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
+					<feMerge>
+						<feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+			</defs>
+			<g fill="#666" fill-opacity="">
+				<path d="M0.0661196319 42.8 L1.30748466 44 L12.8519172 55.7 L14.0912117 56.9 L44.8634816 56.9 L44.8634816 0 L0.0661196319 0 L0.0661196319 42.8 Z M18.9212577 52.6 C13.8069939 52.6 16.3 40.4 16.3 40.4 C16.2717791 40.4 4.4 43.3 4.3 37.9 L4.29819018 4.3 L40.6315491 4.3 L40.6315491 52.6 L18.9212577 52.6 Z" />
+			</g>
+			<g class="loadingLines">
+				<g fill="#fff" fill-opacity="0.7">
+					<rect x="10.2" y="13.2" width="24.6" height="6"/>
+					<rect x="10.2" y="25.2" width="24.6" height="6"/>
+					<rect x="22.2" y="37.2" width="12.6" height="6"/>
+				</g>
+				<g fill="#145995">
+					<rect id="rect1" x="-86" y="13.2" width="70" height="6" clip-path="url(#barMask1)">
+						<animate attributeName="x" from="-60" to="80" dur="3s" begin="0s" repeatCount="indefinite"/>
+					</rect>
+					<rect id="rect2" x="-112" y="25.2" width="70" height="6" clip-path="url(#barMask2)">
+						<animate attributeName="x" from="-60" to="80" dur="3s" begin="0.6s" repeatCount="indefinite"/>
+					</rect>
+					<rect id="rect3" x="-130" y="37.2" width="70" height="6" clip-path="url(#barMask3)">
+						<animate attributeName="x" from="-60" to="80" dur="3s" begin="0.9s" repeatCount="indefinite"/>
+					</rect>
+				</g>
+			</g>
+			<path class="check" filter="url(#filter-1)" fill="#145995" d="M51.9813632,-1.42108547e-14 C37.9362656,8.61645207 27.7450671,19.4878906 23.1660397,24.9435885 L11.9519717,16.1520453 L7,20.1468138 L26.3771103,39.8656508 C29.7120014,31.3181965 40.2736022,14.6126853 53.1702093,2.74327009 L51.9813632,-1.42108547e-14 L51.9813632,-1.42108547e-14 Z"></path>
+		</svg>
+	</div>
+	<div class="download-name-container">
+		<span class="download-report-name">[CARGO] {{ report.name }}</span>
+	</div>
+	<a class="report-download-link" href="../static/reports/{{report.name}}.pdf" download>
+	<div class="download-action-container hidden">
+		<i class="material-icons">&#xE2C4;</i>
+	</div>
+	</a>
+</div>

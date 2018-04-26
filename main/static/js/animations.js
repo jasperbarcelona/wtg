@@ -497,5 +497,4 @@ $('#addCargoModal .form-control').change(function(){
     }
 });
 
-
 });

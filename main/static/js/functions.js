@@ -2282,7 +2282,24 @@ function add_payment() {
 function print_cargo_items() {
   $.post('/report/cargo/print',
   function(data){
-    /*$('#cargoActions').append('<a href="../static/reports/'+data['filename']+'.pdf" id="downloadCargoBtn" download>download</a>')*/
-    $('body').html(data)
+    $('#downloadOverlay .download-body').append(data['template']);
+    update_report_status(data['report_id']);
+  });
+}
+
+function update_report_status(report_id) {
+  $.post('/report/status',
+  {
+    report_id:report_id
+  },
+  function(data){
+    if (data['report_status'] == 'Pending') {
+      update_report_status(report_id);
+    }
+    else {
+      $('#'+report_id+'.download-item .loadingLines').hide();
+      $('#'+report_id+'.download-item .check').show();
+      $('#'+report_id+'.download-item .download-action-container').removeClass('hidden');
+    }
   });
 }

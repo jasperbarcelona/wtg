@@ -218,6 +218,40 @@
     </div><!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="pickupModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Pick Up / Deliver</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-container whole">
+                    <select id="pickupType" class="form-control">
+                        <option value="Pickup">Picked up by:</option>
+                        <option value="Deliver">Delivered to:</option>
+                    </select>
+                    <input type="text" id="pickupPerson" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_pickup();" placeholder="Name" data-error="errorPickupPerson" class="form-control" data-class="input-label" onkeyup="validate_pickup()">
+                    <div id="errorPickupPerson" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container whole">
+                    <input type="text" id="pickupDate" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_pickup();" data-error="errorPickupDate" class="form-control floatlabel datepicker" data-class="input-label" placeholder="Date" onkeyup="validate_pickup()">
+                    <div id="errorPickupDate" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container whole">
+                    <input type="text" id="pickupTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_pickup();" data-error="errorPickupTime" class="form-control floatlabel clockpicker" data-class="input-label" placeholder="Time" onkeyup="validate_pickup()">
+                    <div id="errorPickupTime" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <table id="receiveCargoItemsTable" class="table">
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelPickupBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" id="savePickupBtn" class="btn btn-primary modal-btn" data-loading-text="Saving.." data-complete-text="Receive" onclick="pickup_waybill()" disabled>Done</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 <div class="modal fade" id="addCargoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

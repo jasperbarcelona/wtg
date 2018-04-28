@@ -88,6 +88,11 @@ class Package(db.Model):
     received_by = db.Column(db.String(100),default='')
     payment_received_by_id = db.Column(db.Integer(),default=None)
     payment_received_by = db.Column(db.String(100),default='--')
+    turned_over_by_id = db.Column(db.Integer(),default=None)
+    turned_over_by = db.Column(db.String(100),default='--')
+    pickup_name = db.Column(db.String(100))
+    pickup_date = db.Column(db.String(20))
+    pickup_time = db.Column(db.String(20))
     notes = db.Column(db.Text(),default='')
     created_at = db.Column(db.String(50))
 

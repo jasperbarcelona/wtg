@@ -35,6 +35,13 @@ $('.tooltip').tooltipster({
    trigger: 'hover'
 });
 
+$('.close-download-container').tooltipster({
+   animation: 'grow',
+   delay: 200,
+   theme: 'tooltipster-shadow',
+   trigger: 'hover'
+});
+
 $('#user-icon-container').on('click', function () {
     var $this = jQuery(this);
     if ($this.data('activated')) return false;  // Pending, return
@@ -59,6 +66,12 @@ $('#user-icon-container').on('click', function () {
         }, 500); // Freeze for 500ms
     }
 });
+
+$('#closeDownloadOverlayBtn').on('click', function () { 
+    $('#downloadOverlay .download-body').html('');
+    $('#downloadOverlay').addClass('hidden');
+});
+
 
 $('#composeMessage').on('click', function (e) {
     $('#messageContainer').show();
@@ -112,6 +125,10 @@ $('#createGroupModal').on('shown.bs.modal', function () {
     $('#addGroupName').focus();
 });
 
+$('#pickupModal').on('shown.bs.modal', function () {
+    $('#pickupPerson').focus();
+});
+
 $('#forgotPaymentModal').on('shown.bs.modal', function () {
     $('#forgottenTenderedText').focus();
 });
@@ -136,6 +153,10 @@ $('#saveContactModal').on('hidden.bs.modal', function () {
   setTimeout(function() {
     $('#saveContactBtn').attr('disabled', true);
     }, 500);
+});
+
+$('#pickupModal').on('hidden.bs.modal', function () {
+  clear_pickup_data();
 });
 
 $('#addWaybillItemModal').on('hidden.bs.modal', function () {

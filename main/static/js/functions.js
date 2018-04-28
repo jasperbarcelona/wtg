@@ -30,6 +30,21 @@ function show_cargo(slice_from) {
     });
 }
 
+function show_history(slice_from) {
+  $('.panel-nav-item').removeClass('active');
+  $('#navHistory').addClass('active');
+  $.get('/history',
+  {
+    slice_from:slice_from
+  },
+    function(data){
+      initialize_selected_entries();
+      $('.content').html(data);
+      $('#searchLoader').addClass('hidden');
+      $('#clearHistorySearch').addClass('hidden');
+    });
+}
+
 function show_payment_reminders(slice_from) {
   $('.panel-nav-item').removeClass('active');
   $('#navReminders').addClass('active');
@@ -1935,6 +1950,16 @@ function clear_waybill_data() {
   });
 }
 
+function clear_pickup_data() {
+  $('#pickupType').prop('selectedIndex',0);
+  $('#pickupPerson').val('');
+  $('#pickupDate').val('');
+  $('#pickupTime').val('');
+  $('#pickupModal .form-control').change();
+  $('#pickupModal .error-icon-container').addClass('hidden');
+  $('#pickupModal .form-control').css('border-bottom','1px solid #999');
+}
+
 function compute_change() {
   total = parseInt($('#waybillTotal').html().substring(4));
   tendered = parseInt($('#waybillTenderedText').val());
@@ -2283,6 +2308,7 @@ function print_cargo_items() {
   $.post('/report/cargo/print',
   function(data){
     $('#downloadOverlay .download-body').append(data['template']);
+    $('#downloadOverlay').removeClass('hidden');
     update_report_status(data['report_id']);
   });
 }
@@ -2301,5 +2327,35 @@ function update_report_status(report_id) {
       $('#'+report_id+'.download-item .check').show();
       $('#'+report_id+'.download-item .download-action-container').removeClass('hidden');
     }
+  });
+}
+
+function validate_pickup() {
+  var name = $('#pickupPerson').val();
+  var date = $('#pickupDate').val();
+  var time = $('#pickupTime').val();
+
+  if ((name != '') && (date != '') && (time != '')) {
+    $('#savePickupBtn').attr('disabled', false);
+  }
+  else {
+    $('#savePickupBtn').attr('disabled', true);
+  }
+}
+
+function pickup_waybill() {
+  name = $('#pickupPerson').val();
+  date = $('#pickupDate').val();
+  time = $('#pickupTime').val();
+  $.post('/waybill/pickup',
+  {
+    name:name,
+    date:date,
+    time:time
+  },
+  function(data){
+    $('.content').html(data);
+    $('#pickupModal').modal('hide');
+    $('#editWaybillModal').modal('hide');
   });
 }

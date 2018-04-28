@@ -64,65 +64,69 @@ def send_notification(client_no,status,waybill_no,msisdn):
 
 @app.task
 def send_arrival_notifications(client_no,batch_id):
-    client = Client.query.filter_by(client_no=client_no).first()
-    batch = ArrivalBatch.query.filter_by(id=batch_id).first()
-    notifications = ArrivalNotification.query.filter_by(batch_id=batch_id).all()
+    # client = Client.query.filter_by(client_no=client_no).first()
+    # batch = ArrivalBatch.query.filter_by(id=batch_id).first()
+    # notifications = ArrivalNotification.query.filter_by(batch_id=batch_id).all()
 
-    for notification in notifications:
-        message = 'We are glad to let you know that your package with waybill number %s has arrived at our warehouse. We will notify you once it has been delivered or picked up.' % notification.waybill_no
-        recipient_message_options = {
-        'app_id': client.app_id,
-        'app_secret': client.app_secret,
-        'message': message,
-        'address': notification.recipient_msisdn,
-        'passphrase': client.passphrase,
-        }
+    # for notification in notifications:
+    #     message = 'We are glad to let you know that your package with waybill number %s has arrived at our warehouse. We will notify you once it has been delivered or picked up.' % notification.waybill_no
+    #     recipient_message_options = {
+    #     'app_id': client.app_id,
+    #     'app_secret': client.app_secret,
+    #     'message': message,
+    #     'address': notification.recipient_msisdn,
+    #     'passphrase': client.passphrase,
+    #     }
 
-        sender_message_options = {
-        'app_id': client.app_id,
-        'app_secret': client.app_secret,
-        'message': message,
-        'address': notification.sender_msisdn,
-        'passphrase': client.passphrase,
-        }
+    #     sender_message_options = {
+    #     'app_id': client.app_id,
+    #     'app_secret': client.app_secret,
+    #     'message': message,
+    #     'address': notification.sender_msisdn,
+    #     'passphrase': client.passphrase,
+    #     }
 
-        try:
-            r = requests.post(IPP_URL%client.shortcode,recipient_message_options)           
-            if r.status_code == 201:
-                notification.recipient_notification_status = 'Success'
-                notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-            else:
-                notification.recipient_notification_status = 'Failed'
-                notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    #     try:
+    #         r = requests.post(IPP_URL%client.shortcode,recipient_message_options)           
+    #         if r.status_code == 201:
+    #             notification.recipient_notification_status = 'Success'
+    #             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    #         else:
+    #             notification.recipient_notification_status = 'Failed'
+    #             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
-            db.session.commit()
+    #         db.session.commit()
 
-        except requests.exceptions.ConnectionError as e:
-            notification.recipient_notification_status = 'Failed'
-            notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-            db.session.commit()
+    #     except requests.exceptions.ConnectionError as e:
+    #         notification.recipient_notification_status = 'Failed'
+    #         notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    #         db.session.commit()
 
-        try:
-            n = requests.post(IPP_URL%client.shortcode,sender_message_options)           
-            if n.status_code == 201:
-                notification.sender_notification_status = 'Success'
-                notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-            else:
-                notification.sender_notification_status = 'Failed'
-                notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    #     try:
+    #         n = requests.post(IPP_URL%client.shortcode,sender_message_options)           
+    #         if n.status_code == 201:
+    #             notification.sender_notification_status = 'Success'
+    #             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    #         else:
+    #             notification.sender_notification_status = 'Failed'
+    #             notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
 
-            db.session.commit()
+    #         db.session.commit()
 
-        except requests.exceptions.ConnectionError as e:
-            notification.sender_notification_status = 'Failed'
-            notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-            db.session.commit()
+    #     except requests.exceptions.ConnectionError as e:
+    #         notification.sender_notification_status = 'Failed'
+    #         notification.timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    #         db.session.commit()
 
-        notification.overall_status = 'Done'
-        db.session.commit()
-        batch.done = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='Done').count()
-        batch.pending = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='Pending').count()
-        db.session.commit()
+    #     notification.overall_status = 'Done'
+    #     db.session.commit()
+    #     batch.done = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='Done').count()
+    #     batch.pending = ArrivalNotification.query.filter_by(batch_id=batch.id,overall_status='Pending').count()
+    #     db.session.commit()
+
+    batch.done = ArrivalNotification.query.filter_by(batch_id=batch.id).count()
+    batch.pending = 0
+    db.session.commit()
 
     return
 

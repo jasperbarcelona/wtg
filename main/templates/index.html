@@ -11,7 +11,7 @@
 		<div id="navCargo" class="panel-nav-item" onclick="show_cargo('reset')">
 			<span class="nav-label">Cargo</span>
 		</div>
-		<div id="navBlasts" class="panel-nav-item" onclick="show_blasts('reset')">
+		<div id="navHistory" class="panel-nav-item" onclick="show_history('reset')">
 			<span class="nav-label">History</span>
 		</div>
 		<div id="navReminders" class="panel-nav-item" onclick="show_payment_reminders('reset')">
@@ -32,9 +32,12 @@
 		<i id="closeCargoItemError" class="material-icons">&#xE5CD;</i>
 	</div>
 </div>
-<div id="downloadOverlay">
+<div id="downloadOverlay" class="hidden">
 	<div class="download-header">
-		<span>Generating Report</span>
+		<span>Report</span>
+		<div id="closeDownloadOverlayBtn" class="close-download-container" title="Reports can be downloaded from the REPORTS section, too.">
+			<i class="material-icons">&#xE5CD;</i>
+		</div>
 	</div>
 	<div class="download-body">
 	</div>

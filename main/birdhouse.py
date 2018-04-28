@@ -176,12 +176,13 @@ def index():
         return redirect('/login')
     session['inbound_limit'] = 50
     session['cargo_limit'] = 50
+    session['history_limit'] = 50
     session['waybill_items'] = []
     session['cargo_items'] = []
     user = AdminUser.query.filter_by(id=session['user_id']).first()
-    total_entries = Package.query.filter_by(client_no=session['client_no']).count()
-    packages = Package.query.filter_by(client_no=session['client_no']).order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
-
+    total_entries = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').count()
+    packages = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
+    
     if total_entries < 50:
         return flask.render_template(
         'index.html',
@@ -247,8 +248,8 @@ def all_inbound():
     if slice_from == 'reset':
         session['inbound_limit'] = 50
         prev_btn = 'disabled'
-    total_entries = Package.query.filter_by(client_no=session['client_no']).count()
-    packages = Package.query.filter_by(client_no=session['client_no']).order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
+    total_entries = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').count()
+    packages = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
     if total_entries < 50:
         showing='1 - %s' % total_entries
         prev_btn = 'disabled'
@@ -359,6 +360,40 @@ def all_cargo():
     return flask.render_template(
         'cargo.html',
         cargo=cargo,
+        showing=showing,
+        total_entries=total_entries,
+        prev_btn=prev_btn,
+        next_btn=next_btn,
+    )
+
+
+@app.route('/history',methods=['GET','POST'])
+def all_history():
+    slice_from = flask.request.args.get('slice_from')
+    prev_btn = 'enabled'
+    if slice_from == 'reset':
+        session['history_limit'] = 50
+        prev_btn = 'disabled'
+
+    total_entries = Package.query.filter(Package.client_no==session['client_no'], Package.status=='Done').count()
+    history = Package.query.filter(Package.client_no==session['client_no'], Package.status=='Done').order_by(Package.payment_date.desc()).slice(session['history_limit'] - 50, session['history_limit'])
+    if total_entries < 50:
+        showing='1 - %s' % total_entries
+        prev_btn = 'disabled'
+        next_btn='disabled'
+    else:
+        diff = total_entries - (session['history_limit'] - 50)
+        if diff > 50:
+            showing = '%s - %s' % (str(session['history_limit'] - 49),str(session['history_limit']))
+            next_btn='enabled'
+        else:
+            showing = '%s - %s' % (str(session['history_limit'] - 49),str((session['history_limit']-50)+diff))
+            prev_btn = 'enabled'
+            next_btn='disabled'
+
+    return flask.render_template(
+        'history.html',
+        history=history,
         showing=showing,
         total_entries=total_entries,
         prev_btn=prev_btn,
@@ -2299,6 +2334,46 @@ def print_cargo_report():
         return jsonify(status='failed',message='Could not generate report. Please Contact support.'),201
 
 
+@app.route('/waybill/pickup',methods=['GET','POST'])
+def pickup_waybill():
+    data = flask.request.form.to_dict()
+    waybill = Package.query.filter_by(id=session['waybill_id']).first()
+    waybill.status = 'Done'
+    waybill.pickup_name = data['name']
+    waybill.pickup_date = data['date']
+    waybill.pickup_time = data['time']
+    waybill.turned_over_by_id = session['user_id']
+    waybill.turned_over_by = session['user_name']
+    db.session.commit()
+
+    session['inbound_limit'] = 50
+    prev_btn = 'disabled'
+    total_entries = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').count()
+    packages = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
+    if total_entries < 50:
+        showing='1 - %s' % total_entries
+        prev_btn = 'disabled'
+        next_btn='disabled'
+    else:
+        diff = total_entries - (session['inbound_limit'] - 50)
+        if diff > 50:
+            showing = '%s - %s' % (str(session['inbound_limit'] - 49),str(session['inbound_limit']))
+            next_btn='enabled'
+        else:
+            showing = '%s - %s' % (str(session['inbound_limit'] - 49),str((session['inbound_limit']-50)+diff))
+            prev_btn = 'enabled'
+            next_btn='disabled'
+
+    return flask.render_template(
+        'inbound.html',
+        packages=packages,
+        showing=showing,
+        total_entries=total_entries,
+        prev_btn=prev_btn,
+        next_btn=next_btn,
+    )
+
+
 @app.route('/report/status',methods=['GET','POST'])
 def get_report_status():
     report_id = flask.request.form.get('report_id')
@@ -2355,7 +2430,20 @@ def rebuild_database():
         time_created=time.strftime("%I:%M%p"),
         notes='This is a sample note.',
         created_by_id=1,
-        created_by='Jasper Barcelona'
+        created_by='Jasper Barcelona',
+        arrival_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        arrival_time=time.strftime("%I:%M%p"),
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        departure_time=time.strftime("%I:%M%p"),
+        cargo_no='052018-23',
+        truck='UUE-918',
+        received_by_id=1,
+        received_by='Jasper Barcelona',
+        turned_over_by_id=1,
+        turned_over_by='Jasper Barcelona',
+        pickup_name='Jasper Barcelona',
+        pickup_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        pickup_time=time.strftime("%I:%M%p")
         )
 
     package1 = Package(
@@ -2381,7 +2469,20 @@ def rebuild_database():
         payment_received_by_id=1,
         payment_received_by='Jasper Barcelona',
         created_by_id=1,
-        created_by='Jasper Barcelona'
+        created_by='Jasper Barcelona',
+        arrival_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        arrival_time=time.strftime("%I:%M%p"),
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        departure_time=time.strftime("%I:%M%p"),
+        cargo_no='052018-23',
+        truck='UUE-918',
+        received_by_id=1,
+        received_by='Jasper Barcelona',
+        turned_over_by_id=1,
+        turned_over_by='Jasper Barcelona',
+        pickup_name='Merto Isuzu',
+        pickup_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        pickup_time=time.strftime("%I:%M%p")
         )
 
     package2 = Package(
@@ -2400,6 +2501,7 @@ def rebuild_database():
         total='1200',
         tendered='2000',
         change='800',
+        status='Done',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
@@ -2407,7 +2509,20 @@ def rebuild_database():
         payment_received_by_id=1,
         payment_received_by='Jasper Barcelona',
         created_by_id=1,
-        created_by='Jasper Barcelona'
+        created_by='Jasper Barcelona',
+        arrival_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        arrival_time=time.strftime("%I:%M%p"),
+        departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        departure_time=time.strftime("%I:%M%p"),
+        cargo_no='052018-23',
+        truck='UUE-918',
+        received_by_id=1,
+        received_by='Jasper Barcelona',
+        turned_over_by_id=1,
+        turned_over_by='Jasper Barcelona',
+        pickup_name='Kobe Bryant',
+        pickup_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        pickup_time=time.strftime("%I:%M%p")
         )
 
     package_item = PackageItem(
@@ -2445,18 +2560,58 @@ def rebuild_database():
 
     cargo = Cargo(
         client_no='infinitrix',
-        cargo_no='042018-1',
+        cargo_no='052018-23',
         truck='UUE-918',
         driver='Delfin Barcelona',
-        crew='Yaya',
+        crew='Some Crew',
         origin='Manila',
         destination='Legazpi',
         departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
         departure_time=time.strftime("%I:%M%p"),
+        arrival_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        arrival_time=time.strftime("%I:%M%p"),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
         created_by_id=1,
         created_by='Jasper Barcelona',
+        received_by_id=1,
+        received_by='Jasper Barcelona',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    cargo_item = CargoItem(
+        client_no='infinitrix',
+        cargo_id=1,
+        cargo_no='052018-23',
+        waybill_no='1234',
+        item='Sample Item',
+        quantity=3,
+        recipient='Jasper Barcelona',
+        unit='Rolls',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    cargo_item1 = CargoItem(
+        client_no='infinitrix',
+        cargo_id=1,
+        cargo_no='052018-23',
+        waybill_no='4321',
+        item='Sample Item 2',
+        quantity=4,
+        recipient='Merto Isuzu',
+        unit='Cartons',
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    cargo_item2 = CargoItem(
+        client_no='infinitrix',
+        cargo_id=1,
+        cargo_no='052018-23',
+        waybill_no='5678',
+        item='Another Item',
+        quantity=3,
+        recipient='Kobe Byrant',
+        unit='Bundles',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 
@@ -2468,7 +2623,10 @@ def rebuild_database():
     db.session.add(package_item)
     db.session.add(package_item1)
     db.session.add(package_item2)
-    # db.session.add(cargo)
+    db.session.add(cargo)
+    db.session.add(cargo_item)
+    db.session.add(cargo_item1)
+    db.session.add(cargo_item2)
     db.session.commit()
 
     return jsonify(

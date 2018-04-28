@@ -107,6 +107,11 @@
 <textarea id="editWaybillNotes" disabled>{{ waybill.notes }}</textarea>
 <span class="input-group-label">Actions</span>
 <div class="actions-btn-container">
+    {% if waybill.tendered != '' and waybill.arrival_date != '' %}
+    <button class="btn btn-primary action-btn pickup-btn" data-toggle="modal" data-target="#pickupModal">Pick Up / Deliver</button>
+    {% else %}
+    <button class="btn btn-primary action-btn pickup-btn" title="Package has not arrived yet." disabled>Pick Up / Deliver</button>
+    {% endif %}
     {% if waybill.tendered == '' %}
     <button class="btn btn-primary action-btn" onclick="add_payment_data()">Add Payment</button>
     {% endif %}
@@ -114,6 +119,13 @@
 </div>
 
 <script type="text/javascript">
+    $('.pickup-btn').tooltipster({
+       animation: 'grow',
+       delay: 200,
+       theme: 'tooltipster-shadow',
+       trigger: 'hover'
+    });
+
     $('.form-control.floatlabel').floatlabel({
         labelEndTop:'-2px'
     });

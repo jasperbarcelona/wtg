@@ -36,6 +36,10 @@ a,a:hover,a:active,a:focus {
 	text-decoration: none;
 }
 
+select {
+	cursor: pointer !important;
+}
+
 .btn {
 	border-radius: 2px !important;
 }
@@ -816,6 +820,7 @@ a,a:hover,a:active,a:focus {
 #forgotPaymentModal .modal-body,
 #addPaymentModal .modal-body,
 #receiveCargoModal .modal-body,
+#pickupModal .modal-body,
 #forgotWaybillItemModal .modal-body {
 	position: relative;
 	padding-top: 30px;
@@ -839,12 +844,16 @@ a,a:hover,a:active,a:focus {
 	width: 100%;
 	margin-left: -2px;
 	text-align: left;
+	-webkit-user-select: none;
+  	-moz-user-select: none;
+  	-ms-user-select: none;
 }
 
 #addWaybillModal .form-control:not(#waybillTenderedText),
 #addCargoModal .form-control,
 #editCargoModal .form-control,
-#receiveCargoModal .form-control,
+#receiveCargoModal .form-control:not(#pickupType):not(#pickupPerson),
+#pickupModal .form-control,
 #editWaybillModal .form-control:not(#waybillTenderedEditText),
 #addWaybillItemModal .form-control,
 #addWaybillItemEditModal .form-control {
@@ -860,6 +869,17 @@ a,a:hover,a:active,a:focus {
 	box-shadow: none !important;
 	border-radius: 0 !important;
 	font-size: 15px;
+}
+
+#pickupType {
+	float: left;
+	width: 25% !important;
+	cursor: pointer;
+}
+
+#pickupPerson {
+	float: left;
+	width: 75% !important;
 }
 
 #addCargoTruck {
@@ -998,7 +1018,7 @@ a,a:hover,a:active,a:focus {
 	position: relative;
 }
 
-.input-container .form-control {
+.input-container .form-control:not(#pickupType) {
 	padding-right: 50px;
 }
 
@@ -2180,4 +2200,48 @@ td {
 
 .report-download-link:hover {
 	color: #373A3C !important
+}
+
+.download-header {
+	position: relative;
+}
+
+.close-download-container {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.close-download-container i {
+	font-size: 20px !important;
+}
+
+.history-waybill-td {
+	width: 10%;
+}
+
+.history-type-td {
+	width: 10%;
+}
+
+.history-recipient-td {
+	width: 25%;
+}
+
+.history-amount-td {
+	width: 17.5%;
+}
+
+.history-payment-td {
+	width: 17.5%;
 }

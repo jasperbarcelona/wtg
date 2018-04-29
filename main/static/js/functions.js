@@ -45,6 +45,21 @@ function show_history(slice_from) {
     });
 }
 
+function show_reports(slice_from) {
+  $('.panel-nav-item').removeClass('active');
+  $('#navReport').addClass('active');
+  $.get('/reports',
+  {
+    slice_from:slice_from
+  },
+    function(data){
+      initialize_selected_entries();
+      $('.content').html(data);
+      $('#searchLoader').addClass('hidden');
+      $('#clearReportSearch').addClass('hidden');
+    });
+}
+
 function show_payment_reminders(slice_from) {
   $('.panel-nav-item').removeClass('active');
   $('#navReminders').addClass('active');
@@ -2347,10 +2362,12 @@ function pickup_waybill() {
   name = $('#pickupPerson').val();
   date = $('#pickupDate').val();
   time = $('#pickupTime').val();
+  type = $('#pickupType').val();
   $.post('/waybill/pickup',
   {
     name:name,
     date:date,
+    type:type,
     time:time
   },
   function(data){

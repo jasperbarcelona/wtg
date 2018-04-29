@@ -227,8 +227,8 @@
             <div class="modal-body">
                 <div class="input-container whole">
                     <select id="pickupType" class="form-control">
-                        <option value="Pickup">Picked up by:</option>
-                        <option value="Deliver">Delivered to:</option>
+                        <option value="Pick Up">Picked up by:</option>
+                        <option value="Delivery">Delivered to:</option>
                     </select>
                     <input type="text" id="pickupPerson" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);validate_pickup();" placeholder="Name" data-error="errorPickupPerson" class="form-control" data-class="input-label" onkeyup="validate_pickup()">
                     <div id="errorPickupPerson" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>

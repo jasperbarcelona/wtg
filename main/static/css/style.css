@@ -2245,3 +2245,23 @@ td {
 .history-payment-td {
 	width: 17.5%;
 }
+
+.report-name-td {
+	width: 20%;
+}
+
+.report-type-td {
+	width: 20%;
+}
+
+.report-staff-td {
+	width: 30%;
+}
+
+.report-date-td {
+	width: 20%;
+}
+
+.report-download-td {
+	width: 10%;
+}

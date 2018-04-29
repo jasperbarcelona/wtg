@@ -177,6 +177,7 @@ def index():
     session['inbound_limit'] = 50
     session['cargo_limit'] = 50
     session['history_limit'] = 50
+    session['report_limit'] = 50
     session['waybill_items'] = []
     session['cargo_items'] = []
     user = AdminUser.query.filter_by(id=session['user_id']).first()
@@ -394,6 +395,40 @@ def all_history():
     return flask.render_template(
         'history.html',
         history=history,
+        showing=showing,
+        total_entries=total_entries,
+        prev_btn=prev_btn,
+        next_btn=next_btn,
+    )
+
+
+@app.route('/reports',methods=['GET','POST'])
+def all_reports():
+    slice_from = flask.request.args.get('slice_from')
+    prev_btn = 'enabled'
+    if slice_from == 'reset':
+        session['history_limit'] = 50
+        prev_btn = 'disabled'
+
+    total_entries = Report.query.filter_by(client_no=session['client_no']).count()
+    reports = Report.query.filter_by(client_no=session['client_no']).order_by(Report.created_at.desc()).slice(session['report_limit'] - 50, session['report_limit'])
+    if total_entries < 50:
+        showing='1 - %s' % total_entries
+        prev_btn = 'disabled'
+        next_btn='disabled'
+    else:
+        diff = total_entries - (session['report_limit'] - 50)
+        if diff > 50:
+            showing = '%s - %s' % (str(session['report_limit'] - 49),str(session['report_limit']))
+            next_btn='enabled'
+        else:
+            showing = '%s - %s' % (str(session['report_limit'] - 49),str((session['report_limit']-50)+diff))
+            prev_btn = 'enabled'
+            next_btn='disabled'
+
+    return flask.render_template(
+        'reports.html',
+        reports=reports,
         showing=showing,
         total_entries=total_entries,
         prev_btn=prev_btn,
@@ -2299,7 +2334,7 @@ def print_cargo_report():
     report = Report(
         client_no=session['client_no'],
         name=cargo.cargo_no,
-        report_type='Cargo',
+        report_type='Packing List',
         generated_by=session['user_name'],
         generated_by_id=session['user_id'],
         date=datetime.datetime.now().strftime('%B %d, %Y'),
@@ -2342,6 +2377,7 @@ def pickup_waybill():
     waybill.pickup_name = data['name']
     waybill.pickup_date = data['date']
     waybill.pickup_time = data['time']
+    waybill.pickup_type = data['type']
     waybill.turned_over_by_id = session['user_id']
     waybill.turned_over_by = session['user_name']
     db.session.commit()
@@ -2520,6 +2556,7 @@ def rebuild_database():
         received_by='Jasper Barcelona',
         turned_over_by_id=1,
         turned_over_by='Jasper Barcelona',
+        pickup_type='Delivery',
         pickup_name='Kobe Bryant',
         pickup_date=datetime.datetime.now().strftime('%B %d, %Y'),
         pickup_time=time.strftime("%I:%M%p")

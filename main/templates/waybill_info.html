@@ -53,6 +53,26 @@
 <div class="input-container right">
     <input type="text" id="editWaybillArrivalTime" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Arrival Time" value="{{ waybill.arrival_time }}">
 </div>
+
+{% if waybill.status == 'Done' %}
+<span class="input-group-label">Turnover Info</span>
+<div class="input-container left">
+    <input type="text" id="editWaybillTurnoverType" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Type" value="{{ waybill.pickup_type }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillTurnoverPerson" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Received By" value="{{ waybill.pickup_name }}">
+</div>
+<div class="input-container left">
+    <input type="text" id="editWaybillTurnoverStaff" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Turned Over By" value="{{ waybill.turned_over_by }}">
+</div>
+<div class="input-container right">
+    <input type="text" id="editWaybillTurnoverDate" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Turnover Date" value="{{ waybill.pickup_date }}">
+</div>
+<div class="input-container left">
+    <input type="text" id="editWaybillTurnoverTime" readOnly="ReadOnly" class="form-control floatlabel" data-class="input-label" placeholder="Turnover Time" value="{{ waybill.pickup_time }}">
+</div>
+{% endif %}
+
 {% if item_count == 1 %}
 <span class="input-group-label">Package Content ({{ item_count }} item)</span>
 {% else %}
@@ -107,13 +127,15 @@
 <textarea id="editWaybillNotes" disabled>{{ waybill.notes }}</textarea>
 <span class="input-group-label">Actions</span>
 <div class="actions-btn-container">
-    {% if waybill.tendered != '' and waybill.arrival_date != '' %}
-    <button class="btn btn-primary action-btn pickup-btn" data-toggle="modal" data-target="#pickupModal">Pick Up / Deliver</button>
-    {% else %}
-    <button class="btn btn-primary action-btn pickup-btn" title="Package has not arrived yet." disabled>Pick Up / Deliver</button>
-    {% endif %}
-    {% if waybill.tendered == '' %}
-    <button class="btn btn-primary action-btn" onclick="add_payment_data()">Add Payment</button>
+    {% if waybill.status != 'Done' %}
+            {% if waybill.tendered != '' and waybill.arrival_date != '' %}
+            <button class="btn btn-primary action-btn pickup-btn" data-toggle="modal" data-target="#pickupModal">Pick Up / Deliver</button>
+            {% else %}
+            <button class="btn btn-primary action-btn pickup-btn" title="Package has not arrived yet." disabled>Pick Up / Deliver</button>
+            {% endif %}
+            {% if waybill.tendered == '' %}
+            <button class="btn btn-primary action-btn" onclick="add_payment_data()">Add Payment</button>
+            {% endif %}
     {% endif %}
     <button class="btn btn-danger action-btn">Delete</button>
 </div>

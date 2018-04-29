@@ -36,7 +36,7 @@
 				<th class="history-amount-td align-right">Amount</th>
 				<th class="history-payment-td align-right">Payment Date</th>
 			</tr>
-			<tr class="search-panel conversation">
+			<tr class="search-panel history">
 				<td class="history-waybill-td">
 					<input type="text" id="searchHistoryWaybill" class="form-control search-cargos search-text">
 				</td>
@@ -60,7 +60,7 @@
 		</thead>
 		<tbody id="cargosTbody">
 			{% for entry in history %}
-			<tr id="{{ entry.id }}" onclick="open_history({{ entry.id }})">
+			<tr id="{{ entry.id }}" onclick="open_waybill({{ entry.id }})">
 				<td class="history-waybill-td">{{ entry.waybill_no }}</td>
 				<td class="history-type-td">{{ entry.waybill_type }}</td>
 				<td class="history-recipient-td">{{ entry.recipient }}</td>

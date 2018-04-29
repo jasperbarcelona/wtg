@@ -93,6 +93,7 @@ class Package(db.Model):
     pickup_name = db.Column(db.String(100))
     pickup_date = db.Column(db.String(20))
     pickup_time = db.Column(db.String(20))
+    pickup_type = db.Column(db.String(30))
     notes = db.Column(db.Text(),default='')
     created_at = db.Column(db.String(50))
 

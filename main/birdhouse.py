@@ -2333,7 +2333,7 @@ def print_cargo_report():
     cargo_items = CargoItem.query.filter_by(cargo_id=cargo.id).all()
     report = Report(
         client_no=session['client_no'],
-        name=cargo.cargo_no,
+        name='[Packing List] %s' % cargo.cargo_no,
         report_type='Packing List',
         generated_by=session['user_name'],
         generated_by_id=session['user_id'],
@@ -2352,6 +2352,48 @@ def print_cargo_report():
                 report=report,
                 cargo=cargo,
                 cargo_items=cargo_items,
+                staff_name=session['user_name'],
+                date=report.date,
+                time=report.time
+                )
+            )
+        return jsonify(
+            status='success',
+            template=flask.render_template('download_item.html',report=report),
+            report_id=report.id
+            )
+
+    except requests.exceptions.ConnectionError as e:
+        report.status = 'failed'
+        db.session.commit()
+        return jsonify(status='failed',message='Could not generate report. Please Contact support.'),201
+
+
+@app.route('/report/master/print',methods=['GET','POST'])
+def print_master_list():
+    cargo = Cargo.query.filter_by(id=session['cargo_id']).first()
+    waybills = Package.query.filter_by(cargo_no=cargo.cargo_no).all()
+    report = Report(
+        client_no=session['client_no'],
+        name='[Master List] %s' % cargo.cargo_no,
+        report_type='Master List',
+        generated_by=session['user_name'],
+        generated_by_id=session['user_id'],
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+    db.session.add(report)
+    db.session.commit()
+
+    try:
+        create_pdf.delay(
+            report.id,
+            flask.render_template(
+                'print_master_list.html',
+                report=report,
+                cargo=cargo,
+                waybills=waybills,
                 staff_name=session['user_name'],
                 date=report.date,
                 time=report.time
@@ -2562,6 +2604,51 @@ def rebuild_database():
         pickup_time=time.strftime("%I:%M%p")
         )
 
+    for i in range(1000):
+        package_loop = Package(
+            client_no='infinitrix',
+            waybill_no='5678%s'%str(i),
+            waybill_type='Cash',
+            origin='Manila',
+            destination='Legazpi',
+            sender='Lebron James',
+            sender_msisdn='092796041',
+            recipient='Kobe Byrant',
+            recipient_address='Maharlika',
+            recipient_msisdn='09176214704',
+            date_received=datetime.datetime.now().strftime('%B %d, %Y'),
+            time_received=time.strftime("%I:%M%p"),
+            total='1200',
+            tendered='2000',
+            change='800',
+            status='Done',
+            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
+            date_created=datetime.datetime.now().strftime('%B %d, %Y'),
+            time_created=time.strftime("%I:%M%p"),
+            payment_date=datetime.datetime.now().strftime('%B %d, %Y'),
+            payment_received_by_id=1,
+            payment_received_by='Jasper Barcelona',
+            created_by_id=1,
+            created_by='Jasper Barcelona',
+            arrival_date=datetime.datetime.now().strftime('%B %d, %Y'),
+            arrival_time=time.strftime("%I:%M%p"),
+            departure_date=datetime.datetime.now().strftime('%B %d, %Y'),
+            departure_time=time.strftime("%I:%M%p"),
+            cargo_no='052018-23',
+            truck='UUE-918',
+            received_by_id=1,
+            received_by='Jasper Barcelona',
+            turned_over_by_id=1,
+            turned_over_by='Jasper Barcelona',
+            pickup_type='Delivery',
+            pickup_name='Kobe Bryant',
+            pickup_date=datetime.datetime.now().strftime('%B %d, %Y'),
+            pickup_time=time.strftime("%I:%M%p")
+            )
+
+        db.session.add(package_loop)
+        db.session.commit()
+
     package_item = PackageItem(
         client_no='infinitrix',
         waybill_id=1,
@@ -2651,6 +2738,21 @@ def rebuild_database():
         unit='Bundles',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
+
+    for i in range(100):
+        cargo_item_loop = CargoItem(
+            client_no='infinitrix',
+            cargo_id=1,
+            cargo_no='052018-23',
+            waybill_no='5678%s'%str(i),
+            item='Another Item%s'%str(i),
+            quantity=3,
+            recipient='Kobe Byrant',
+            unit='Bundles',
+            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+            )
+        db.session.add(cargo_item_loop)
+        db.session.commit()
 
     db.session.add(client)
     db.session.add(user)

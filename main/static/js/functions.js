@@ -2328,6 +2328,15 @@ function print_cargo_items() {
   });
 }
 
+function print_master_list() {
+  $.post('/report/master/print',
+  function(data){
+    $('#downloadOverlay .download-body').append(data['template']);
+    $('#downloadOverlay').removeClass('hidden');
+    update_report_status(data['report_id']);
+  });
+}
+
 function update_report_status(report_id) {
   $.post('/report/status',
   {

@@ -76,7 +76,7 @@
 		 	}
 
 		 	.report-quantity-td {
-		 		width: 5%;
+		 		width: 10%;
 		 	}
 
 			.report-unit-td {
@@ -84,11 +84,11 @@
 			}
 
 			.report-desc-td {
-				width: 37.5%;
+				width: 32.5%;
 			}
 
 			.report-recipient-td {
-				width: 35.5%;
+				width: 30.5%;
 			}
 
 			.report-waybill-td {
@@ -114,11 +114,11 @@
 		<table class="table">
 			<thead>
 				<tr class="head-row">
-					<td class="report-quantity-td bold">Quantity</td>
+					<td class="report-quantity-td bold">Qty</td>
 					<td class="report-unit-td bold">Unit</td>
 					<td class="report-desc-td bold">Description</td>
 					<td class="report-recipient-td bold">Consigned To</td>
-					<td class="report-waybill-td align-right bold">Waybill Number</td>
+					<td class="report-waybill-td align-right bold">Waybill No</td>
 				</tr>
 			</thead>
 			<tbody>
@@ -130,6 +130,27 @@
 					<td class="report-recipient-td">{{ entry.recipient }}</td>
 					<td class="report-waybill-td align-right">{{ entry.waybill_no }}</td>
 				</tr>
+				{% if loop.index < 38 %}
+					{% set max_rows = 35 %}
+					{% else %}
+					{% set max_rows = 37 %}
+					{% endif %}
+
+					{% if loop.index % max_rows == 0 %}
+					</tbody>
+					</table>
+					<table class="table">
+						<thead>
+							<tr class="head-row">
+								<td class="report-quantity-td bold">Qty</td>
+								<td class="report-unit-td bold">Unit</td>
+								<td class="report-desc-td bold">Description</td>
+								<td class="report-recipient-td bold">Consigned To</td>
+								<td class="report-waybill-td align-right bold">Waybill No</td>
+							</tr>
+						</thead>
+					<tbody>
+					{% endif %}
 				{% endfor %}
 			</tbody>
 		</table>

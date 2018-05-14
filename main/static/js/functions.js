@@ -2385,3 +2385,47 @@ function pickup_waybill() {
     $('#editWaybillModal').modal('hide');
   });
 }
+
+function show_report_form(report_type) {
+  if ((report_type == 'Master List') || (report_type == 'Packing List')) {
+    $('.report-form-text').addClass('hidden');
+    $('#addReportCargoNumber').removeClass('hidden');
+  }
+  else if (report_type == 'Sales Report') {
+    $('.report-form-text').addClass('hidden');
+    $('#addReportFromDate').removeClass('hidden');
+    $('#addReportToDate').removeClass('hidden');
+  }
+  else if (report_type == 'Waybill') {
+    $('.report-form-text').addClass('hidden');
+    $('#addReportWaybillNumber').removeClass('hidden');
+  }
+}
+
+function save_report() {
+  $('#saveReportBtn').button('loading');
+  report_type = $('#addReportType').val();
+  cargo_no = $('#addReportCargoNumber').val();
+  waybill_no = $('#addReportWaybillNumber').val();
+  from_date = $('#addReportFromDate').val();
+  to_date = $('#addReportToDate').val();
+  $.post('/report/save',
+  {
+    report_type:report_type,
+    cargo_no:cargo_no,
+    waybill_no:waybill_no,
+    from_date:from_date,
+    to_date:to_date
+  },
+  function(data){
+    $('.content').html(data['content_template']);
+    $('#addReportType').prop('selectedIndex',0);
+    $('#addReportModal .form-control').val('');
+    $('#addReportModal .form-control').change();
+    $('#saveReportBtn').button('complete');
+    $('#addReportModal').modal('hide');
+    $('#downloadOverlay .download-body').append(data['download_template']);
+    $('#downloadOverlay').removeClass('hidden');
+    update_report_status(data['report_id']);
+  });
+}

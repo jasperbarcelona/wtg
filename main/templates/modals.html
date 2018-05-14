@@ -53,6 +53,33 @@
     </div><!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="addReportModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">New Report</h4>
+            </div>
+            <div class="modal-body">
+                <select id="addReportType" class="form-control" onchange="show_report_form(this.value)">
+                    <option value="" selected disabled>Report Type</option>
+                    <option value="Master List">Master List</option>
+                    <option value="Packing List">Packing List</option>
+                    <option value="Sales Report">Sales Report</option>
+                    <option value="Waybill">Waybill</option>
+                </select>
+                <input type="text" id="addReportCargoNumber" class="form-control hidden report-form-text" placeholder="Cargo Number">
+                <input type="text" id="addReportWaybillNumber" class="form-control hidden report-form-text" placeholder="Waybill Number">
+                <input type="text" id="addReportFromDate" class="form-control hidden report-form-text datepicker" placeholder="From">
+                <input type="text" id="addReportToDate" class="form-control hidden report-form-text datepicker" placeholder="To (Leave blank if single day)">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button id="saveReportBtn" type="button" class="btn btn-primary modal-btn" onclick="save_report()" data-loading-text="Generating.." data-complete-text="Generate">Generate</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 <div class="modal fade" id="addWaybillModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

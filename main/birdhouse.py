@@ -2411,6 +2411,112 @@ def print_master_list():
         return jsonify(status='failed',message='Could not generate report. Please Contact support.'),201
 
 
+@app.route('/report/save',methods=['GET','POST'])
+def generate_report():
+    data = flask.request.form.to_dict()
+
+    report = Report(
+        client_no=session['client_no'],
+        report_type=data['report_type'],
+        generated_by=session['user_name'],
+        generated_by_id=session['user_id'],
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+    db.session.add(report)
+    db.session.commit()
+
+    if data['report_type'] == 'Master List':
+        cargo = Cargo.query.filter_by(cargo_no=data['cargo_no']).first()
+        waybills = Package.query.filter_by(cargo_no=cargo.cargo_no).all()
+        report.name = '[Master List] %s' % cargo.cargo_no
+        db.session.commit()
+        report_template = flask.render_template(
+            'print_master_list.html',
+            report=report,
+            cargo=cargo,
+            waybills=waybills,
+            staff_name=session['user_name'],
+            date=report.date,
+            time=report.time
+            )
+
+    elif data['report_type'] == 'Packing List':
+        cargo = Cargo.query.filter_by(cargo_no=data['cargo_no']).first()
+        cargo_items = CargoItem.query.filter_by(cargo_id=cargo.id).all()
+        report.name = '[Packing List] %s' % cargo.cargo_no
+        db.session.commit()
+        report_template = flask.render_template(
+            'print_cargo.html',
+            report=report,
+            cargo=cargo,
+            cargo_items=cargo_items,
+            staff_name=session['user_name'],
+            date=report.date,
+            time=report.time
+            )
+
+    elif data['report_type'] == 'Sales Report':
+        if data['to_date'] == None or data['to_date'] == '':
+            waybills = Package.query.filter_by(payment_date=data['from_date']).all()
+            report.name = '[Sales Report] %s' % data['from_date']
+        else:
+            waybills = Package.query.filter(Package.payment_date >= data['from_date']).filter(Package.payment_date <= data['to_date']).order_by(Package.payment_date)
+            report.name = '[Sales Report] %s - %s' % (data['from_date'],data['to_date'])
+        db.session.commit()
+        total_sales = sum(int(waybill.total) for waybill in waybills)
+        report_template = flask.render_template(
+            'print_sales_report.html',
+            report=report,
+            waybills=waybills,
+            from_date=data['from_date'],
+            to_date=data['to_date'],
+            total_sales=total_sales,
+            staff_name=session['user_name'],
+            date=report.date,
+            time=report.time
+            )
+
+    try:
+        create_pdf.delay(report.id, report_template)
+
+        total_entries = Report.query.filter_by(client_no=session['client_no']).count()
+        reports = Report.query.filter_by(client_no=session['client_no']).order_by(Report.created_at.desc()).slice(session['report_limit'] - 50, session['report_limit'])
+        if total_entries < 50:
+            showing='1 - %s' % total_entries
+            prev_btn = 'disabled'
+            next_btn='disabled'
+        else:
+            diff = total_entries - (session['report_limit'] - 50)
+            if diff > 50:
+                showing = '%s - %s' % (str(session['report_limit'] - 49),str(session['report_limit']))
+                next_btn='enabled'
+            else:
+                showing = '%s - %s' % (str(session['report_limit'] - 49),str((session['report_limit']-50)+diff))
+                prev_btn = 'enabled'
+                next_btn='disabled'
+
+        return jsonify(
+            status='success',
+            download_template=flask.render_template('download_item.html',report=report),
+            report_id=report.id,
+            content_template=flask.render_template(
+                    'reports.html',
+                    reports=reports,
+                    showing=showing,
+                    total_entries=total_entries,
+                    prev_btn=prev_btn,
+                    next_btn=next_btn,
+                )
+            )
+
+    except requests.exceptions.ConnectionError as e:
+        report.status = 'failed'
+        db.session.commit()
+        return jsonify(status='failed',message='Could not generate report. Please Contact support.'),201
+
+
 @app.route('/waybill/pickup',methods=['GET','POST'])
 def pickup_waybill():
     data = flask.request.form.to_dict()
@@ -2543,7 +2649,7 @@ def rebuild_database():
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
-        payment_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        payment_date='May 03, 2018',
         payment_received_by_id=1,
         payment_received_by='Jasper Barcelona',
         created_by_id=1,
@@ -2583,7 +2689,7 @@ def rebuild_database():
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
         date_created=datetime.datetime.now().strftime('%B %d, %Y'),
         time_created=time.strftime("%I:%M%p"),
-        payment_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        payment_date='May 03, 2018',
         payment_received_by_id=1,
         payment_received_by='Jasper Barcelona',
         created_by_id=1,

@@ -832,6 +832,7 @@ select {
 }
 
 #addWaybillItemModal .modal-body,
+#addReportModal .modal-body,
 #addWaybillItemEditModal .modal-body {
 	padding-left: 30px;
 	padding-right: 30px;
@@ -851,6 +852,7 @@ select {
 
 #addWaybillModal .form-control:not(#waybillTenderedText),
 #addCargoModal .form-control,
+#addReportModal .form-control,
 #editCargoModal .form-control,
 #receiveCargoModal .form-control:not(#pickupType):not(#pickupPerson),
 #pickupModal .form-control,

@@ -1,7 +1,5 @@
 $(document).ready(function(){
-
-initialize_selected_entries();
-
+  
 /*$(window).load(function(){
   check_upload_progress();
   setTimeout(function() {
@@ -292,6 +290,10 @@ $('.search-inbound').keypress(function(e){
     if (e.which == 13) {
       search_inbound($(this).attr('id'));
     }
+});
+
+$('.search-inbound').change(function(){
+    search_inbound($(this).attr('id'));
 });
 
 $('#addNumberRecipient').keyup(function(e){

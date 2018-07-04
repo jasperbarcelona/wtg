@@ -1,14 +1,12 @@
-<tbody id="inboundTbody">
-	{% for entry in packages %}
-	<tr onclick="open_waybill({{ entry.id }})">
-		<td class="traking-td">{{ entry.waybill_no }}</td>
-		<td class="type-td">{{ entry.waybill_type }}</td>
-		<td class="destination-td">{{ entry.destination }}</td>
-		<td class="recipient-td">{{ entry.recipient }}</td>
-		<td class="status-td">{{ entry.status }}</td>
-		<td class="price-td align-right">PHP {{ entry.total }}</td>
-		<td class="date-td align-right">{{ entry.date_received }}</td>
-		<td class="date-td align-right">{{ entry.arrival_date }}</td>
-	</tr>
-	{% endfor %}
-</tbody>
+{% for entry in packages %}
+<tr onclick="open_waybill({{ entry.id }})">
+	<td class="traking-td">{{ entry.waybill_no }}</td>
+	<td class="type-td">{{ entry.waybill_type }}</td>
+	<td class="destination-td">{{ entry.destination }}</td>
+	<td class="recipient-td">{{ entry.recipient }}</td>
+	<td class="status-td">{{ entry.status }}</td>
+	<td class="price-td align-right">PHP {{ entry.total }}</td>
+	<td class="date-td align-right">{{ entry.date_received }}</td>
+	<td class="date-td align-right">{{ entry.arrival_date }}</td>
+</tr>
+{% endfor %}

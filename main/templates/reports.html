@@ -59,7 +59,7 @@
 				<td class="report-download-td align-right"></td>
 			</tr>
 		</thead>
-		<tbody id="cargosTbody">
+		<tbody id="reportsTbody">
 			{% for entry in reports %}
 			<tr id="{{ entry.id }}">
 				<td class="report-name-td">{{ entry.name }}</td>
@@ -81,15 +81,13 @@ $(".datepicker").datepicker({
     dateFormat: "MM dd, yy"
 });
 
-$('.clockpicker').clockpicker({
-    twelvehour: true,
-    donetext: 'Done',
-    autoclose: false
-});
-
 $('.search-reports').keypress(function(e){
     if (e.which == 13) {
-        search_cargos($(this).attr('id'));
+      search_reports($(this).attr('id'));
     }
+});
+
+$('.search-reports').change(function(){
+    search_reports($(this).attr('id'));
 });
 </script>

@@ -89,7 +89,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def search_inbound(**kwargs):
-    query = 'Package.query.filter(Package.client_no.ilike("'+session['client_no']+'"),'
+    query = 'Package.query.filter(Package.client_no=="'+session['client_no']+'",Package.status!="Done",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
             query += 'Package.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
@@ -104,67 +104,67 @@ def search_inbound_count(**kwargs):
     query += ').count()'
     return eval(query)
 
-def search_blasts(**kwargs):
-    query = 'Batch.query.filter(Batch.client_no.ilike("'+session['client_no']+'"),'
+def search_cargo(**kwargs):
+    query = 'Cargo.query.filter(Cargo.client_no=="'+session['client_no']+'",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'Batch.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
-    query += ').order_by(Batch.created_at.desc())'
+            query += 'Cargo.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+    query += ').order_by(Cargo.created_at.desc())'
     return eval(query)
 
-def search_blasts_count(**kwargs):
-    query = 'Batch.query.filter(Batch.client_no.ilike("'+session['client_no']+'"),'
+def search_cargo_count(**kwargs):
+    query = 'Cargo.query.filter(Cargo.client_no=="'+session['client_no']+'",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'Batch.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+            query += 'Cargo.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
     query += ').count()'
     return eval(query)
 
-def search_reminders(**kwargs):
-    query = 'ReminderBatch.query.filter(ReminderBatch.client_no.ilike("'+session['client_no']+'"),'
+def search_history(**kwargs):
+    query = 'Package.query.filter(Package.client_no=="'+session['client_no']+'",Package.status=="Done",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'ReminderBatch.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
-    query += ').order_by(ReminderBatch.created_at.desc())'
+            query += 'Package.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+    query += ').order_by(Package.created_at.desc())'
     return eval(query)
 
-def search_reminders_count(**kwargs):
-    query = 'ReminderBatch.query.filter(ReminderBatch.client_no.ilike("'+session['client_no']+'"),'
+def search_history_count(**kwargs):
+    query = 'Package.query.filter(Package.client_no=="'+session['client_no']+'",Package.status=="Done",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'ReminderBatch.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+            query += 'Package.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
     query += ').count()'
     return eval(query)
 
-def search_contacts(**kwargs):
-    query = 'Contact.query.filter(Contact.client_no.ilike("'+session['client_no']+'"),'
+def search_report(**kwargs):
+    query = 'Report.query.filter(Report.client_no=="'+session['client_no']+'",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'Contact.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
-    query += ').order_by(Contact.name)'
+            query += 'Report.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+    query += ').order_by(Report.created_at.desc())'
     return eval(query)
 
-def search_contacts_count(**kwargs):
-    query = 'Contact.query.filter(Contact.client_no.ilike("'+session['client_no']+'"),'
+def search_report_count(**kwargs):
+    query = 'Report.query.filter(Report.client_no=="'+session['client_no']+'",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'Contact.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+            query += 'Report.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
     query += ').count()'
     return eval(query)
 
-def search_groups(**kwargs):
-    query = 'Group.query.filter(Group.client_no.ilike("'+session['client_no']+'"),'
+def search_user(**kwargs):
+    query = 'AdminUser.query.filter(AdminUser.client_no=="'+session['client_no']+'",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'Group.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
-    query += ').order_by(Group.name)'
+            query += 'AdminUser.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+    query += ').order_by(AdminUser.created_at.desc())'
     return eval(query)
 
-def search_groups_count(**kwargs):
-    query = 'Group.query.filter(Group.client_no.ilike("'+session['client_no']+'"),'
+def search_user_count(**kwargs):
+    query = 'AdminUser.query.filter(AdminUser.client_no=="'+session['client_no']+'",'
     for arg_name in kwargs:
         if kwargs[arg_name]:
-            query += 'Group.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
+            query += 'AdminUser.' + arg_name + '.ilike("%'+kwargs[arg_name]+'%"),'
     query += ').count()'
     return eval(query)
 
@@ -1834,47 +1834,91 @@ def search_from_inbound():
         )
 
 
-@app.route('/blasts/search',methods=['GET','POST'])
-def search_from_blasts():
+@app.route('/cargos/search',methods=['GET','POST'])
+def search_from_cargo():
     data = flask.request.args.to_dict()
-    result = search_blasts(sender_name=data['sender'], content=data['content'],date=data['date'])
-    count = search_blasts_count(sender_name=data['sender'], content=data['content'],date=data['date'])
+    result = search_cargo(
+        cargo_no=data['cargo_number'],
+        truck=data['truck'],
+        origin=data['origin'],
+        destination=data['destination'],
+        departure_date=data['departure'],
+        arrival_date=data['arrival']
+        )
+    count = search_cargo_count(
+        cargo_no=data['cargo_number'],
+        truck=data['truck'],
+        origin=data['origin'],
+        destination=data['destination'],
+        departure_date=data['departure'],
+        arrival_date=data['arrival']
+        )
     return jsonify(
         count = count,
-        template = flask.render_template('blasts_result.html',blasts=result)
+        template = flask.render_template('cargo_result.html',cargo=result)
         )
 
 
-@app.route('/reminders/search',methods=['GET','POST'])
-def search_from_reminders():
+@app.route('/reports/search',methods=['GET','POST'])
+def search_from_reports():
     data = flask.request.args.to_dict()
-    result = search_reminders(sender_name=data['sender'], file_name=data['filename'],date=data['date'])
-    count = search_reminders_count(sender_name=data['sender'], file_name=data['filename'],date=data['date'])
+    result = search_report(
+        name=data['name'],
+        report_type=data['type'],
+        generated_by=data['staff'],
+        date=data['date']
+        )
+    count = search_report_count(
+        name=data['name'],
+        report_type=data['type'],
+        generated_by=data['staff'],
+        date=data['date']
+        )
     return jsonify(
         count = count,
-        template = flask.render_template('reminders_result.html',reminders=result)
+        template = flask.render_template('reports_result.html',reports=result)
         )
 
 
-@app.route('/contacts/search',methods=['GET','POST'])
-def search_from_contacts():
+@app.route('/history/search',methods=['GET','POST'])
+def search_from_history():
     data = flask.request.args.to_dict()
-    result = search_contacts(name=data['name'], contact_type=data['contact_type'],msisdn=data['msisdn'])
-    count = search_contacts_count(name=data['name'], contact_type=data['contact_type'],msisdn=data['msisdn'])
+    result = search_history(
+        waybill_no=data['history_no'],
+        waybill_type=data['history_type'],
+        recipient=data['recipient'],
+        total=data['amount'],
+        payment_date=data['payment_date']
+        )
+    count = search_history_count(
+        waybill_no=data['history_no'],
+        waybill_type=data['history_type'],
+        recipient=data['recipient'],
+        total=data['amount'],
+        payment_date=data['payment_date']
+        )
     return jsonify(
         count = count,
-        template = flask.render_template('contacts_result.html',contacts=result)
+        template = flask.render_template('history_result.html',history=result)
         )
 
 
-@app.route('/groups/search',methods=['GET','POST'])
-def search_from_groups():
+@app.route('/users/search',methods=['GET','POST'])
+def search_from_users():
     data = flask.request.args.to_dict()
-    result = search_groups(name=data['name'])
-    count = search_groups_count(name=data['name'])
+    result = search_user(
+        name=data['name'],
+        role=data['role'],
+        email=data['email']
+        )
+    count = search_user_count(
+        name=data['name'],
+        role=data['role'],
+        email=data['email']
+        )
     return jsonify(
         count = count,
-        template = flask.render_template('groups_result.html',groups=result)
+        template = flask.render_template('users_result.html',users=result)
         )
 
 
@@ -2588,20 +2632,26 @@ def print_master_list():
 def generate_report():
     data = flask.request.form.to_dict()
 
-    report = Report(
-        client_no=session['client_no'],
-        report_type=data['report_type'],
-        generated_by=session['user_name'],
-        generated_by_id=session['user_id'],
-        date=datetime.datetime.now().strftime('%B %d, %Y'),
-        time=time.strftime("%I:%M%p"),
-        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
-        )
-    db.session.add(report)
-    db.session.commit()
-
     if data['report_type'] == 'Master List':
         cargo = Cargo.query.filter_by(cargo_no=data['cargo_no']).first()
+        if not cargo or cargo == None:
+            return jsonify(
+                status='failed',
+                message='Invalid cargo number.'
+                )
+
+        report = Report(
+            client_no=session['client_no'],
+            report_type=data['report_type'],
+            generated_by=session['user_name'],
+            generated_by_id=session['user_id'],
+            date=datetime.datetime.now().strftime('%B %d, %Y'),
+            time=time.strftime("%I:%M%p"),
+            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+            )
+        db.session.add(report)
+        db.session.commit()
+
         waybills = Package.query.filter_by(cargo_no=cargo.cargo_no).all()
         report.name = '[Master List] %s' % cargo.cargo_no
         db.session.commit()
@@ -2617,6 +2667,24 @@ def generate_report():
 
     elif data['report_type'] == 'Packing List':
         cargo = Cargo.query.filter_by(cargo_no=data['cargo_no']).first()
+        if not cargo or cargo == None:
+            return jsonify(
+                status='failed',
+                message='Invalid cargo number.'
+                )
+
+        report = Report(
+            client_no=session['client_no'],
+            report_type=data['report_type'],
+            generated_by=session['user_name'],
+            generated_by_id=session['user_id'],
+            date=datetime.datetime.now().strftime('%B %d, %Y'),
+            time=time.strftime("%I:%M%p"),
+            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+            )
+        db.session.add(report)
+        db.session.commit()
+
         cargo_items = CargoItem.query.filter_by(cargo_id=cargo.id).all()
         report.name = '[Packing List] %s' % cargo.cargo_no
         db.session.commit()
@@ -2631,6 +2699,19 @@ def generate_report():
             )
 
     elif data['report_type'] == 'Sales Report':
+
+        report = Report(
+            client_no=session['client_no'],
+            report_type=data['report_type'],
+            generated_by=session['user_name'],
+            generated_by_id=session['user_id'],
+            date=datetime.datetime.now().strftime('%B %d, %Y'),
+            time=time.strftime("%I:%M%p"),
+            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+            )
+        db.session.add(report)
+        db.session.commit()
+
         if data['to_date'] == None or data['to_date'] == '':
             waybills = Package.query.filter_by(payment_date=data['from_date']).all()
             report.name = '[Sales Report] %s' % data['from_date']

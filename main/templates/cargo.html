@@ -40,26 +40,26 @@
 			</tr>
 			<tr class="search-panel conversation">
 				<td class="cargo-truck-td">
-					<input type="text" id="searchCargosSender" class="form-control search-cargos search-text">
+					<input type="text" id="searchCargoNumber" class="form-control search-cargo search-text">
 				</td>
 				<td class="cargo-driver-td">
-					<input type="text" id="searchCargosContent" class="form-control search-cargos search-text">
+					<input type="text" id="searchCargoTruck" class="form-control search-cargo search-text">
 				</td>
 				<td class="cargo-origin-td">
-					<input type="text" id="searchCargosContent" class="form-control search-cargos search-text">
+					<input type="text" id="searchCargoOrigin" class="form-control search-cargo search-text">
 				</td>
 				<td class="cargo-destination-td">
-					<input type="text" id="searchCargosContent" class="form-control search-cargos search-text">
+					<input type="text" id="searchCargoDestination" class="form-control search-cargo search-text">
 				</td>
 				<td class="cargo-departure-date-td align-right">
-					<input type="text" id="searchCargosDate" class="form-control search-cargos search-text align-right datepicker">
+					<input type="text" id="searchCargoDeparture" class="form-control search-cargo search-text align-right datepicker">
 				</td>
 				<td class="cargo-arrival-date-td align-right">
-					<input type="text" id="searchCargosDate" class="form-control search-cargos search-text align-right datepicker">
+					<input type="text" id="searchCargoArrival" class="form-control search-cargo search-text align-right datepicker">
 				</td>
 			</tr>
 		</thead>
-		<tbody id="cargosTbody">
+		<tbody id="cargoTbody">
 			{% for entry in cargo %}
 			<tr id="{{ entry.id }}" onclick="open_cargo({{ entry.id }})">
 				<td class="cargo-truck-td">{{ entry.cargo_no }}</td>
@@ -78,24 +78,14 @@ $(".datepicker").datepicker({
     dateFormat: "MM dd, yy"
 });
 
-$('.search-cargos').keypress(function(e){
+$('.search-cargo').keypress(function(e){
     if (e.which == 13) {
-        search_cargos($(this).attr('id'));
+      search_cargo($(this).attr('id'));
     }
 });
 
-$('.cargo-check').on('click', function () {
-  var entry_id = $(this).attr('data-id');
-  if ($(this).hasClass('checked')) {
-    $(this).removeClass('checked');
-    $(this).html('&#xE835;');
-    deselect_cargo(entry_id);
-  }
-  else {
-    $(this).addClass('checked');
-    $(this).html('&#xE834;');
-    select_cargo(entry_id);
-  }
+$('.search-cargo').change(function(){
+    search_cargo($(this).attr('id'));
 });
 
 </script>

@@ -8,7 +8,6 @@ function show_inbound(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearInboundSearch').addClass('hidden');
@@ -23,7 +22,6 @@ function show_cargo(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearCargoSearch').addClass('hidden');
@@ -38,7 +36,6 @@ function show_history(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearHistorySearch').addClass('hidden');
@@ -53,7 +50,6 @@ function show_reports(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearReportSearch').addClass('hidden');
@@ -68,7 +64,6 @@ function show_payment_reminders(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearInboundSearch').addClass('hidden');
@@ -83,7 +78,6 @@ function show_contacts(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearInboundSearch').addClass('hidden');
@@ -98,7 +92,6 @@ function show_groups(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearInboundSearch').addClass('hidden');
@@ -113,7 +106,6 @@ function show_users(slice_from) {
     slice_from:slice_from
   },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearInboundSearch').addClass('hidden');
@@ -135,7 +127,6 @@ function user_profile() {
 function inbound_next_page() {
   $.post('/inbound/next',
     function(data){
-      initialize_selected_entries();
       $('#inboundTbody').html(data['template']);
       $('#paginationShowingConversation').html(data['showing']);
       $('#paginationTotalConversation').html(data['total_entries']);
@@ -160,7 +151,6 @@ function inbound_next_page() {
 function inbound_prev_page() {
   $.post('/inbound/prev',
     function(data){
-      initialize_selected_entries();
       $('#inboundTbody').html(data['template']);
       $('#paginationShowingConversation').html(data['showing']);
       $('#paginationTotalConversation').html(data['total_entries']);
@@ -185,7 +175,6 @@ function inbound_prev_page() {
 function blast_next_page() {
   $.post('/blasts/next',
     function(data){
-      initialize_selected_entries();
       $('#blastsTbody').html(data['template']);
       $('#paginationShowingBlasts').html(data['showing']);
       $('#paginationTotalBlasts').html(data['total_entries']);
@@ -210,7 +199,6 @@ function blast_next_page() {
 function blast_prev_page() {
   $.post('/blasts/prev',
     function(data){
-      initialize_selected_entries();
       $('#blastsTbody').html(data['template']);
       $('#paginationShowingBlasts').html(data['showing']);
       $('#paginationTotalBlasts').html(data['total_entries']);
@@ -235,7 +223,6 @@ function blast_prev_page() {
 function reminder_next_page() {
   $.post('/reminders/next',
     function(data){
-      initialize_selected_entries();
       $('#remindersTbody').html(data['template']);
       $('#paginationShowingReminders').html(data['showing']);
       $('#paginationTotalReminders').html(data['total_entries']);
@@ -260,7 +247,6 @@ function reminder_next_page() {
 function reminder_prev_page() {
   $.post('/reminders/prev',
     function(data){
-      initialize_selected_entries();
       $('#remindersTbody').html(data['template']);
       $('#paginationShowingReminders').html(data['showing']);
       $('#paginationTotalReminders').html(data['total_entries']);
@@ -285,7 +271,6 @@ function reminder_prev_page() {
 function contact_next_page() {
   $.post('/contacts/next',
     function(data){
-      initialize_selected_entries();
       $('#contactsTbody').html(data['template']);
       $('#paginationShowingContacts').html(data['showing']);
       $('#paginationTotalContacts').html(data['total_entries']);
@@ -310,7 +295,6 @@ function contact_next_page() {
 function contact_prev_page() {
   $.post('/contacts/prev',
     function(data){
-      initialize_selected_entries();
       $('#contactsTbody').html(data['template']);
       $('#paginationShowingContacts').html(data['showing']);
       $('#paginationTotalContacts').html(data['total_entries']);
@@ -335,7 +319,6 @@ function contact_prev_page() {
 function group_next_page() {
   $.post('/groups/next',
     function(data){
-      initialize_selected_entries();
       $('#groupsTbody').html(data['template']);
       $('#paginationShowingGroups').html(data['showing']);
       $('#paginationTotalGroups').html(data['total_entries']);
@@ -360,7 +343,6 @@ function group_next_page() {
 function group_prev_page() {
   $.post('/groups/prev',
     function(data){
-      initialize_selected_entries();
       $('#groupsTbody').html(data['template']);
       $('#paginationShowingGroups').html(data['showing']);
       $('#paginationTotalGroups').html(data['total_entries']);
@@ -385,7 +367,6 @@ function group_prev_page() {
 function user_next_page() {
   $.post('/users/next',
     function(data){
-      initialize_selected_entries();
       $('#usersTbody').html(data['template']);
       $('#paginationShowingUsers').html(data['showing']);
       $('#paginationTotalUsers').html(data['total_entries']);
@@ -410,7 +391,6 @@ function user_next_page() {
 function user_prev_page() {
   $.post('/users/prev',
     function(data){
-      initialize_selected_entries();
       $('#usersTbody').html(data['template']);
       $('#paginationShowingUsers').html(data['showing']);
       $('#paginationTotalUsers').html(data['total_entries']);
@@ -462,7 +442,6 @@ function open_conversation(conversation_id) {
       conversation_id:conversation_id
     },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
     });
 }
@@ -612,7 +591,6 @@ function supply_info_from_contacts(msisdn) {
       msisdn:msisdn
     },
     function(data){
-      initialize_selected_entries();
       $('#editContactModal .modal-content').html(data);
       $('#editContactModal .form-control').change();
     });
@@ -624,7 +602,6 @@ function open_group(group_id) {
       group_id:group_id
     },
     function(data){
-      initialize_selected_entries();
       $('#groupMembersModal .modal-body').html(data);
       $('#groupMembersModal .form-control').change();
     });
@@ -691,22 +668,6 @@ function send_reply() {
         }, 4000);
       }
     });
-}
-
-function initialize_selected_entries() {
-  selected_inbound = [];
-  selected_blasts = [];
-  selected_reminders = [];
-  selected_contacts = [];
-  selected_groups = [];
-  selected_users = [];
-
-  $('#deleteInboundBtn').addClass('hidden');
-  $('#deleteBlastsBtn').addClass('hidden');
-  $('#deleteRemindersBtn').addClass('hidden');
-  $('#deleteContactsBtn').addClass('hidden');
-  $('#deleteGroupsBtn').addClass('hidden');
-  $('#deleteUsersBtn').addClass('hidden');
 }
 
 function initialize_recipients() {
@@ -1210,7 +1171,6 @@ function open_blast(batch_id) {
       batch_id:batch_id
     },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
     });
 }
@@ -1221,7 +1181,6 @@ function open_reminder(reminder_id) {
       reminder_id:reminder_id
     },
     function(data){
-      initialize_selected_entries();
       $('#viewReminderModal .modal-body').html(data);
     });
 }
@@ -1256,7 +1215,6 @@ function check_upload_progress() {
 function search_inbound(active_text) {
   $('#inboundTbody').html('');
   $('#searchLoader').removeClass('hidden');
-  $('#clearInboundSearch').removeClass('hidden');
   var waybill_no = $('#searchWaybillNo').val();
   var type = $('#searchWaybillType').val();
   var destination = $('#searchWaybillDestination').val();
@@ -1272,10 +1230,8 @@ function search_inbound(active_text) {
       slice_from:'reset'
     },
     function(data){
-      initialize_selected_entries();
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
-      $('#clearInboundSearch').addClass('hidden');
       $('#'+active_text).focus();
     });
   }
@@ -1307,35 +1263,39 @@ function search_inbound(active_text) {
   }
 }
 
-function search_blasts(active_text) {
-  $('#blastsTbody').html('');
+function search_cargo(active_text) {
+  $('#cargoTbody').html('');
   $('#searchLoader').removeClass('hidden');
-  $('#clearBlastsSearch').removeClass('hidden');
-  var sender = $('#searchBlastsSender').val();
-  var content = $('#searchBlastsContent').val();
-  var date = $('#searchBlastsDate').val();
-  if ((sender == '') && (content == '') && (date == '')) {
-    $.get('/blasts',
+  var cargo_number = $('#searchCargoNumber').val();
+  var truck = $('#searchCargoTruck').val();
+  var origin = $('#searchCargoOrigin').val();
+  var destination = $('#searchCargoDestination').val();
+  var departure = $('#searchCargoDeparture').val();
+  var arrival = $('#searchCargoArrival').val();
+
+  if ((cargo_number == '') && (truck == '') && (origin == '') && (destination == '') && (departure == '') && (arrival == '')) {
+    $.get('/cargos',
     {
       slice_from:'reset'
     },
-    function(data){
-      initialize_selected_entries();
+    function(data) {
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
-      $('#clearBlastsSearch').addClass('hidden');
       $('#'+active_text).focus();
     });
   }
   else {
-    $.get('/blasts/search',
+    $.get('/cargos/search',
     {
-      sender:sender,
-      content:content,
-      date:date
+      cargo_number:cargo_number,
+      truck:truck,
+      origin:origin,
+      destination:destination,
+      departure:departure,
+      arrival:arrival
     },
     function(data){
-      $('#blastsTbody').html(data['template']);
+      $('#cargoTbody').html(data['template']);
       $('#searchLoader').addClass('hidden');
       if (data['count'] != 0) {
         var start_from = 1;
@@ -1343,42 +1303,44 @@ function search_blasts(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingBlasts').html(start_from+' - '+data['count']);
-      $('#paginationTotalBlasts').html(data['count']);
+      $('#paginationShowingConversation').html(start_from+' - '+data['count']);
+      $('#paginationTotalConversation').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
   }
 }
 
-function search_reminders(active_text) {
-  $('#remindersTbody').html('');
+function search_history(active_text) {
+  $('#historyTbody').html('');
   $('#searchLoader').removeClass('hidden');
-  $('#clearRemindersSearch').removeClass('hidden');
-  var sender = $('#searchRemindersSender').val();
-  var filename = $('#searchRemindersFile').val();
-  var date = $('#searchRemindersDate').val();
-  if ((sender == '') && (filename == '') && (date == '')) {
-    $.get('/reminders',
+  var history_no = $('#searchHistoryWaybill').val();
+  var history_type = $('#searchHistoryType').val();
+  var recipient = $('#searchHistoryRecipient').val();
+  var amount = $('#searchHistoryAmount').val();
+  var payment_date = $('#searchHistoryPayment').val();
+
+  if ((history_no == '') && (history_type == '') && (recipient == '') && (amount == '') && (payment_date == '')) {
+    $.get('/history',
     {
       slice_from:'reset'
     },
-    function(data){
-      initialize_selected_entries();
+    function(data) {
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
-      $('#clearRemindersSearch').addClass('hidden');
       $('#'+active_text).focus();
     });
   }
   else {
-    $.get('/reminders/search',
+    $.get('/history/search',
     {
-      sender:sender,
-      filename:filename,
-      date:date
+      history_no:history_no,
+      history_type:history_type,
+      recipient:recipient,
+      amount:amount,
+      payment_date:payment_date
     },
     function(data){
-      $('#remindersTbody').html(data['template']);
+      $('#historyTbody').html(data['template']);
       $('#searchLoader').addClass('hidden');
       if (data['count'] != 0) {
         var start_from = 1;
@@ -1386,42 +1348,42 @@ function search_reminders(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingReminders').html(start_from+' - '+data['count']);
-      $('#paginationTotalReminders').html(data['count']);
+      $('#paginationShowingConversation').html(start_from+' - '+data['count']);
+      $('#paginationTotalConversation').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
   }
 }
 
-function search_contacts(active_text) {
-  $('#contactsTbody').html('');
+function search_reports(active_text) {
+  $('#historyTbody').html('');
   $('#searchLoader').removeClass('hidden');
-  $('#clearContactsSearch').removeClass('hidden');
-  var name = $('#searchContactsName').val();
-  var contact_type = $('#searchContactsType').val();
-  var msisdn = $('#searchContactsMsisdn').val();
-  if ((name == '') && (contact_type == '') && (msisdn == '')) {
-    $.get('/contacts',
+  var name = $('#searchReportName').val();
+  var type = $('#searchReportType').val();
+  var staff = $('#searchReportStaff').val();
+  var date = $('#searchReportDate').val();
+
+  if ((name == '') && (type == '') && (staff == '') && (date == '')) {
+    $.get('/reports',
     {
       slice_from:'reset'
     },
-    function(data){
-      initialize_selected_entries();
-      $('#clearContactsSearch').addClass('hidden');
+    function(data) {
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#'+active_text).focus();
     });
   }
   else {
-    $.get('/contacts/search',
+    $.get('/reports/search',
     {
       name:name,
-      contact_type:contact_type,
-      msisdn:msisdn
+      type:type,
+      staff:staff,
+      date:date
     },
     function(data){
-      $('#contactsTbody').html(data['template']);
+      $('#reportsTbody').html(data['template']);
       $('#searchLoader').addClass('hidden');
       if (data['count'] != 0) {
         var start_from = 1;
@@ -1429,38 +1391,40 @@ function search_contacts(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingContacts').html(start_from+' - '+data['count']);
-      $('#paginationTotalContacts').html(data['count']);
+      $('#paginationShowingConversation').html(start_from+' - '+data['count']);
+      $('#paginationTotalConversation').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
   }
 }
 
-function search_groups(active_text) {
-  $('#groupsTbody').html('');
+function search_users(active_text) {
+  $('#usersTbody').html('');
   $('#searchLoader').removeClass('hidden');
-  $('#clearGroupsSearch').removeClass('hidden');
-  var name = $('#searchGroupsName').val();
-  if (name == '') {
-    $.get('/groups',
+  var name = $('#searchUserName').val();
+  var role = $('#searchUserRole').val();
+  var email = $('#searchUserEmail').val();
+
+  if ((name == '') && (role == '') && (email == '')) {
+    $.get('/users',
     {
       slice_from:'reset'
     },
-    function(data){
-      initialize_selected_entries();
+    function(data) {
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
-      $('#clearGroupsSearch').addClass('hidden');
       $('#'+active_text).focus();
     });
   }
   else {
-    $.get('/groups/search',
+    $.get('/users/search',
     {
-      name:name
+      name:name,
+      role:role,
+      email:email
     },
     function(data){
-      $('#groupsTbody').html(data['template']);
+      $('#usersTbody').html(data['template']);
       $('#searchLoader').addClass('hidden');
       if (data['count'] != 0) {
         var start_from = 1;
@@ -1468,8 +1432,8 @@ function search_groups(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingGroups').html(start_from+' - '+data['count']);
-      $('#paginationTotalGroups').html(data['count']);
+      $('#paginationShowingConversation').html(start_from+' - '+data['count']);
+      $('#paginationTotalConversation').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
   }
@@ -2429,15 +2393,25 @@ function save_report() {
     to_date:to_date
   },
   function(data){
-    $('.content').html(data['content_template']);
-    $('#addReportType').prop('selectedIndex',0);
-    $('#addReportModal .form-control').val('');
-    $('#addReportModal .form-control').change();
     $('#saveReportBtn').button('complete');
-    $('#addReportModal').modal('hide');
-    $('#downloadOverlay .download-body').append(data['download_template']);
-    $('#downloadOverlay').removeClass('hidden');
-    update_report_status(data['report_id']);
+
+    if (data['status'] == 'failed') {
+      $('#cargoItemError').fadeIn();
+      $('#cargoItemError .snackbar-message').html(data['message']);
+      setTimeout(function(){
+        $('#cargoItemError').fadeOut();
+      },5000);
+    }
+    else {
+      $('.content').html(data['content_template']);
+      $('#addReportType').prop('selectedIndex',0);
+      $('#addReportModal .form-control').val('');
+      $('#addReportModal .form-control').change();
+      $('#addReportModal').modal('hide');
+      $('#downloadOverlay .download-body').append(data['download_template']);
+      $('#downloadOverlay').removeClass('hidden');
+      update_report_status(data['report_id']);
+    }
   });
 }
 

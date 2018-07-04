@@ -38,11 +38,11 @@
 			</tr>
 			<tr class="search-panel history">
 				<td class="history-waybill-td">
-					<input type="text" id="searchHistoryWaybill" class="form-control search-cargos search-text">
+					<input type="text" id="searchHistoryWaybill" class="form-control search-history search-text">
 				</td>
 				<td class="history-type-td">
 					<select id="searchHistoryType" class="form-control search-history search-text">
-						<option value="" selected disabled></option>
+						<option value="" selected>All</option>
 						<option value="Cash">Cash</option>
 						<option value="Charge">Charge</option>
 					</select>
@@ -58,7 +58,7 @@
 				</td>
 			</tr>
 		</thead>
-		<tbody id="cargosTbody">
+		<tbody id="historyTbody">
 			{% for entry in history %}
 			<tr id="{{ entry.id }}" onclick="open_waybill({{ entry.id }})">
 				<td class="history-waybill-td">{{ entry.waybill_no }}</td>
@@ -78,7 +78,11 @@ $(".datepicker").datepicker({
 
 $('.search-history').keypress(function(e){
     if (e.which == 13) {
-        search_cargos($(this).attr('id'));
+      search_history($(this).attr('id'));
     }
+});
+
+$('.search-history').change(function(){
+    search_history($(this).attr('id'));
 });
 </script>

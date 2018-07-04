@@ -1,0 +1,10 @@
+{% for entry in cargo %}
+<tr id="{{ entry.id }}" onclick="open_cargo({{ entry.id }})">
+	<td class="cargo-truck-td">{{ entry.cargo_no }}</td>
+	<td class="cargo-driver-td">{{ entry.truck }}</td>
+	<td class="cargo-origin-td">{{ entry.origin }}</td>
+	<td class="cargo-destination-td">{{ entry.destination }}</td>
+	<td class="cargo-departure-date-td align-right">{{ entry.departure_date }}</td>
+	<td class="cargo-arrival-date-td align-right">{{ entry.arrival_date }}</td>
+</tr>
+{% endfor %}

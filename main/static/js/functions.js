@@ -1257,10 +1257,16 @@ function search_inbound(active_text) {
   $('#inboundTbody').html('');
   $('#searchLoader').removeClass('hidden');
   $('#clearInboundSearch').removeClass('hidden');
-  var name = $('#searchConversationName').val();
-  var content = $('#searchConversationContent').val();
-  var date = $('#searchConversationDate').val();
-  if ((name == '') && (content == '') && (date == '')) {
+  var waybill_no = $('#searchWaybillNo').val();
+  var type = $('#searchWaybillType').val();
+  var destination = $('#searchWaybillDestination').val();
+  var recipient = $('#searchWaybillRecipient').val();
+  var status = $('#searchWaybillStatus').val();
+  var amount = $('#searchWaybillAmount').val();
+  var received = $('#searchWaybillReceived').val();
+  var arrived = $('#searchWaybillArrived').val();
+
+  if ((waybill_no == '') && (type == null) && (destination == '') && (recipient == '') && (status == null) && (amount == '') && (received == '') && (arrived == '')) {
     $.get('/inbound',
     {
       slice_from:'reset'
@@ -1276,9 +1282,14 @@ function search_inbound(active_text) {
   else {
     $.get('/inbound/search',
     {
-      name:name,
-      content:content,
-      date:date
+      waybill_no:waybill_no,
+      type:type,
+      destination:destination,
+      recipient:recipient,
+      status:status,
+      amount:amount,
+      received:received,
+      arrived:arrived
     },
     function(data){
       $('#inboundTbody').html(data['template']);
@@ -1289,7 +1300,7 @@ function search_inbound(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingConversation').html(start_from+' to '+data['count']);
+      $('#paginationShowingConversation').html(start_from+' - '+data['count']);
       $('#paginationTotalConversation').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
@@ -1332,7 +1343,7 @@ function search_blasts(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingBlasts').html(start_from+' to '+data['count']);
+      $('#paginationShowingBlasts').html(start_from+' - '+data['count']);
       $('#paginationTotalBlasts').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
@@ -1375,7 +1386,7 @@ function search_reminders(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingReminders').html(start_from+' to '+data['count']);
+      $('#paginationShowingReminders').html(start_from+' - '+data['count']);
       $('#paginationTotalReminders').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
@@ -1418,7 +1429,7 @@ function search_contacts(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingContacts').html(start_from+' to '+data['count']);
+      $('#paginationShowingContacts').html(start_from+' - '+data['count']);
       $('#paginationTotalContacts').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
@@ -1457,7 +1468,7 @@ function search_groups(active_text) {
       else {
         var start_from = 0;
       }
-      $('#paginationShowingGroups').html(start_from+' to '+data['count']);
+      $('#paginationShowingGroups').html(start_from+' - '+data['count']);
       $('#paginationTotalGroups').html(data['count']);
       $('.pagination-btn').attr('disabled',true);
     });
@@ -1871,7 +1882,7 @@ function save_waybill() {
     $('#forgotPaymentModal').modal('show');
     $('#saveWaybillBtn').button('complete');
   }
-  else if ((waybill_type == 'Cash') && (tendered < total)) {
+  else if ((waybill_type == 'Cash') && (parseFloat(tendered) < parseFloat(total))) {
     $('.forgot-payment-message').html('Amount tendered cannot be smaller than total amount due. No worries, you can change it below:');
     $('#forgottenTotal').html($('#waybillTotal').html());
     $('#forgottenTenderedText').val($('#waybillTenderedText').val());
@@ -2428,4 +2439,200 @@ function save_report() {
     $('#downloadOverlay').removeClass('hidden');
     update_report_status(data['report_id']);
   });
+}
+
+function save_user() {
+  $('#saveUserBtn').button('loading');
+  name = $('#addUserName').val();
+  email = $('#addUserEmail').val();
+  temp_pw = $('#addUserPassword').val();
+  role = $('#addUserRole').val();
+
+  $.post('/user/add',
+  {
+    name:name,
+    email:email,
+    temp_pw:temp_pw,
+    role:role
+  },
+  function(data){
+    $('.content').html(data);
+    $('#addUserRole').prop('selectedIndex',0);
+    $('#addUserModal .form-control').val('');
+    $('#addUserModal .form-control').change();
+    $('#addUserModal .error-icon-container').addClass('hidden');
+    $('#addUserModal .form-control').css('border-bottom','1px solid #999');
+    $('#saveUserBtn').button('complete');
+    $('#addUserModal').modal('hide');
+  });
+}
+
+function validate_password(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  if ((value != '') && (value.length >= 8)) {
+    $(element).css("border-bottom", "1px solid #999");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border-bottom", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function validate_password_confirm(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  password = $('#changePasswordText').val();
+  password_confirm = $('#changePasswordConfirmText').val();
+  if (password == password_confirm) {
+    $(element).css("border-bottom", "1px solid #999");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border-bottom", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function validate_temp_pass(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  password = $('#addUserPassword').val();
+  password_confirm = $('#addUserPasswordConfirm').val();
+  if (password == password_confirm) {
+    $(element).css("border-bottom", "1px solid #999");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border-bottom", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function validate_password_reset(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  password = $('#resetPasswordText').val();
+  password_confirm = $('#resetPasswordConfirmText').val();
+  if (password == password_confirm) {
+    $(element).css("border-bottom", "1px solid #999");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border-bottom", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function reset_password() {
+  $('#saveResetPasswordBtn').button('complete');
+  password = $('#resetPasswordText').val();
+  $.post('/user/password/reset',
+  {
+    password:password
+  },
+  function(data){
+    $('#resetPasswordModal .form-control').change();
+    $('#resetPasswordModal .form-control').val('');
+    $('#resetPasswordModal .error-icon-container').addClass('hidden');
+    $('#resetPasswordModal .form-control').css('border-bottom','1px solid #999');
+    $('#saveResetPasswordBtn').button('complete');
+    $('#resetPasswordModal').modal('hide');
+    $('#replySuccess .snackbar-message').html('Password successfully reset.');
+    $('#replySuccess').fadeIn();
+    setTimeout(function() {
+      $('#replySuccess').fadeOut();
+    }, 4000);
+  });
+}
+
+function edit_user() {
+  $('#editUserBtn').button('loading');
+  name = $('#editUserName').val();
+  email = $('#editUserEmail').val();
+  role = $('#editUserRole').val();
+
+  $.post('/user/edit',
+  {
+    name:name,
+    email:email,
+    role:role
+  },
+  function(data){
+    $('.content').html(data);
+    $('#editUserModal .form-control').val('');
+    $('#editUserModal .form-control').change();
+    $('#editUserModal .error-icon-container').addClass('hidden');
+    $('#editUserModal .form-control').css('border-bottom','1px solid #999');
+    $('#editUserBtn').button('complete');
+    $('#editUserModal').modal('hide');
+    $('#replySuccess .snackbar-message').html('Changes saved.');
+    $('#replySuccess').fadeIn();
+    setTimeout(function() {
+      $('#replySuccess').fadeOut();
+    }, 4000);
+  });
+}
+
+function delete_user() {
+  $('#deleteUserBtn').button('loading');
+  $.post('/user/delete',
+  function(data){
+    $('.content').html(data);
+    $('#deleteUserBtn').button('complete');
+    $('#editUserModal').modal('hide');
+    $('#deleteUserModal').modal('hide');
+    $('#replySuccess .snackbar-message').html('User successfully deleted.');
+    $('#replySuccess').fadeIn();
+    setTimeout(function() {
+      $('#replySuccess').fadeOut();
+    }, 4000);
+  });
+}
+
+function change_password() {
+  $('#changePasswordModal').modal({
+    backdrop: 'static',
+    keyboard: false
+  });
+}
+
+function save_password() {
+  $('#savePasswordBtn').button('loading');
+  password = $('#changePasswordText').val();
+
+  $.post('/user/password/save',
+  {
+    password:password
+  },
+  function(data){
+    if (data['status'] == 'success') {
+      $('#changePasswordModal').modal('hide');
+    }
+    else {
+      $('#cargoItemError .snackbar-message').html(data['message']);
+      $('#cargoItemError').fadeIn();
+      $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+      setTimeout(function() {
+        $('#cargoItemError').fadeOut();
+      }, 4000);
+    }
+    $('#savePasswordBtn').button('complete');
+  });
+}
+
+function supply_user_info(user_id) {
+  $.get('/user',
+    {
+      user_id:user_id
+    },
+    function(data){
+      $('#editUserModal .modal-body').html(data);
+      $('#editUserModal .form-control').change();
+    });
 }

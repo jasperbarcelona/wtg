@@ -125,6 +125,14 @@ $('#createGroupModal').on('shown.bs.modal', function () {
     $('#addGroupName').focus();
 });
 
+$('#resetPasswordModal').on('shown.bs.modal', function () {
+    $('#resetPasswordText').focus();
+});
+
+$('#addUserModal').on('shown.bs.modal', function () {
+    $('#addUserName').focus();
+});
+
 $('#pickupModal').on('shown.bs.modal', function () {
     $('#pickupPerson').focus();
 });
@@ -153,6 +161,41 @@ $('#saveContactModal').on('hidden.bs.modal', function () {
   setTimeout(function() {
     $('#saveContactBtn').attr('disabled', true);
     }, 500);
+});
+
+$('#addReportModal').on('hidden.bs.modal', function () {
+  $('#addReportModal .form-control').val('');
+  $('#addReportCargoNumber').addClass('hidden');
+  $('#addReportWaybillNumber').addClass('hidden');
+  $('#addReportFromDate').addClass('hidden');
+  $('#addReportToDate').addClass('hidden');
+});
+
+$('#addUserModal').on('hidden.bs.modal', function () {
+  $('#addUserModal .form-control').val('');
+  $('#addUserModal .form-control').change();
+  $('#addUserModal .error-icon-container').addClass('hidden');
+  $('#addUserModal .form-control').css('border-bottom','1px solid #999');
+});
+
+$('#resetPasswordModal').on('hidden.bs.modal', function () {
+  $('#resetPasswordModal .form-control').val('');
+  $('#resetPasswordModal .form-control').change();
+  $('#resetPasswordModal .error-icon-container').addClass('hidden');
+  $('#resetPasswordModal .form-control').css('border-bottom','1px solid #999');
+});
+
+$('#resetPasswordModal .form-control').on('keyup', function () {
+  temp_pw = $('#resetPasswordText').val();
+  temp_pw_confirm = $('#resetPasswordConfirmText').val();
+  role = $('#addUserRole').val();
+
+  if ((temp_pw != '') && (temp_pw_confirm != '') && (temp_pw_confirm == temp_pw)) {
+    $('#resetPasswordBtn').attr('disabled',false);
+  }
+  else {
+    $('#resetPasswordBtn').attr('disabled',true);
+  }
 });
 
 $('#pickupModal').on('hidden.bs.modal', function () {
@@ -195,6 +238,10 @@ $('#addWaybillItemEditModal').on('hidden.bs.modal', function () {
 
 $('#addWaybillModal').on('shown.bs.modal', function () {
   $('#addWaybillNumber').focus();
+});
+
+$('#changePasswordModal').on('shown.bs.modal', function () {
+    $('#changePasswordText').focus();
 });
 
 $('#addCargoItemModal').on('shown.bs.modal', function () {
@@ -253,6 +300,18 @@ $('#addNumberRecipient').keyup(function(e){
   }
   else {
     $('#addNumberRecipientBtn').attr('disabled',true);
+  }
+});
+
+$('#changePasswordModal .form-control').keyup(function(e){
+  password = $('#changePasswordText').val();
+  password_confirm = $('#changePasswordConfirmText').val();
+
+  if ((password != '') && (password_confirm != '') && (password == password_confirm)) {
+    $('#savePasswordBtn').attr('disabled',false);
+  }
+  else {
+    $('#savePasswordBtn').attr('disabled',true);
   }
 });
 
@@ -516,6 +575,102 @@ $('#addCargoModal .form-control').change(function(){
     else {
       $('#saveCargoBtn').attr('disabled',true);
     }
+});
+
+$('#addUserModal .form-control').on('keyup', function () {
+  name = $('#addUserName').val();
+  email = $('#addUserEmail').val();
+  temp_pw = $('#addUserPassword').val();
+  role = $('#addUserRole').val();
+
+  if ((name != '') && (email != '') && (temp_pw != '') && (role != undefined)) {
+    $('#saveUserBtn').attr('disabled',false);
+  }
+  else {
+    $('#saveUserBtn').attr('disabled',true);
+  }
+});
+
+$('#addUserModal .form-control').on('change', function () {
+  name = $('#addUserName').val();
+  email = $('#addUserEmail').val();
+  temp_pw = $('#addUserPassword').val();
+  role = $('#addUserRole').val();
+
+  if ((name != '') && (email != '') && (temp_pw != '') && (role != undefined)) {
+    $('#saveUserBtn').attr('disabled',false);
+  }
+  else {
+    $('#saveUserBtn').attr('disabled',true);
+  }
+});
+
+$('#addReportModal .form-control').on('change', function () {
+  report_type = $('#addReportType').val();
+
+  if (report_type == '') {
+    $('#saveReportBtn').attr('disabled', true);
+  }
+  else {
+    if ((report_type == 'Master List') || (report_type == 'Packing List')) {
+      if ($('#addReportCargoNumber').val() != '') {
+        $('#saveReportBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveReportBtn').attr('disabled', true);
+      }
+    }
+    else if (report_type == 'Sales Report') {
+      if (($('#addReportFromDate').val() != '') && ($('#addReportToDate').val() != '')) {
+        $('#saveReportBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveReportBtn').attr('disabled', true);
+      }
+    }
+    else if (report_type == 'Waybill') {
+      if ($('#addReportWaybillNumber').val() != '') {
+        $('#saveReportBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveReportBtn').attr('disabled', true);
+      }
+    }
+  }
+});
+
+$('#addReportModal .form-control').on('keyup', function () {
+  report_type = $('#addReportType').val();
+
+  if (report_type == '') {
+    $('#saveReportBtn').attr('disabled', true);
+  }
+  else {
+    if ((report_type == 'Master List') || (report_type == 'Packing List')) {
+      if ($('#addReportCargoNumber').val() != '') {
+        $('#saveReportBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveReportBtn').attr('disabled', true);
+      }
+    }
+    else if (report_type == 'Sales Report') {
+      if (($('#addReportFromDate').val() != '') && ($('#addReportToDate').val() != '')) {
+        $('#saveReportBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveReportBtn').attr('disabled', true);
+      }
+    }
+    else if (report_type == 'Waybill') {
+      if ($('#addReportWaybillNumber').val() != '') {
+        $('#saveReportBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveReportBtn').attr('disabled', true);
+      }
+    }
+  }
 });
 
 });

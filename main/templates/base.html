@@ -19,7 +19,11 @@
                 <link rel="shortcut icon" href="../static/images/logos/favicon.ico" type="image/x-icon">
                 <title>Dashboard | {{client_name}}</title>
         </head>
+        {% if change_pw == 'yes' %}
+        <body onload="change_password()">
+        {% else %}
         <body>
+        {% endif %}
                 <div id="mainPreloader" class="wrapperloader hidden">
                         <svg id="loaderSVG" viewBox="0 0 190 132" style="background-color:#ffffff00" xmlns="http://www.w3.org/2000/svg">
                                 <g stroke="#FFF" stroke-width="2" fill="none">

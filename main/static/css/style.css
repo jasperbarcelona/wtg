@@ -392,7 +392,8 @@ select {
 	text-align: right;
 }
 
-.delete-icon-td i {
+.delete-icon-td i,
+.user-icon-td i {
 	font-size: 16px !important;
 	margin-right: 10px;
 	padding: 0;
@@ -820,6 +821,7 @@ select {
 #forgotPaymentModal .modal-body,
 #addPaymentModal .modal-body,
 #receiveCargoModal .modal-body,
+#editUserModal .modal-body,
 #pickupModal .modal-body,
 #forgotWaybillItemModal .modal-body {
 	position: relative;
@@ -833,6 +835,9 @@ select {
 
 #addWaybillItemModal .modal-body,
 #addReportModal .modal-body,
+#addUserModal .modal-body,
+#changePasswordModal .modal-body,
+#resetPasswordModal .modal-body,
 #addWaybillItemEditModal .modal-body {
 	padding-left: 30px;
 	padding-right: 30px;
@@ -853,14 +858,35 @@ select {
 #addWaybillModal .form-control:not(#waybillTenderedText),
 #addCargoModal .form-control,
 #addReportModal .form-control,
+#addUserModal .form-control:not(#addUserEmail):not(#addUserPassword),
 #editCargoModal .form-control,
 #receiveCargoModal .form-control:not(#pickupType):not(#pickupPerson),
 #pickupModal .form-control,
+#editUserModal .form-control:not(#editUserEmail),
 #editWaybillModal .form-control:not(#waybillTenderedEditText),
 #addWaybillItemModal .form-control,
 #addWaybillItemEditModal .form-control {
 	margin-bottom: 10px;
 	text-transform: capitalize;
+	outline: none !important;
+	height: 40px;
+	margin-bottom: 20px;
+	border-top: 0 !important;
+	border-left: 0 !important;
+	border-right: 0 !important;
+	border-bottom: 1px solid #999;
+	box-shadow: none !important;
+	border-radius: 0 !important;
+	font-size: 15px;
+}
+
+#addUserEmail,
+#editUserEmail,
+#editUserPassword,
+#resetPasswordModal .form-control,
+#changePasswordModal .form-control,
+#addUserPassword {
+	margin-bottom: 10px;
 	outline: none !important;
 	height: 40px;
 	margin-bottom: 20px;
@@ -1646,8 +1672,8 @@ textarea:disabled {
 	position: absolute;
 	z-index: 999999;
 	left: 0;
-	top: 59px;
-	height: calc(100vh - 184px);
+	top: 98px;
+	height: calc(100vh - 223px);
 	width: 100%;
 	background-color: #ddd;
 	display: -webkit-flex;

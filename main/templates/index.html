@@ -6,16 +6,16 @@
 	</div>
 	<div class="lower-panel-container">
 		<div id="navInbound" class="panel-nav-item active" onclick="show_inbound('reset')">
-			<span class="nav-label">Packages</span>
+			<span class="nav-label">Waybills</span>
 		</div>
 		<div id="navCargo" class="panel-nav-item" onclick="show_cargo('reset')">
 			<span class="nav-label">Cargo</span>
 		</div>
-		<div id="navHistory" class="panel-nav-item" onclick="show_history('reset')">
-			<span class="nav-label">History</span>
-		</div>
 		<div id="navReport" class="panel-nav-item" onclick="show_reports('reset')">
 			<span class="nav-label">Reports</span>
+		</div>
+		<div id="navHistory" class="panel-nav-item" onclick="show_history('reset')">
+			<span class="nav-label">Transaction History</span>
 		</div>
 		<div class="nav-separator"></div>
 		<div id="navUsers" class="panel-nav-item" onclick="show_users('reset')">
@@ -119,28 +119,38 @@
 				</tr>
 				<tr class="search-panel inbound">
 					<td class="tracking-td">
-						<input type="text" id="searchConversationName" class="form-control search-inbound search-text">
+						<input type="text" id="searchWaybillNo" class="form-control search-inbound search-text">
 					</td>
 					<td class="type-td">
-						<input type="text" id="searchConversationOrigin" class="form-control search-inbound search-text">
+						<select class="form-control" id="searchWaybillType">
+							<option value="" selected disabled></option>
+							<option value="Cash">Cash</option>
+							<option value="Waybill">Waybill</option>
+						</select>
 					</td>
 					<td class="destination-td">
-						<input type="text" id="searchConversationOrigin" class="form-control search-inbound search-text">
+						<input type="text" id="searchWaybillDestination" class="form-control search-inbound search-text">
 					</td>
 					<td class="recipient-td">
-						<input type="text" id="searchConversationRecipient" class="form-control search-inbound search-text">
+						<input type="text" id="searchWaybillRecipient" class="form-control search-inbound search-text">
 					</td>
 					<td class="status-td">
-						<input type="text" id="searchConversationDate" class="form-control search-inbound search-text align-center">
+						<select class="form-control" id="searchWaybillStatus">
+							<option value="" selected disabled></option>
+							<option value="Pending">Pending</option>
+							<option value="En Route">En Route</option>
+							<option value="Received">Arrived</option>
+							<option value="Delivered">Delivered</option>
+						</select>
 					</td>
 					<td class="price-td align-right">
-						<input type="text" id="searchConversationDate" class="form-control search-inbound search-text align-right">
+						<input type="text" id="searchWaybillAmount" class="form-control search-inbound search-text align-right">
 					</td>
 					<td class="date-td align-right">
-						<input type="text" id="searchConversationDate" class="form-control search-inbound search-text align-right datepicker">
+						<input type="text" id="searchWaybillReceived" class="form-control search-inbound search-text align-right datepicker">
 					</td>
 					<td class="date-td align-right">
-						<input type="text" id="searchConversationDate" class="form-control search-inbound search-text align-right datepicker">
+						<input type="text" id="searchWaybillArrived" class="form-control search-inbound search-text align-right datepicker">
 					</td>
 				</tr>
 			</thead>

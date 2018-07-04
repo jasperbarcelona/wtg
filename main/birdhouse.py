@@ -184,6 +184,12 @@ def index():
     total_entries = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').count()
     packages = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
     
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    if user.password == user.temp_pw:
+        change_pw = 'yes'
+    else:
+        change_pw = 'no'
+
     if total_entries < 50:
         return flask.render_template(
         'index.html',
@@ -194,6 +200,8 @@ def index():
         total_entries=total_entries,
         prev_btn='disabled',
         next_btn='disabled',
+        change_pw=change_pw,
+        user_role=user.role
     )
     return flask.render_template(
         'index.html',
@@ -204,6 +212,8 @@ def index():
         total_entries=total_entries,
         prev_btn='disabled',
         next_btn='enabled',
+        change_pw=change_pw,
+        user_role=user.role
     )
 
 
@@ -226,14 +236,149 @@ def authenticate_user():
         return jsonify(status='failed', error='Invalid email or password.')
     if user.client_no != client.client_no:
         return jsonify(status='failed', error='Not authorized.')
-    if user.status != 'Active':
-        return jsonify(status='failed', error='Your account has been deactivated.')
     session['user_name'] = user.name
     session['user_id'] = user.id
-    session['user_branch'] = user.branch
     session['client_no'] = client.client_no
     session['client_name'] = client.name
     return jsonify(status='success', error=''),200
+
+
+@app.route('/user/add',methods=['GET','POST'])
+def add_user():
+    data = flask.request.form.to_dict()
+
+    new_user = AdminUser(
+        client_no=session['client_no'],
+        email=data['email'],
+        password=data['temp_pw'],
+        temp_pw=data['temp_pw'],
+        name=data['name'].title(),
+        role=data['role'],
+        added_by_id=session['user_id'],
+        added_by_name=session['user_name'],
+        join_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    db.session.add(new_user)
+    db.session.commit()
+    prev_btn = 'enabled'
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name).slice(session['user_limit'] - 50, session['user_limit'])
+    if total_entries < 50:
+        showing='1 - %s' % total_entries
+        prev_btn = 'disabled'
+        next_btn='disabled'
+    else:
+        diff = total_entries - (session['user_limit'] - 50)
+        if diff > 50:
+            showing = '%s - %s' % (str(session['user_limit'] - 49),str(session['user_limit']))
+            next_btn='enabled'
+        else:
+            showing = '%s - %s' % (str(session['user_limit'] - 49),str((session['user_limit']-50)+diff))
+            prev_btn = 'enabled'
+            next_btn='disabled'
+
+    return flask.render_template(
+        'users.html',
+        users=users,
+        showing=showing,
+        total_entries=total_entries,
+        prev_btn=prev_btn,
+        next_btn=next_btn,
+    )
+
+
+@app.route('/user/edit',methods=['GET','POST'])
+def edit_user():
+    data = flask.request.form.to_dict()
+
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    user.name = data['name'].title()
+    user.email = data['email']
+    user.role = data['role']
+
+    db.session.commit()
+
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name).slice(session['user_limit'] - 50, session['user_limit'])
+    if total_entries < 50:
+        showing='1 - %s' % total_entries
+        prev_btn = 'disabled'
+        next_btn='disabled'
+    else:
+        diff = total_entries - (session['user_limit'] - 50)
+        if diff > 50:
+            showing = '%s - %s' % (str(session['user_limit'] - 49),str(session['user_limit']))
+            next_btn='enabled'
+        else:
+            showing = '%s - %s' % (str(session['user_limit'] - 49),str((session['user_limit']-50)+diff))
+            prev_btn = 'enabled'
+            next_btn='disabled'
+
+    return flask.render_template(
+        'users.html',
+        users=users,
+        user_id=session['user_id'],
+        showing=showing,
+        total_entries=total_entries,
+        prev_btn=prev_btn,
+        next_btn=next_btn,
+    )
+
+
+@app.route('/user/password/reset',methods=['GET','POST'])
+def reset_user_password():
+    password = flask.request.form.get('password')
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    user.password = password
+    user.temp_pw = password
+    db.session.commit()
+    return jsonify(status='success', message=''),201
+
+
+@app.route('/user/delete',methods=['GET','POST'])
+def delete_user():
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    db.session.delete(user)
+    db.session.commit()
+
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name).slice(session['user_limit'] - 50, session['user_limit'])
+    if total_entries < 50:
+        showing='1 - %s' % total_entries
+        prev_btn = 'disabled'
+        next_btn='disabled'
+    else:
+        diff = total_entries - (session['user_limit'] - 50)
+        if diff > 50:
+            showing = '%s - %s' % (str(session['user_limit'] - 49),str(session['user_limit']))
+            next_btn='enabled'
+        else:
+            showing = '%s - %s' % (str(session['user_limit'] - 49),str((session['user_limit']-50)+diff))
+            prev_btn = 'enabled'
+            next_btn='disabled'
+
+    return flask.render_template(
+        'users.html',
+        users=users,
+        user_id=session['user_id'],
+        showing=showing,
+        total_entries=total_entries,
+        prev_btn=prev_btn,
+        next_btn=next_btn,
+    )
+
+
+@app.route('/user/password/save',methods=['GET','POST'])
+def save_password():
+    password = flask.request.form.get('password')
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    if user.password == password:
+        return jsonify(status='failed', message='The password you entered is the same as your temporary password, please enter a different one.')
+    user.password = password
+    db.session.commit()
+    return jsonify(status='success', message='')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -885,6 +1030,13 @@ def prev_users():
             'users_result.html',
             users=users)
         )
+
+
+@app.route('/user',methods=['GET','POST'])
+def user_info():
+    session['open_user_id'] = flask.request.args.get('user_id')
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    return flask.render_template('user_info.html',user=user, user_id=session['user_id'])
 
 
 @app.route('/groups/save',methods=['GET','POST'])
@@ -1656,11 +1808,29 @@ def get_cargo_notifications():
 @app.route('/inbound/search',methods=['GET','POST'])
 def search_from_inbound():
     data = flask.request.args.to_dict()
-    result = search_inbound(latest_date=data['date'], latest_content=data['content'],display_name=data['name'])
-    count = search_inbound_count(latest_date=data['date'], latest_content=data['content'],display_name=data['name'])
+    result = search_inbound(
+        waybill_no=data['waybill_no'],
+        waybill_type=data['type'],
+        destination=data['destination'],
+        recipient=data['recipient'],
+        status=data['status'],
+        total=data['amount'],
+        date_received=data['received'],
+        arrival_date=data['arrived']
+        )
+    count = search_inbound_count(
+        waybill_no=data['waybill_no'],
+        waybill_type=data['type'],
+        destination=data['destination'],
+        recipient=data['recipient'],
+        status=data['status'],
+        total=data['amount'],
+        date_received=data['received'],
+        arrival_date=data['arrived']
+        )
     return jsonify(
         count = count,
-        template = flask.render_template('inbound_result.html',inbound=result)
+        template = flask.render_template('inbound_result.html',packages=result)
         )
 
 
@@ -2088,11 +2258,13 @@ def save_waybill():
     session['waybill_items'] = []
 
     total_entries = Package.query.filter_by(client_no=session['client_no']).count()
-    packages = Package.query.filter_by(client_no=session['client_no']).order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
+    packages = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').order_by(Package.created_at.desc()).slice(session['inbound_limit'] - 50, session['inbound_limit'])
+    
+    prev_btn = 'enabled'
     if total_entries < 50:
         showing='1 - %s' % total_entries
         prev_btn = 'disabled'
-        next_btn='disabled'
+        next_btn ='disabled'
     else:
         diff = total_entries - (session['inbound_limit'] - 50)
         if diff > 50:
@@ -2174,6 +2346,7 @@ def save_cargo():
 
     total_entries = Cargo.query.filter_by(client_no=session['client_no']).count()
     cargo = Cargo.query.filter_by(client_no=session['client_no']).order_by(Cargo.created_at.desc()).slice(session['cargo_limit'] - 50, session['cargo_limit'])
+    prev_btn = 'enabled'
     if total_entries < 50:
         showing='1 - %s' % total_entries
         prev_btn = 'disabled'
@@ -2481,6 +2654,7 @@ def generate_report():
     try:
         create_pdf.delay(report.id, report_template)
 
+        prev_btn = 'enabled'
         total_entries = Report.query.filter_by(client_no=session['client_no']).count()
         reports = Report.query.filter_by(client_no=session['client_no']).order_by(Report.created_at.desc()).slice(session['report_limit'] - 50, session['report_limit'])
         if total_entries < 50:
@@ -2530,6 +2704,9 @@ def pickup_waybill():
     waybill.turned_over_by = session['user_name']
     db.session.commit()
 
+    send_notification.delay(session['client_no'],waybill.status,waybill.waybill_no,waybill.sender_msisdn)
+    send_notification.delay(session['client_no'],waybill.status,waybill.waybill_no,waybill.recipient_msisdn)
+    
     session['inbound_limit'] = 50
     prev_btn = 'disabled'
     total_entries = Package.query.filter(Package.client_no==session['client_no'], Package.status!='Done').count()
@@ -2587,10 +2764,8 @@ def rebuild_database():
         client_no='infinitrix',
         email='jasper@pisara.tech',
         password='ratmaxi8',
-        branch='Lucena',
         name='Jasper Barcelona',
         role='Administrator',
-        status='Active',
         join_date=datetime.datetime.now().strftime('%B %d, %Y'),
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
@@ -2710,7 +2885,7 @@ def rebuild_database():
         pickup_time=time.strftime("%I:%M%p")
         )
 
-    for i in range(1000):
+    for i in range(50):
         package_loop = Package(
             client_no='infinitrix',
             waybill_no='5678%s'%str(i),
@@ -2719,7 +2894,7 @@ def rebuild_database():
             destination='Legazpi',
             sender='Lebron James',
             sender_msisdn='092796041',
-            recipient='Kobe Byrant',
+            recipient='John Doe',
             recipient_address='Maharlika',
             recipient_msisdn='09176214704',
             date_received=datetime.datetime.now().strftime('%B %d, %Y'),

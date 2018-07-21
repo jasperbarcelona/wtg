@@ -1,4 +1,5 @@
 function login(){
+  $('#login-form-loader').show();
   $('#login-btn').button('loading');
   client_no = $('#client_no').val();
   user_email = $('#user_email').val();

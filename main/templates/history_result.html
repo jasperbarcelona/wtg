@@ -1,9 +1,0 @@
-{% for entry in history %}
-<tr id="{{ entry.id }}" onclick="open_waybill({{ entry.id }})">
-	<td class="history-waybill-td">{{ entry.waybill_no }}</td>
-	<td class="history-type-td">{{ entry.waybill_type }}</td>
-	<td class="history-recipient-td">{{ entry.recipient }}</td>
-	<td class="history-amount-td align-right">PHP {{ entry.total }}</td>
-	<td class="history-payment-td align-right">{{ entry.payment_date }}</td>
-</tr>
-{% endfor %}

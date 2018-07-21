@@ -111,6 +111,7 @@ select {
 }
 
 .entry {
+	float: left;
 	padding: 12px;
 	height: 70px;
 	width: 100%;
@@ -265,4 +266,23 @@ select {
 
 #addTransactionBtn {
 	background-color: #337AB7 !important;
+}
+
+.content-header {
+	float: left;
+	width: 100%;
+	padding: 12px;
+}
+
+.content-header-left {
+	float: left;
+	width: 50%;
+	height: 100%;
+}
+
+.content-header-right {
+	float: left;
+	text-align: right;
+	width: 50%;
+	height: 100%;
 }

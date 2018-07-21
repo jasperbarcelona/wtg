@@ -64,9 +64,15 @@ def nocache(view):
 def index():
     if not session:
         return redirect('/login')
+
+    transactions = Transaction.query.filter(Transaction.client_no==session['client_no']).order_by(Transaction.customer_name).all()
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no']).count()
+
     return flask.render_template(
         'index.html',
-        client_name=session['client_name']
+        client_name=session['client_name'],
+        transactions=transactions,
+        total_entries=total_entries
         )
 
 
@@ -126,10 +132,8 @@ def rebuild_database():
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
         cashier_id=1,
-        transaction_type='Top Up',
         cashier_name='Jasper Barcelona',
-        customer_id_no='2011334281',
-        customer_name='',
+        customer_name='Vhing Barcelona',
         customer_msisdn='09176214704',
         total='4000.00',
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')

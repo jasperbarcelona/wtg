@@ -16,7 +16,6 @@
 		url('../fonts/Lato-Thin.ttf') format('truetype');
 }
 
-
 html {
 	height: 100vh;
 	width: 100%;
@@ -76,7 +75,7 @@ select {
 	background-color: rgba(51,122,183, 0.3);
 }
 
-hr {
+.nav-border {
 	height: .30rem;
 	width: 33.33%;
 	background-color: #337AB7;
@@ -98,9 +97,12 @@ hr {
 	border-bottom: 1px solid #D9D9D9;
 }
 
-.search-text {
-	height: 100%;
-	width: 100%;
+.search-text-box {
+	height: 100% !important;
+	width: 100% !important;
+	padding-left: 12px !important;
+	font-size: 14px !important;
+	background-color: #FFFFFF !important;
 	border-radius: 0 !important;
 	border: none !important;
 	box-shadow: none !important;
@@ -236,4 +238,14 @@ hr {
 .active-entry-action:focus {
 	color: #FFFFFF;
 	outline: none !important;
+}
+
+.add-btn-container {
+	position: fixed;
+	right: 30px;
+	bottom: 30px;
+}
+
+#addTransactionBtn {
+	background-color: #337AB7 !important;
 }

@@ -39,5 +39,6 @@ $('.close-action-icon').on('click', function (e) {
   $('.active-entry-action-container').removeClass('visible');
 });
 
+$('.fixed-action-btn').floatingActionButton();
 
 });

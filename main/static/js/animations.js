@@ -29,4 +29,15 @@ $('.tooltip').tooltipster({
    trigger: 'hover'
 });
 
+$('.active-entry-right').on('click', function () {
+  $('.active-entry-action-container').removeClass('visible');
+  $(this).find('.active-entry-action-container').addClass('visible');
+});
+
+$('.close-action-icon').on('click', function (e) {
+  e.stopPropagation();
+  $('.active-entry-action-container').removeClass('visible');
+});
+
+
 });

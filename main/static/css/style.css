@@ -482,7 +482,8 @@ select {
 }
 
 .tt-hint {
-  color: #999
+	margin-top: 10px;
+  	color: #999
 }
 
 .tt-menu {    /* used to be tt-dropdown-menu in older versions */

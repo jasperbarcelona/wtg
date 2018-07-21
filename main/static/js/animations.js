@@ -77,13 +77,7 @@ var substringMatcher = function(strs) {
 };
 
 $('.typeahead').on('typeahead:selected', function(evt, item) {
-  supply
-});
-
-$('.number-operations-btn.plus').on('click', function () {
-  quantity = $(this).closest('.service-quantity-text').val();
-  quantity += 1;
-  $(this).closest('service-quantity-text').val('3');
+  
 });
 
 });

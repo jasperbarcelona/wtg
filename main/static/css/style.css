@@ -219,9 +219,11 @@ select {
 
 .active-entry-action {
 	padding: 5px !important;
+	height: auto !important;
 	margin-left: 20px;
 	width: calc(100% - 20px);
-	font-size: 12px;
+	font-size: 12px !important;
+	text-transform: none !important;
 	color: #FFFFFF;
 }
 
@@ -242,8 +244,8 @@ select {
 
 .add-btn-container {
 	position: fixed;
-	right: 30px;
-	bottom: 30px;
+	right: 20px;
+	bottom: 20px;
 }
 
 #addTransactionBtn {

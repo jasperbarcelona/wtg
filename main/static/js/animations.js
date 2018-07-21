@@ -1,11 +1,11 @@
 $(document).ready(function(){
   
-/*$(window).load(function(){
-  check_upload_progress();
+$(window).load(function(){
   setTimeout(function() {
     $('#mainPreloader').fadeOut();
   }, 3000);
-});*/
+});
+
 $('.snackbar').hide();
 
 $('.form-control.floatlabel').floatlabel({

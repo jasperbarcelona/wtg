@@ -35,6 +35,22 @@ select {
 	cursor: pointer !important;
 }
 
+#mainPreloader {
+	position: absolute;
+	z-index: 10;
+	width: 100%;
+	height: 100vh;
+	background-color: #FFFFFF;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
 .nav-container {
 	position: fixed;
 	background-color: #FFFFFF;
@@ -47,6 +63,7 @@ select {
 .nav-item {
 	float: left;
 	text-align: center;
+	width: 33.33%;
 	height: 45px;
 	display: -webkit-flex;
 	display: flex;
@@ -285,4 +302,85 @@ select {
 	text-align: right;
 	width: 50%;
 	height: 100%;
+}
+
+.modal-content {
+	float: left;
+	width: 100%;
+	border-radius: 0 !important;
+}
+
+.modal-header {
+	position: relative;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+	justify-content: left;
+	border-radius: 0 !important;
+}
+
+#activeSortModal .modal-header {
+	height: 20px;
+}
+
+#activeSortModal .modal-title {
+	font-weight: bold;
+}
+
+#activeSortModal .modal-body {
+	float: left;
+	width: 100%;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	background-color: #FFFFFF;
+} 
+
+.modal-footer {
+	float: left;
+	width: 100%;
+}
+
+.sort-selector {
+	float: left;	
+	height: 50px;
+	width: calc(50% - 20px);
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	border: 1px solid #D9D9D9;
+	border-radius: 10px;
+}
+
+.sort-selector.active {
+	background-color: #337AB7;
+	color: #FFFFFF;
+}
+
+#activeSortByDate {
+	margin-left: 40px;
+}
+
+.btn {
+	text-transform: none !important; 
+}
+
+.modal-btn.btn-danger {
+	background-color: #d9534f !important;
+}
+
+.modal-btn:hover,
+.modal-btn:active,
+.modal-btn:focus {
+	color: #FFFFFF;
+	outline: none !important;
+	background-color: #337AB7;
 }

@@ -1,4 +1,63 @@
 {% extends "base.html" %}
 {% block content %}
-
-{% endblock %}
+<div class="nav-container">
+    <div id="navActive" class="nav-item col-xs-4 active" onclick="show_active()"><span class="nav-item-label">Active</span></div>
+	<div id="navHistory" class="nav-item col-xs-4" onclick="show_history()"><span class="nav-item-label">History</span></div>
+	<div id="navSettings" class="nav-item col-xs-4" onclick="show_settings()"><span class="nav-item-label">Settings</span></div>
+	<div class="hr-container">
+		<hr />
+	</div>
+</div>
+<div class="content">
+	<div class="search-container">
+		<input type="text" id="searchActive" class="form-control search-text" placeholder="Search active transactions">
+	</div>
+	<div class="entry-container">
+		<div class="entry">
+			<div class="active-entry-left">
+				<div>
+					<span class="active-entry-name">Jasper Barcelona</span>
+				</div>
+				<div>
+					<span class="active-entry-date">Setpember 31, 2018</span>
+				</div>
+			</div>
+			<div class="active-entry-right">
+				<div>
+					<span class="active-entry-status pending">Pending</span>
+				</div>
+			</div>
+		</div>
+		<div class="entry">
+			<div class="active-entry-left">
+				<div>
+					<span class="active-entry-name">Leanza Mildred Etorma</span>
+				</div>
+				<div>
+					<span class="active-entry-date">Setpember 31, 2018</span>
+				</div>
+			</div>
+			<div class="active-entry-right">
+				<div>
+					<span class="active-entry-status processing">Processing</span>
+				</div>
+			</div>
+		</div>
+		<div class="entry">
+			<div class="active-entry-left">
+				<div>
+					<span class="active-entry-name">Vhing Barcelona</span>
+				</div>
+				<div>
+					<span class="active-entry-date">Setpember 31, 2018</span>
+				</div>
+			</div>
+			<div class="active-entry-right">
+				<div>
+					<span class="active-entry-status processing">Processing</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %} 

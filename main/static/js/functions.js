@@ -1,13 +1,35 @@
-function show_inbound(slice_from) {
-  $('.panel-nav-item').removeClass('active');
-  $('#navInbound').addClass('active');
-  $.get('/inbound',
-  {
-    slice_from:slice_from
-  },
+function show_active(slice_from) {
+  $('.nav-item').removeClass('active');
+  $('#navActive').addClass('active');
+  $('hr').css('margin-left', '0');
+  /*$.get('/history',
     function(data){
       $('.content').html(data);
       $('#searchLoader').addClass('hidden');
       $('#clearInboundSearch').addClass('hidden');
-    });
+    });*/
+}
+
+function show_history(slice_from) {
+  $('.nav-item').removeClass('active');
+  $('#navHistory').addClass('active');
+  $('hr').css('margin-left', '33.33%');
+  /*$.get('/history',
+    function(data){
+      $('.content').html(data);
+      $('#searchLoader').addClass('hidden');
+      $('#clearInboundSearch').addClass('hidden');
+    });*/
+}
+
+function show_settings(slice_from) {
+  $('.nav-item').removeClass('active');
+  $('#navSettings').addClass('active');
+  $('hr').css('margin-left', '66.66%');
+  /*$.get('/history',
+    function(data){
+      $('.content').html(data);
+      $('#searchLoader').addClass('hidden');
+      $('#clearInboundSearch').addClass('hidden');
+    });*/
 }

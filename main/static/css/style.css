@@ -59,6 +59,7 @@ select {
 }
 
 .nav-item.active {
+	font-weight: bold;
 	color: #337AB7 !important;
 }
 
@@ -235,11 +236,25 @@ select {
 	background-color: #337AB7;
 }
 
-.active-entry-action:hover,
-.active-entry-action:active,
-.active-entry-action:focus {
+.active-entry-action.processing:hover,
+.active-entry-action.processing:active,
+.active-entry-action.processing:focus {
 	color: #FFFFFF;
 	outline: none !important;
+	background-color: #00B969;
+}
+
+.active-entry-action.done:hover,
+.active-entry-action.done:active,
+.active-entry-action.done:focus {
+	color: #FFFFFF;
+	outline: none !important;
+	background-color: #337AB7;
+}
+
+.btn:active {
+	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125) !important;
+          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125) !important;
 }
 
 .add-btn-container {

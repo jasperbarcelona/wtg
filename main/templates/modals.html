@@ -5,8 +5,66 @@
                 <span class="modal-title" id="gridSystemModalLabel">Sort</span>
             </div>
             <div class="modal-body">
+                {% if user.active_sort == 'Alphabetical' %}
                 <div id="activeSortAlphabetical" class="sort-selector active">Alphabetical</div>
                 <div id="activeSortByDate" class="sort-selector">By Date</div>
+                {% else %}
+                <div id="activeSortAlphabetical" class="sort-selector">Alphabetical</div>
+                <div id="activeSortByDate" class="sort-selector active">By Date</div>
+                {% endif %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="addTransactionModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="gridSystemModalLabel">New Transaction</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-container whole">
+                    <input type="text" id="addTransactionName" data-error="errorTransactionName" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control typeahead" data-class="input-label" placeholder="Customer's name">
+                    <div id="errorTransactionName" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container whole">
+                    <input type="text" id="addTransactionMsisdn" data-error="errorTransactionMsisdn" onblur="validate_blank(this,this.value); validate_msisdn(this,this.value);" class="form-control" data-class="input-label" placeholder="Customer's mobile number">
+                    <div id="errorTransactionMsisdn" class="error-icon-container hidden tooltip" title="Must be exactly 11 characters."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <span class="input-group-label">Products & Services</span>
+
+
+                <div class="service-container">
+                    {% for service in services %}
+                    <div class="service">
+                        <div class="service-left">
+                            <div>
+                                <span class="service-name">{{ service.name }}</span>
+                            </div>
+                            <div>
+                                <span class="service-price">PHP {{ service.price }}</span>
+                            </div>
+                        </div>
+                        <div class="service-right">
+                            <div>
+                                <button type="button" class="btn number-operations-btn plus" onclick="add_quantity({{ service.id }})">
+                                    <i class="material-icons">add</i>
+                                </button>
+                                <input type="text" id="{{ service.id }}" class="service-quantity-text form-control" value="0">
+                                <button type="button" class="btn number-operations-btn minus" onclick="subtract_quantity({{ service.id }})">
+                                    <i class="material-icons">remove</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Close</button>

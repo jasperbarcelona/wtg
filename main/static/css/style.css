@@ -35,6 +35,10 @@ select {
 	cursor: pointer !important;
 }
 
+.form-control {
+	width: 100% !important;
+}
+
 #mainPreloader {
 	position: absolute;
 	z-index: 10;
@@ -110,8 +114,8 @@ select {
 }
 
 .search-container {
-	width: 100%;
-	height: 45px;
+	width: 100% !important;
+	height: 50px !important;
 	border-bottom: 1px solid #D9D9D9;
 }
 
@@ -160,12 +164,10 @@ select {
 }
 
 .active-entry-name {
-	font-weight: bold;
 	font-size: 16px;
 }
 
 .active-entry-date {
-	font-weight: normal;
 	font-size: 12px;
 }
 
@@ -310,6 +312,10 @@ select {
 	border-radius: 0 !important;
 }
 
+.modal-title {
+	font-size: 18px;
+}
+
 .modal-header {
 	position: relative;
 	display: -webkit-flex;
@@ -321,14 +327,6 @@ select {
 	-webkit-justify-content: left;
 	justify-content: left;
 	border-radius: 0 !important;
-}
-
-#activeSortModal .modal-header {
-	height: 20px;
-}
-
-#activeSortModal .modal-title {
-	font-weight: bold;
 }
 
 #activeSortModal .modal-body {
@@ -347,7 +345,7 @@ select {
 .sort-selector {
 	float: left;	
 	height: 50px;
-	width: calc(50% - 20px);
+	width: calc(50% - 10px);
 	display: -webkit-flex;
 	display: flex;
 	-webkit-flex-direction: row;
@@ -366,7 +364,7 @@ select {
 }
 
 #activeSortByDate {
-	margin-left: 40px;
+	margin-left: 20px;
 }
 
 .btn {
@@ -383,4 +381,261 @@ select {
 	color: #FFFFFF;
 	outline: none !important;
 	background-color: #337AB7;
+}
+
+#addTransactionModal,
+#addTransactionModal .modal-dialog,
+#addTransactionModal .modal-content {
+	padding: 0 !important;
+	margin: 0 !important;
+	border: none !important;
+	width: 100% !important
+}
+
+#addTransactionModal .modal-body {
+	height: calc(100vh - 125px) !important;
+	width: 100% !important;
+	position: relative;
+}
+
+#addTransactionModal .form-control {
+	text-transform: capitalize;
+	height: 45px;
+}
+
+#addTransactionName {
+	margin-top: 10px;
+}
+
+.input-label{
+	font-family: Lato, sans-serif !important;
+	font-weight: normal !important;
+	padding-left: 4px;
+	padding-top: 5px;
+	font-size: 12px !important;
+	color: #337AB7 !important;
+}
+
+.input-container {
+	margin-bottom: 20px;
+	position: relative;
+}
+
+.input-container .form-control:not(#pickupType) {
+	padding-right: 50px;
+}
+
+.input-container.left .error-icon-container {
+	right: 35px;
+}
+
+.input-container.right .error-icon-container,
+.input-container.whole .error-icon-container {
+	right: 15px;
+}
+
+.input-container .error-icon-container {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+.error-icon-container i {
+	color: #d9534f !important;
+	font-size: 25px !important;
+	cursor: pointer;
+}
+.input-container:not(.whole) {
+	float: left;
+	width: 50%;
+}
+.input-container.whole {
+	float: left;
+	width: 100%;
+	position: relative;
+}
+
+.input-container.left {
+	padding-right: 20px;
+}
+
+.input-container.right {
+	padding-left: 20px;
+}
+
+
+.twitter-typeahead {
+	width: 100%;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-menu {    /* used to be tt-dropdown-menu in older versions */
+  width: 100%;
+  margin-top: 0;
+  padding: 4px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor,.tt-suggestion:hover {
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+.input-group-label {
+	float: left;
+	width: 100%;
+	font-size: 16px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.service-container {
+	float: left;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+}
+
+.service {
+	height: 60px;
+	width: 100%;
+	background-color: #FFFFFF;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.service-left {
+	float: left;
+	width: 60%;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.service-right {
+	float: left;
+	position: relative;
+	width: 40%;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.service-left > div {
+	width: 100%;
+	text-align: left;
+	white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.service-right > div {
+	width: 100%;
+}
+
+.service-name {
+	font-size: 16px;
+}
+
+.service-price {
+	font-size: 12px;
+}
+
+.number-operations-btn {
+	float: right;
+	background-color: #337AB7 !important;
+	color: #FFFFFF;
+	box-shadow: none !important;
+	height: 35px !important;
+	width: 30px;
+	padding: 0 !important;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.number-operations-btn:hover,
+.number-operations-btn:active,
+.number-operations-btn:focus {
+	color: #FFFFFF;
+	outline: none !important;
+	background-color: #00B969;
+	box-shadow: none !important;
+}
+
+.service-quantity-text {
+	float: right;
+	width: 55px !important;
+	height: 35px !important;
+	border-radius: 0 !important;
+	text-align: center;
+}
+
+.number-operations-btn.minus {
+	border-radius: 5px 0 0 5px;
+}
+
+.number-operations-btn.plus {
+	border-radius: 0 5px 5px 0;
 }

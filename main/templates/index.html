@@ -10,77 +10,53 @@
 </div>
 <div class="content">
 	<div class="add-btn-container">
-		<a id="addTransactionBtn" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">add</i></a>
+		<a id="addTransactionBtn" class="btn-floating btn-large waves-effect waves-light red" data-toggle="modal" data-target="#addTransactionModal"><i class="material-icons">add</i></a>
 	</div>
 	<div class="search-container">
-		<input type="text" id="searchActive" class="form-control search-text-box" placeholder="Search active transactions">
+		<input type="text" id="searchActive" class="search-text-box form-control" placeholder="Search active transactions">
 	</div>
 	<div class="content-header">
 		<div class="content-header-left">
-			<span class="total-entries">23 Transactions</span>
+			<span class="total-entries">{{ total_entries }} Items</span>
 		</div>
 		<div class="content-header-right">
+			{% if user.active_sort == 'Alphabetical' %}
 			<span class="sort-options modal-trigger" data-toggle="modal" data-target="#activeSortModal">Sort: A-Z</span>
+			{% else %}
+			<span class="sort-options modal-trigger" data-toggle="modal" data-target="#activeSortModal">Sort: By Date</span>
+			{% endif %}
 		</div>
 	</div>
 	<div class="entry-container">
+		{% for entry in transactions %}
 		<div class="entry">
 			<div class="active-entry-left">
 				<div>
-					<span class="active-entry-name">Jasper Barcelona</span>
+					<span class="active-entry-name">{{ entry.customer_name }}</span>
 				</div>
 				<div>
-					<span class="active-entry-date">Setpember 31, 2018 | 03:30PM</span>
+					<span class="active-entry-date">{{ entry.date }} | {{ entry.time }}</span>
 				</div>
 			</div>
 			<div class="active-entry-right">
 				<div class="status-container">
-					<span class="active-entry-status pending">Pending</span>
+					{% if entry.status == 'Pending' %}
+					<span class="active-entry-status pending">{{ entry.status }}</span>
+					{% else %}
+					<span class="active-entry-status processing">{{ entry.status }}</span>
+					{% endif %}
 				</div>
 				<div class="active-entry-action-container">
 					<i class="material-icons close-action-icon">close</i>
+					{% if entry.status == 'Pending' %}
 					<button type="button" class="active-entry-action btn processing">Processing</Button>
-				</div>
-			</div>
-		</div>
-		<div class="entry">
-			<div class="active-entry-left">
-				<div>
-					<span class="active-entry-name">Jasper Barcelona</span>
-				</div>
-				<div>
-					<span class="active-entry-date">Setpember 31, 2018 | 03:30PM</span>
-				</div>
-			</div>
-			<div class="active-entry-right">
-				<div class="status-container">
-					<span class="active-entry-status processing">Processing</span>
-				</div>
-				<div class="active-entry-action-container">
-					<i class="material-icons close-action-icon">close</i>
+					{% else %}
 					<button type="button" class="active-entry-action btn done">Done</Button>
+					{% endif %}
 				</div>
 			</div>
 		</div>
-		<div class="entry">
-			<div class="active-entry-left">
-				<div>
-					<span class="active-entry-name">Jasper Barcelona</span>
-				</div>
-				<div>
-					<span class="active-entry-date">Setpember 31, 2018 | 03:30PM</span>
-				</div>
-			</div>
-			<div class="active-entry-right">
-				<div class="status-container">
-					<span class="active-entry-status pending">Pending</span>
-				</div>
-				<div class="active-entry-action-container">
-					<i class="material-icons close-action-icon">close</i>
-					<button type="button" class="active-entry-action btn processing">Processing</Button>
-				</div>
-			</div>
-		</div>
+		{% endfor %}
 	</div>
 </div>
 {% endblock %} 

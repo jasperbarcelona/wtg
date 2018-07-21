@@ -1,9 +1,21 @@
 $(document).ready(function(){
   
 $(window).load(function(){
-  setTimeout(function() {
-    $('#mainPreloader').fadeOut();
-  }, 3000);
+  $.get('/states',
+    function(data){
+      var states = data['customers'];
+      $('.input-container .typeahead').typeahead({
+        hint: true,
+        highlight: true,
+      },
+      {
+        name: 'states',
+        source: substringMatcher(states)
+      });
+      setTimeout(function() {
+        $('#mainPreloader').fadeOut();
+      }, 3000);
+    });
 });
 
 $('.snackbar').hide();
@@ -40,5 +52,38 @@ $('.close-action-icon').on('click', function (e) {
 });
 
 $('.fixed-action-btn').floatingActionButton();
+
+
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+
+$('.typeahead').on('typeahead:selected', function(evt, item) {
+  supply
+});
+
+$('.number-operations-btn.plus').on('click', function () {
+  quantity = $(this).closest('.service-quantity-text').val();
+  quantity += 1;
+  $(this).closest('service-quantity-text').val('3');
+});
 
 });

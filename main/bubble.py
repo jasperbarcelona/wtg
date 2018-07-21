@@ -65,14 +65,23 @@ def index():
     if not session:
         return redirect('/login')
 
-    transactions = Transaction.query.filter(Transaction.client_no==session['client_no']).order_by(Transaction.customer_name).all()
-    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no']).count()
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+
+    if user.active_sort == 'Alphabetical':
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.customer_name).all()
+    else:
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.created_at.desc()).all()
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').count()
+
+    services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name).all()
 
     return flask.render_template(
         'index.html',
         client_name=session['client_name'],
         transactions=transactions,
-        total_entries=total_entries
+        total_entries=total_entries,
+        services=services,
+        user=user
         )
 
 
@@ -82,6 +91,17 @@ def user_login():
     if session:
         return redirect('/')
     return flask.render_template('login.html')
+
+
+@app.route('/states',methods=['GET','POST'])
+def states():
+    transactions = Transaction.query.all()
+    customers = []
+    for entry in transactions:
+        customers.append(entry.customer_name)
+    return jsonify(
+        customers = customers
+        )
 
 
 @app.route('/user/authenticate',methods=['GET','POST'])
@@ -123,6 +143,7 @@ def rebuild_database():
         password='ratmaxi8',
         name='Jasper Barcelona',
         role='Administrator',
+        active_sort='Alphabetical',
         join_date=datetime.datetime.now().strftime('%B %d, %Y'),
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
@@ -131,6 +152,7 @@ def rebuild_database():
         client_no='bubble',
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
+        status='Pending',
         cashier_id=1,
         cashier_name='Jasper Barcelona',
         customer_name='Vhing Barcelona',
@@ -138,10 +160,70 @@ def rebuild_database():
         total='4000.00',
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
+    transaction1 = Transaction(
+        client_no='bubble',
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        status='Processing',
+        cashier_id=1,
+        cashier_name='Jasper Barcelona',
+        customer_name='Leanza Etorma',
+        customer_msisdn='09176214704',
+        total='4000.00',
+        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
+        )
+    transaction2 = Transaction(
+        client_no='bubble',
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        status='Processing',
+        cashier_id=1,
+        cashier_name='Jasper Barcelona',
+        customer_name='Tobie Delos Reyes',
+        customer_msisdn='09176214704',
+        total='4000.00',
+        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
+        )
+    transaction3 = Transaction(
+        client_no='bubble',
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        status='Pending',
+        cashier_id=1,
+        cashier_name='Jasper Barcelona',
+        customer_name='Janno Armamento',
+        customer_msisdn='09176214704',
+        total='4000.00',
+        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
+        )
+
+    service = Service(
+        client_no='bubble',
+        name='Wash & Dry',
+        price='100.00'
+        )
+
+    service1 = Service(
+        client_no='bubble',
+        name='Fabric Conditioner',
+        price='15.00'
+        )
+
+    service2 = Service(
+        client_no='bubble',
+        name='Fold',
+        price='20.00'
+        )
 
     db.session.add(client)
     db.session.add(user)
     db.session.add(transaction)
+    db.session.add(transaction1)
+    db.session.add(transaction2)
+    db.session.add(transaction3)
+    db.session.add(service)
+    db.session.add(service1)
+    db.session.add(service2)
     db.session.commit()
 
     return jsonify(

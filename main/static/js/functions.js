@@ -62,15 +62,42 @@ function validate_msisdn(element,value) {
 }
 
 function add_quantity(element_id) {
-  quantity = parseInt($('#'+element_id).val());
+  quantity = parseFloat($('#'+element_id).val());
   quantity += 1;
-  $('#'+element_id).val(quantity);
+  if (quantity % 1 != 0){
+    $('#'+element_id).val(quantity.toFixed(1));
+  }
+  else{
+    $('#'+element_id).val(quantity.toFixed(0));
+  }
+  get_current_total();
 }
 
 function subtract_quantity(element_id) {
-  quantity = parseInt($('#'+element_id).val());
-  if (quantity > 0){
+  quantity = parseFloat($('#'+element_id).val());
+  if (quantity >= 1){
     quantity -= 1;
   }
-  $('#'+element_id).val(quantity);
+  else {
+    quantity = 0;
+  }
+  if (quantity % 1 != 0){
+    $('#'+element_id).val(quantity.toFixed(1));
+  }
+  else{
+    $('#'+element_id).val(quantity.toFixed(0));
+  }
+  get_current_total();
+}
+
+function get_current_total() {
+  var total = 0
+  $('.service').each(function() {
+    price = parseFloat($(this).find('.service-price').html().substring(4));
+    quantity = parseFloat($(this).find('.service-quantity-text').val());
+
+    product = price * quantity
+    total = parseFloat(total) + product;
+  });
+  $('#transactionTotal').html('PHP ' + total.toFixed(2));
 }

@@ -339,6 +339,7 @@ select {
 
 .modal-footer {
 	float: left;
+	position: relative;
 	width: 100%;
 }
 
@@ -396,6 +397,13 @@ select {
 	height: calc(100vh - 125px) !important;
 	width: 100% !important;
 	position: relative;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#addTransactionModal .btn-primary {
+	background-color: #337AB7 !important;
+	width: 200px !important;
 }
 
 #addTransactionModal .form-control {
@@ -639,4 +647,13 @@ select {
 
 .number-operations-btn.plus {
 	border-radius: 0 5px 5px 0;
+}
+
+.transaction-total-container {
+	float: left;
+	padding-top: 7px;
+}
+
+#transactionTotal {
+	font-size: 18px;
 }

@@ -185,7 +185,7 @@ def rebuild_database():
 
     client = Client(
         client_no='bubble',
-        name='Wash & Rinse',
+        name='Wash App',
         app_id='EGXMuB5eEgCMLTKxExieqkCGeGeGuBon',
         app_secret='f3e1ab30e23ea7a58105f058318785ae236378d1d9ebac58fe8b42e1e239e1c3',
         passphrase='24BUubukMQ',

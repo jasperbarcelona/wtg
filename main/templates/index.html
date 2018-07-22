@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+<div id="header">
+	<span class="client-name">{{ client_name }}</span>
+</div>
 <div class="nav-container">
     <div id="navActive" class="nav-item col-xs-4 active" onclick="show_active()"><span class="nav-item-label">Active</span></div>
 	<div id="navHistory" class="nav-item col-xs-4" onclick="show_history()"><span class="nav-item-label">History</span></div>

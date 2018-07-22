@@ -1,21 +1,7 @@
 $(document).ready(function(){
   
 $(window).load(function(){
-  $.get('/states',
-    function(data){
-      var states = data['customers'];
-      $('.input-container .typeahead').typeahead({
-        hint: true,
-        highlight: true,
-      },
-      {
-        name: 'states',
-        source: substringMatcher(states)
-      });
-      setTimeout(function() {
-        $('#mainPreloader').fadeOut();
-      }, 3000);
-    });
+  initialize_page();
 });
 
 $('.snackbar').hide();
@@ -53,28 +39,60 @@ $('.close-action-icon').on('click', function (e) {
 
 $('.fixed-action-btn').floatingActionButton();
 
+$('.service-quantity-text').on('keyup', function () {
+  quantity = $(this).val();
+  if (quantity == '') {
+    quantity = 0;
+    $(this).val(quantity);
+    $(this).select();
+  }
+  get_current_total();
+});
 
-var substringMatcher = function(strs) {
-  return function findMatches(q, cb) {
-    var matches, substringRegex;
+$('#addTransactionModal .form-control').on('keyup', function () {
+  customer_name = $('#addTransactionName').val();
+  customer_msisdn = $('#addTransactionMsisdn').val();
+  total = $('#transactionTotal').html();
 
-    // an array that will be populated with substring matches
-    matches = [];
+  if ((customer_name != '') && (customer_msisdn != '') && (customer_msisdn.length == 11) && (total != 'PHP 0.00')) {
+    $('#saveTransactionBtn').attr('disabled', false);
+  }
+  else {
+    $('#saveTransactionBtn').attr('disabled', true);
+  }
+});
 
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
+$('#addTransactionModal .form-control').on('change', function () {
+  customer_name = $('#addTransactionName').val();
+  customer_msisdn = $('#addTransactionMsisdn').val();
+  total = $('#transactionTotal').html();
 
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        matches.push(str);
-      }
-    });
+  if ((customer_name != '') && (customer_msisdn != '') && (customer_msisdn.length == 11) && (total != 'PHP 0.00')) {
+    $('#saveTransactionBtn').attr('disabled', false);
+  }
+  else {
+    $('#saveTransactionBtn').attr('disabled', true);
+  }
+});
 
-    cb(matches);
-  };
-};
+$('#addTransactionModal').on('hidden.bs.modal', function () {
+  $('#addTransactionModal .error-icon-container').addClass('hidden');
+  $('#addTransactionName').val('');
+  $('#addTransactionMsisdn').val('');
+  $('#addTransactionModal .service-quantity-text').val('0');
+  $('#addTransactionModal .form-control').change();
+  $('#addTransactionName').css('border','1px solid #ccc');
+  $('#addTransactionMsisdn').css('border','1px solid #ccc');
+  $('#saveTransactionBtn').button('complete');
+  $('#transactionTotal').html('PHP 0.00');
+  setTimeout(function() {
+    $('#saveTransactionBtn').attr('disabled', true);
+  }, 500);
+});
+
+$('#addTransactionModal').on('shown.bs.modal', function () {
+  $('#addTransactionName').focus();
+});
 
 $('.typeahead').on('typeahead:selected', function(evt, item) {
   

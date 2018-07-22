@@ -24,15 +24,20 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="modal-title" id="gridSystemModalLabel">New Transaction</span>
+                <div class="arrow-back-container" data-dismiss="modal">
+                    <i class="material-icons">
+                        arrow_back_ios
+                    </i>
+                    <span class="modal-title" id="gridSystemModalLabel">New Transaction</span>
+                </div>
             </div>
             <div class="modal-body">
-                <div class="input-container whole">
+                <div id="addTransactionNameContainer" class="input-container whole">
                     <input type="text" id="addTransactionName" data-error="errorTransactionName" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control typeahead" data-class="input-label" placeholder="Customer's name">
                     <div id="errorTransactionName" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="text" id="addTransactionMsisdn" data-error="errorTransactionMsisdn" onblur="validate_blank(this,this.value); validate_msisdn(this,this.value);" class="form-control" data-class="input-label" placeholder="Customer's mobile number">
+                    <input type="number" id="addTransactionMsisdn" data-error="errorTransactionMsisdn" onblur="validate_blank(this,this.value); validate_msisdn(this,this.value);" class="form-control" data-class="input-label" placeholder="Customer's mobile number" maxlength = "11" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                     <div id="errorTransactionMsisdn" class="error-icon-container hidden tooltip" title="Must be exactly 11 characters."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <span class="input-group-label">Products & Services</span>
@@ -54,7 +59,7 @@
                                 <button type="button" class="btn number-operations-btn plus" onclick="add_quantity({{ service.id }})">
                                     <i class="material-icons">add</i>
                                 </button>
-                                <input type="text" id="{{ service.id }}" class="service-quantity-text form-control" value="0">
+                                <input type="number" id="{{ service.id }}" class="service-quantity-text form-control" value="0" onclick="this.select()">
                                 <button type="button" class="btn number-operations-btn minus" onclick="subtract_quantity({{ service.id }})">
                                     <i class="material-icons">remove</i>
                                 </button>
@@ -63,14 +68,12 @@
                     </div>
                     {% endfor %}
                 </div>
-
-
             </div>
             <div class="modal-footer">
                 <div class="transaction-total-container">
                     <span id="transactionTotal">PHP 0.00</span>
                 </div>
-                <button type="button" class="btn btn-primary modal-btn" >Done</button>
+                <button type="button" id="saveTransactionBtn" class="btn btn-primary modal-btn" onclick="save_transaction()" data-loading-text="Saving.." data-complete-text="Done" disabled>Done</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

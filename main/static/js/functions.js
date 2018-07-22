@@ -50,12 +50,12 @@ function validate_blank(element,value) {
 
 function validate_msisdn(element,value) {
   if ((value != '') && (value.length == 11)) {
-    $(element).css("border-bottom", "1px solid #ccc");
+    $(element).css("border", "1px solid #ccc");
     $('#'+error_icon_id).addClass('hidden');
     $('#'+error_icon_id).addClass('tooltip');
   }
   else {
-    $(element).css("border-bottom", "1px solid #d9534f");
+    $(element).css("border", "1px solid #d9534f");
     $('#'+error_icon_id).removeClass('hidden');
     $('#'+error_icon_id).removeClass('tooltip');
   }
@@ -71,6 +71,7 @@ function add_quantity(element_id) {
     $('#'+element_id).val(quantity.toFixed(0));
   }
   get_current_total();
+  $('#'+element_id).change();
 }
 
 function subtract_quantity(element_id) {
@@ -88,6 +89,7 @@ function subtract_quantity(element_id) {
     $('#'+element_id).val(quantity.toFixed(0));
   }
   get_current_total();
+  $('#'+element_id).change();
 }
 
 function get_current_total() {
@@ -101,3 +103,59 @@ function get_current_total() {
   });
   $('#transactionTotal').html('PHP ' + total.toFixed(2));
 }
+
+function save_transaction() {
+  $('#saveTransactionBtn').button('loading');
+  items = {};
+  customer_name = $('#addTransactionName').val();
+  customer_msisdn = $('#addTransactionMsisdn').val();
+  total = $('#transactionTotal').html().substring(4);
+  $('.service').each(function() {
+    item_id = $(this).find('.service-quantity-text').attr('id');
+    quantity = parseFloat($(this).find('.service-quantity-text').val());
+    items[item_id] = quantity;
+    /*alert('id: '+item_id+', quantity: '+quantity);*/
+  });
+  items['total'] = total;
+  items['customer_name'] = customer_name;
+  items['customer_msisdn'] = customer_msisdn;
+  $.post('/transaction/save',
+  items
+  ,
+  function(data){
+    $('.content').html(data['template']);
+    $('#addTransactionModal').modal('hide');
+  });
+}
+
+function initialize_page() {
+  $.get('/states',
+  function(data){
+    var states = data['customers'];
+    $('.input-container .typeahead').typeahead({
+      hint: true,
+      highlight: true,
+    },
+    {
+      name: 'states',
+      source: substringMatcher(states)
+    });
+    setTimeout(function() {
+      $('#mainPreloader').fadeOut();
+    }, 3000);
+  });
+}
+
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+    matches = [];
+    substrRegex = new RegExp(q, 'i');
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+    cb(matches);
+  };
+};

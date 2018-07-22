@@ -72,3 +72,12 @@ class Service(db.Model):
     client_no = db.Column(db.String(32))
     name = db.Column(db.String(30))
     price = db.Column(db.String(10))
+
+class TransactionItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    client_no = db.Column(db.String(32))
+    transaction_id = db.Column(db.Integer())
+    service_id = db.Column(db.Integer())
+    service_name = db.Column(db.String(30))
+    quantity = db.Column(db.Float())
+    price = db.Column(db.String(10))

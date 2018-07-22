@@ -43,8 +43,10 @@ class BubbleAdmin(sqla.ModelView):
 
 admin = Admin(app, name='bubble')
 admin.add_view(BubbleAdmin(Client, db.session))
-admin.add_view(BubbleAdmin(Transaction, db.session))
 admin.add_view(BubbleAdmin(AdminUser, db.session))
+admin.add_view(BubbleAdmin(Transaction, db.session))
+admin.add_view(BubbleAdmin(TransactionItem, db.session))
+admin.add_view(BubbleAdmin(Service, db.session))
 # admin.add_view(BubbleAdmin(Service, db.session))
 
 def nocache(view):
@@ -65,7 +67,7 @@ def index():
     if not session:
         return redirect('/login')
 
-    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
 
     if user.active_sort == 'Alphabetical':
         transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.customer_name).all()
@@ -82,6 +84,60 @@ def index():
         total_entries=total_entries,
         services=services,
         user=user
+        )
+
+
+@app.route('/transaction/save',methods=['GET','POST'])
+def save_transaction():
+    data = flask.request.form.to_dict()
+
+    transaction = Transaction(
+        client_no=session['client_no'],
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        status='Pending',
+        cashier_id=session['user_id'],
+        cashier_name=session['user_name'].title(),
+        customer_name=data['customer_name'].title(),
+        customer_msisdn=data['customer_msisdn'],
+        total=data['total'],
+        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
+        )
+
+    db.session.add(transaction)
+    db.session.commit()
+
+    services = Service.query.filter_by(client_no=session['client_no']).all()
+    for service in services:
+        quantity = data[str(service.id)]
+        if quantity != 0:
+            price = float(quantity) * float(service.price)
+            transaction_item = TransactionItem(
+                client_no=session['client_no'],
+                transaction_id=transaction.id,
+                service_id=service.id,
+                service_name=service.name,
+                quantity=quantity,
+                price='{0:.2f}'.format(price)
+                )
+            db.session.add(transaction_item)
+            db.session.commit()
+
+    user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
+
+    if user.active_sort == 'Alphabetical':
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.customer_name).all()
+    else:
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.created_at.desc()).all()            
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').count()
+
+    return jsonify(
+        template = flask.render_template(
+            'transactions.html',
+            transactions = transactions,
+            total_entries=total_entries,
+            user=user
+            )
         )
 
 

@@ -162,6 +162,9 @@ var substringMatcher = function(strs) {
 
 function open_transaction(transaction_id) {
   $.post('/transaction',
+  {
+    transaction_id:transaction_id
+  },
   function(data){
     $('#transactionInfoModal').html(data);
     $('#transactionInfoModal').modal('show');

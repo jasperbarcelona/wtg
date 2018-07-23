@@ -30,9 +30,9 @@
 			{% endif %}
 		</div>
 	</div>
-	<div class="entry-container">
+	<div class="active-entry-container">
 		{% for entry in transactions %}
-		<div class="entry">
+		<div class="entry" onclick="open_transaction({{ entry.id }})">
 			<div class="active-entry-left">
 				<div>
 					<span class="active-entry-name">{{ entry.customer_name }}</span>

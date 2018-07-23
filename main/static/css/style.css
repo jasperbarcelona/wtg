@@ -168,6 +168,11 @@ input[type=number]::-webkit-outer-spin-button {
 	outline: none !important;
 }
 
+.active-entry-container {
+	float: left;
+	padding-bottom: 100px !important;
+}
+
 .entry {
 	float: left;
 	padding: 0;
@@ -432,6 +437,19 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: #337AB7;
 }
 
+.clockpicker-button {
+	background-color: #337AB7 !important;
+}
+
+.clockpicker-button:hover,
+.clockpicker-button:active,
+.clockpicker-button:focus {
+	color: #FFFFFF !important;
+	outline: none !important;
+	background-color: #337AB7 !important;
+}
+
+
 #addTransactionModal,
 #addTransactionModal .modal-dialog,
 #addTransactionModal .modal-content {
@@ -446,7 +464,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #addTransactionModal .modal-body {
-	height: calc(100vh - 125px) !important;
+	height: calc(100vh - 126px) !important;
 	width: 100% !important;
 	position: relative;
 	overflow-y: scroll;

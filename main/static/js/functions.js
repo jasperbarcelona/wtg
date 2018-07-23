@@ -159,3 +159,11 @@ var substringMatcher = function(strs) {
     cb(matches);
   };
 };
+
+function open_transaction(transaction_id) {
+  $.post('/transaction',
+  function(data){
+    $('#transactionInfoModal').html(data);
+    $('#transactionInfoModal').modal('show');
+  });
+}

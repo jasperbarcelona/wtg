@@ -40,6 +40,14 @@
                     <input type="number" id="addTransactionMsisdn" data-error="errorTransactionMsisdn" onblur="validate_blank(this,this.value); validate_msisdn(this,this.value);" class="form-control" data-class="input-label" placeholder="Customer's mobile number" maxlength = "11" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                     <div id="errorTransactionMsisdn" class="error-icon-container hidden tooltip" title="Must be exactly 11 characters."><i class="material-icons">&#xE001;</i></div>
                 </div>
+                <div class="input-container left">
+                    <input type="text" id="addTransactionDate" data-error="errorTransactionDate" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" class="form-control datepicker" data-class="input-label" placeholder="Date">
+                    <div id="errorTransactionDate" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container right">
+                    <input type="text" id="addTransactionTime" data-error="errorTransactionTime" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)"  class="form-control clockpicker" data-class="input-label" placeholder="Time" maxlength = "11" oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+                    <div id="errorTransactionTime" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
                 <span class="input-group-label">Products & Services</span>
 
 

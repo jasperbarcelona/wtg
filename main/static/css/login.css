@@ -27,7 +27,7 @@ body{
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  background-image:url('../images/assets/test1.jpg');
+  background-image:url('../images/assets/test.jpg');
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;
@@ -90,8 +90,6 @@ body{
 }
 
 .sub-brand-container {
-  color: #FFFFFF;
-  font-size: 22px;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -101,6 +99,16 @@ body{
   -webkit-justify-content: center;
   justify-content: center;
   margin-bottom: 20px;
+}
+
+#login-error {
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.login-sub-brand {
+  color: #FFFFFF;
+  font-size: 22px;
 }
 
 .container {

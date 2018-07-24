@@ -293,7 +293,7 @@ def rebuild_database():
         )
 
     transaction_item = TransactionItem(
-        client_no=session['client_no'],
+        client_no='bubble',
         transaction_id=1,
         service_id=1,
         service_name='Wash & Dry',

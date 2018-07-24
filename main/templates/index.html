@@ -26,7 +26,7 @@
 		</div>
 	</div>
 	<div class="add-btn-container">
-		<a id="addTransactionBtn" class="btn-floating btn-large waves-effect waves-light red" data-toggle="modal" data-target="#addTransactionModal"><i class="material-icons">add</i></a>
+		<a id="addTransactionBtn" class="btn-floating btn-large waves-effect waves-light" data-toggle="modal" data-target="#addTransactionModal"><i class="material-icons">add</i></a>
 	</div>
 	<div class="search-container">
 		<input type="text" id="searchActive" class="search-text-box form-control" placeholder="Search active transactions">
@@ -45,8 +45,8 @@
 	</div>
 	<div class="active-entry-container">
 		{% for entry in transactions %}
-		<div class="entry" onclick="open_transaction({{ entry.id }})">
-			<div class="active-entry-left">
+		<div class="entry">
+			<div class="active-entry-left" onclick="open_transaction({{ entry.id }})">
 				<div>
 					<span class="active-entry-name">{{ entry.customer_name }}</span>
 				</div>
@@ -65,9 +65,9 @@
 				<div class="active-entry-action-container">
 					<i class="material-icons close-action-icon">close</i>
 					{% if entry.status == 'Pending' %}
-					<button type="button" class="active-entry-action btn processing">Processing</Button>
+					<button type="button" class="active-entry-action btn processing waves-effect waves-light">Process</Button>
 					{% else %}
-					<button type="button" class="active-entry-action btn done">Done</Button>
+					<button type="button" class="active-entry-action btn done waves-effect waves-light">Done</Button>
 					{% endif %}
 				</div>
 			</div>

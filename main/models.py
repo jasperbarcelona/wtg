@@ -65,6 +65,7 @@ class Transaction(db.Model):
     customer_name = db.Column(db.String(60), nullable=True)
     customer_msisdn = db.Column(db.String(30), nullable=True)
     total = db.Column(db.String(30))
+    notes = db.Column(db.Text())
     created_at = db.Column(db.String(50))
 
 class Service(db.Model):
@@ -79,5 +80,6 @@ class TransactionItem(db.Model):
     transaction_id = db.Column(db.Integer())
     service_id = db.Column(db.Integer())
     service_name = db.Column(db.String(30))
-    quantity = db.Column(db.Float())
+    quantity = db.Column(db.String(10))
     price = db.Column(db.String(10))
+    total = db.Column(db.String(10))

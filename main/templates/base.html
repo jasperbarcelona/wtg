@@ -6,14 +6,12 @@
                 <link rel="stylesheet" href="../static/css/bootstrap.min.css">
                 <link rel="stylesheet" href="../static/css/bootstrap-clockpicker.min.css">
                 <link rel="stylesheet" href="../static/css/jquery-ui.css">
-                <link rel="stylesheet" href="../static/css/jquery.ui.datepicker.mobile.css">
                 <link rel="stylesheet" href="../static/css/jquery-ui.structure.css">
                 <link rel="stylesheet" href="../static/css/style.css">
                 <link rel="stylesheet" href="../static/css/icon.css">
                 <link rel="stylesheet" href="../static/css/tooltipster.bundle.css">
                 <link rel="stylesheet" href="../static/css/tooltipster-sideTip-shadow.min.css">
                 <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-                <link rel="stylesheet" href="../static/css/materialize.css">
                 <!--<script src="//fast.eager.io/sgP7QN5AJL.js"></script>
                 <script src="//fast.eager.io/nH76uFjaDI.js"></script> -->
                 <link rel="shortcut icon" href="../static/images/logos/favicon.ico" type="image/x-icon">
@@ -24,8 +22,19 @@
         {% else %}
         <body>
         {% endif %}
-                <div id="mainPreloader" class="wrapperloader hidden">
-                        Loading..
+                <div id="mainPreloader" class="wrapperloader">
+                        <div class="main-washing-machine">
+                                <div class="main-controls-container">
+                                        <div class="main-controls-align">
+                                                <div class="main-wash-controls"></div>
+                                                <div class="main-wash-controls"></div>
+                                        </div>
+                                </div>
+                                <div class="main-washing-machine-body">
+                                        <div class="main-washing-machine-lid"></div>
+                                </div>
+                        </div>
+                        <span class="main-loading-text">WashApp?! Just a moment please.</span>
                 </div>
                 {% include 'modals.html' %}
                 {% block content %} 
@@ -36,8 +45,8 @@
                 <script src="../static/js/TweenMax.min.js"></script>
                 <script src="../static/js/TimelineMax.min.js"></script>
                 <script src="../static/js/jquery.drawsvg.js"></script>
-                <!-- <script src="../static/js/jquery-ui.min.js"></script> -->
-                <script src="../static/js/materialize.min.js"></script>
+                <script src="../static/js/jquery-ui.min.js"></script>
+                <script src="../static/js/materialize.js"></script>
                 <script src="../static/js/typeahead.jquery.min.js"></script>
                 <script src="../static/js/animations.js"></script>
                 <script src="../static/js/bootstrap-select.js"></script>

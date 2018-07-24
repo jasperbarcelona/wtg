@@ -1,0 +1,31 @@
+<div id="editransactionNameContainer" class="input-container whole">
+        <input type="text" id="editTransactionName" class="form-control" placeholder="Customer's name" value="{{ transaction.customer_name }}">
+</div>
+<div class="input-container whole">
+    <input type="text" id="editTransactionMsisdn" class="form-control" placeholder="Customer's mobile number" value="{{ transaction.customer_msisdn }}">
+</div>
+<span class="input-group-label">Items/Services</span>
+<div class="transaction-service-container">
+    <table id="transactionItemsTable" class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th class="align-right">Unt Price</th>
+                <th class="align-right">Qty</th>
+                <th class="align-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in transaction_items %}
+            <tr>
+                <td>{{ item.service_name }}</td>
+                <td class="align-right">{{ item.price }}</td>
+                <td class="align-right">{{ item.quantity }}</td>
+                <td class="align-right">{{ item.total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<span class="input-group-label">Additional Notes</span>
+<textarea id="transactionNotes" class="form-control notes" value="{{ transaction.notes }}"></textarea>

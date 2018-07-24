@@ -86,6 +86,21 @@ def index():
         user=user
         )
 
+@app.route('/transaction',methods=['GET','POST'])
+def open_transaction():
+    transaction_id = flask.request.form.get('transaction_id')
+    transaction = Transaction.query.filter_by(id=transaction_id).first()
+    transaction_items = TransactionItem.query.filter_by(transaction_id=transaction.id).all()
+
+    return jsonify(
+        body_template=flask.render_template(
+            'transaction_info.html',
+            transaction=transaction,
+            transaction_items=transaction_items
+            ),
+        total=transaction.total
+        )
+
 
 @app.route('/transaction/save',methods=['GET','POST'])
 def save_transaction():
@@ -101,6 +116,7 @@ def save_transaction():
         customer_name=data['customer_name'].title(),
         customer_msisdn=data['customer_msisdn'],
         total=data['total'],
+        notes=data['notes'],
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
 
@@ -110,15 +126,16 @@ def save_transaction():
     services = Service.query.filter_by(client_no=session['client_no']).all()
     for service in services:
         quantity = data[str(service.id)]
-        if quantity != 0:
+        if quantity != '0' and quantity != '0.0':
             price = float(quantity) * float(service.price)
             transaction_item = TransactionItem(
                 client_no=session['client_no'],
                 transaction_id=transaction.id,
                 service_id=service.id,
                 service_name=service.name,
-                quantity=quantity,
-                price='{0:.2f}'.format(price)
+                quantity=str(quantity),
+                price=service.price,
+                total='{0:.2f}'.format(price)
                 )
             db.session.add(transaction_item)
             db.session.commit()
@@ -149,6 +166,12 @@ def user_login():
     return flask.render_template('login.html')
 
 
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.clear()
+    return redirect('/login')
+
+
 @app.route('/states',methods=['GET','POST'])
 def states():
     transactions = Transaction.query.all()
@@ -163,14 +186,10 @@ def states():
 @app.route('/user/authenticate',methods=['GET','POST'])
 def authenticate_user():
     data = flask.request.form.to_dict()
-    client = Client.query.filter_by(client_no=data['client_no']).first()
-    if not client or client == None:
-        return jsonify(status='failed', error='Invalid client ID.')
     user = AdminUser.query.filter_by(email=data['user_email'],password=data['user_password']).first()
     if not user or user == None:
         return jsonify(status='failed', error='Invalid email or password.')
-    if user.client_no != client.client_no:
-        return jsonify(status='failed', error='Not authorized.')
+    client = Client.query.filter_by(client_no=user.client_no).first()
     session['user_name'] = user.name
     session['user_id'] = user.id
     session['client_no'] = client.client_no
@@ -214,8 +233,10 @@ def rebuild_database():
         customer_name='Vhing Barcelona',
         customer_msisdn='09176214704',
         total='4000.00',
+        notes='Sample notes.',
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
+
     transaction1 = Transaction(
         client_no='bubble',
         date=datetime.datetime.now().strftime('%B %d, %Y'),
@@ -271,6 +292,16 @@ def rebuild_database():
         price='20.00'
         )
 
+    transaction_item = TransactionItem(
+        client_no=session['client_no'],
+        transaction_id=1,
+        service_id=1,
+        service_name='Wash & Dry',
+        quantity='1',
+        price='100',
+        total='100'
+        )
+
     db.session.add(client)
     db.session.add(user)
     db.session.add(transaction)
@@ -280,6 +311,7 @@ def rebuild_database():
     db.session.add(service)
     db.session.add(service1)
     db.session.add(service2)
+    db.session.add(transaction_item)
     db.session.commit()
 
     return jsonify(

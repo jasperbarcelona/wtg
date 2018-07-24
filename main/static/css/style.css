@@ -44,6 +44,10 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0; 
 }
 
+.align-right {
+	text-align: right;
+}
+
 .form-control {
 	width: 100% !important;
 }
@@ -292,11 +296,11 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .active-entry-action {
-	padding: 5px !important;
-	height: auto !important;
+	padding: 5px;
+	height: 50px !important;
 	margin-left: 20px;
 	width: calc(100% - 20px);
-	font-size: 12px !important;
+	font-size: 14px !important;
 	text-transform: none !important;
 	color: #FFFFFF;
 }
@@ -323,11 +327,6 @@ input[type=number]::-webkit-outer-spin-button {
 	color: #FFFFFF;
 	outline: none !important;
 	background-color: #337AB7;
-}
-
-.btn:active {
-	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125) !important;
-          box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125) !important;
 }
 
 .add-btn-container {
@@ -452,39 +451,50 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: #337AB7 !important;
 }
 
+.table {
+	margin-bottom: 0 !important;
+}
 
 #addTransactionModal,
 #addTransactionModal .modal-dialog,
-#addTransactionModal .modal-content {
+#addTransactionModal .modal-content,
+#transactionInfoModal,
+#transactionInfoModal .modal-dialog,
+#transactionInfoModal .modal-content {
 	padding: 0 !important;
 	margin: 0 !important;
 	border: none !important;
 	width: 100% !important
 }
 
-#addTransactionModal .modal-title {
+#addTransactionModal .modal-title,
+#transactionInfoModal .modal-title {
 	padding-top: 3px !important;
 }
 
-#addTransactionModal .modal-body {
-	height: calc(100vh - 126px) !important;
+#addTransactionModal .modal-body,
+#transactionInfoModal .modal-body {
+	height: calc(100vh - 115px) !important;
 	width: 100% !important;
 	position: relative;
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
 
-#addTransactionModal .btn-primary {
+#addTransactionModal .btn-primary,
+#transactionInfoModal .btn-primary {
 	background-color: #337AB7 !important;
 	width: 200px !important;
 }
 
-#addTransactionModal .form-control {
+#addTransactionModal .form-control,
+#transactionInfoModal .form-control {
 	text-transform: capitalize;
 	height: 45px;
 }
 
-#addTransactionNameContainer {
+#addTransactionNameContainer,
+#editTransactionNameContainer {
 	margin-top: 10px;
 }
 
@@ -611,6 +621,28 @@ input[type=number]::-webkit-outer-spin-button {
 	border-bottom: 1px solid #ccc;
 }
 
+#transactionItemsTable thead{
+	background-color: #337AB7;
+	color: #FFFFFF !important;
+}
+
+#transactionItemsTable th {
+	font-size: 13px;
+}
+
+#transactionItemsTable td {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-size: 13px;
+}
+
+.transaction-service-container {
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #ccc !important;
+}
+
 .service {
 	height: 60px;
 	width: 100%;
@@ -727,7 +759,8 @@ input[type=number]::-webkit-outer-spin-button {
 	padding-top: 7px;
 }
 
-#transactionTotal {
+#transactionTotal,
+#editTransactionTotal {
 	font-size: 18px;
 }
 
@@ -753,7 +786,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 #modalLoader {
 	position: fixed;
-	z-index: 30;
+	z-index: 9999;
 	top: 50px;
 	left: 0;
 	width: 100%;
@@ -771,7 +804,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .washing-machine {
 	position: relative;
-	height: 80px;
+	height: 90px;
 	width: 70px;
 	border-radius: 5px;
 	border: 2px solid #ccc;
@@ -831,7 +864,311 @@ input[type=number]::-webkit-outer-spin-button {
 	animation: spin 1s linear infinite;
 }
 
+
+#mainPreloader {
+	position: fixed;
+	z-index: 99999;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background-color: #337AB7;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.main-washing-machine {
+	position: relative;
+	height: 90px;
+	width: 70px;
+	border-radius: 5px;
+	border: 2px solid #FFFFFF;
+}
+
+.main-controls-container {
+	height: 20px;
+	width: 100%;
+	border-bottom: 1px solid #FFFFFF;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.main-controls-container > .controls-align {
+	width: 100%;
+	text-align: right;
+	padding-right: 10px;
+}
+
+.main-wash-controls {
+	float: right;
+	height: 4px;
+	width: 4px;
+	border-radius: 50%;
+	background-color: #FFFFFF;
+}
+
+.main-wash-controls:first-of-type {
+	margin-left: 5px;
+}
+
+.main-washing-machine-body {
+	height: calc(100% - 20px);
+	width: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.main-washing-machine-lid {
+	height: 35px;
+	width: 35px;
+	border-radius: 50%;
+	border: 2px solid #ccc; /* Light grey */
+    border-top: 3px solid #FFFFFF; /* Blue */
+	animation: spin 1s linear infinite;
+}
+
+.main-loading-text {
+	color: #FFFFFF;
+	margin-top: 20px;
+	font-size: 14px;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.waves-effect {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  vertical-align: middle;
+  z-index: 1;
+  -webkit-transition: .3s ease-out;
+  transition: .3s ease-out;
+}
+
+.waves-effect .waves-ripple {
+  position: absolute;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.2);
+  -webkit-transition: all 0.7s ease-out;
+  transition: all 0.7s ease-out;
+  -webkit-transition-property: opacity, -webkit-transform;
+  transition-property: opacity, -webkit-transform;
+  transition-property: transform, opacity;
+  transition-property: transform, opacity, -webkit-transform;
+  -webkit-transform: scale(0);
+          transform: scale(0);
+  pointer-events: none;
+}
+
+.waves-effect.waves-light .waves-ripple {
+  background-color: rgba(255, 255, 255, 0.45);
+}
+
+.waves-effect.waves-red .waves-ripple {
+  background-color: rgba(244, 67, 54, 0.7);
+}
+
+.waves-effect.waves-yellow .waves-ripple {
+  background-color: rgba(255, 235, 59, 0.7);
+}
+
+.waves-effect.waves-orange .waves-ripple {
+  background-color: rgba(255, 152, 0, 0.7);
+}
+
+.waves-effect.waves-purple .waves-ripple {
+  background-color: rgba(156, 39, 176, 0.7);
+}
+
+.waves-effect.waves-green .waves-ripple {
+  background-color: rgba(76, 175, 80, 0.7);
+}
+
+.waves-effect.waves-teal .waves-ripple {
+  background-color: rgba(0, 150, 136, 0.7);
+}
+
+.waves-effect input[type="button"], .waves-effect input[type="reset"], .waves-effect input[type="submit"] {
+  border: 0;
+  font-style: normal;
+  font-size: inherit;
+  text-transform: inherit;
+  background: none;
+}
+
+.waves-effect img {
+  position: relative;
+  z-index: -1;
+}
+
+.waves-notransition {
+  -webkit-transition: none !important;
+  transition: none !important;
+}
+
+.waves-circle {
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+}
+
+.waves-input-wrapper {
+  border-radius: 0.2em;
+  vertical-align: bottom;
+}
+
+.waves-input-wrapper .waves-button-input {
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.waves-circle {
+  text-align: center;
+  width: 2.5em;
+  height: 2.5em;
+  line-height: 2.5em;
+  border-radius: 50%;
+  -webkit-mask-image: none;
+}
+
+.waves-block {
+  display: block;
+}
+
+/* Firefox Bug: link not triggered */
+.waves-effect .waves-ripple {
+  z-index: -1;
+}
+
+.btn, .btn-large, .btn-small,
+.btn-floating,
+.btn-large,
+.btn-small,
+.btn-flat {
+  font-size: 14px;
+  outline: 0;
+}
+
+.btn i, .btn-large i, .btn-small i,
+.btn-floating i,
+.btn-large i,
+.btn-small i,
+.btn-flat i {
+  font-size: 1.3rem;
+  line-height: inherit;
+}
+
+.btn:focus, .btn-large:focus, .btn-small:focus,
+.btn-floating:focus {
+  background-color: #1d7d74;
+}
+.btn-floating {
+  display: inline-block;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  background-color: #26a69a;
+  border-radius: 50%;
+  -webkit-transition: background-color .3s;
+  transition: background-color .3s;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.btn-floating:hover {
+  background-color: #26a69a;
+}
+
+.btn-floating:before {
+  border-radius: 0;
+}
+
+.btn-floating.btn-large {
+  width: 56px;
+  height: 56px;
+  padding: 0;
+}
+
+.btn-floating.btn-large.halfway-fab {
+  bottom: -28px;
+}
+
+.btn-floating.btn-large i {
+  line-height: 56px;
+}
+
+.btn-floating.btn-small {
+  width: 32.4px;
+  height: 32.4px;
+}
+
+.btn-floating.btn-small.halfway-fab {
+  bottom: -16.2px;
+}
+
+.btn-floating.btn-small i {
+  line-height: 32.4px;
+}
+
+.btn-floating.halfway-fab {
+  position: absolute;
+  right: 24px;
+  bottom: -20px;
+}
+
+.btn-floating.halfway-fab.left {
+  right: auto;
+  left: 24px;
+}
+
+.btn-floating i {
+  width: inherit;
+  display: inline-block;
+  text-align: center;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 40px;
+}
+
+button.btn-floating {
+  border: none;
 }

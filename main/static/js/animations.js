@@ -5,6 +5,7 @@ $(window).load(function(){
 });
 
 $('.snackbar').hide();
+$('#modalLoader').hide();
 
 $('.form-control.floatlabel').floatlabel({
     labelEndTop:'-2px'
@@ -88,6 +89,10 @@ $('#addTransactionModal').on('hidden.bs.modal', function () {
   setTimeout(function() {
     $('#saveTransactionBtn').attr('disabled', true);
   }, 500);
+});
+
+$('#transactionInfoModal').on('hidden.bs.modal', function () {
+  $('#modalLoader').hide();
 });
 
 $('#addTransactionModal').on('shown.bs.modal', function () {

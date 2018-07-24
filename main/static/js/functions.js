@@ -110,13 +110,21 @@ function save_transaction() {
   customer_name = $('#addTransactionName').val();
   customer_msisdn = $('#addTransactionMsisdn').val();
   total = $('#transactionTotal').html().substring(4);
+  notes = $('#transactionNotes').html().substring(4);
   $('.service').each(function() {
     item_id = $(this).find('.service-quantity-text').attr('id');
-    quantity = parseFloat($(this).find('.service-quantity-text').val());
+    quantity_text = parseFloat($(this).find('.service-quantity-text').val());
+    if (quantity_text % 1 != 0){
+      quantity = quantity_text.toFixed(2);
+    }
+    else{
+      quantity = quantity_text.toFixed(0);
+    }
     items[item_id] = quantity;
     /*alert('id: '+item_id+', quantity: '+quantity);*/
   });
   items['total'] = total;
+  items['notes'] = notes;
   items['customer_name'] = customer_name;
   items['customer_msisdn'] = customer_msisdn;
   $.post('/transaction/save',
@@ -161,12 +169,18 @@ var substringMatcher = function(strs) {
 };
 
 function open_transaction(transaction_id) {
-  $.post('/transaction',
+  
+  $('#transactionInfoModal').modal('show');
+  setTimeout(function() {
+    $('#modalLoader').show();
+  }, 200);
+  /*$.post('/transaction',
   {
     transaction_id:transaction_id
   },
   function(data){
-    $('#transactionInfoModal').html(data);
-    $('#transactionInfoModal').modal('show');
-  });
+    $('#transactionInfoModal .modal-body').html(data['body_template']);
+    $('#editTransactionTotal').html('PHP ' + data['total']);
+    $('#modalLoader').fadeOut();
+  });*/
 }

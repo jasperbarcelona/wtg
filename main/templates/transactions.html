@@ -19,7 +19,7 @@
 <div class="entry-container">
 	{% for entry in transactions %}
 	<div class="entry">
-		<div class="active-entry-left">
+		<div class="active-entry-left" onclick="open_transaction({{ entry.id }})">
 			<div>
 				<span class="active-entry-name">{{ entry.customer_name }}</span>
 			</div>
@@ -38,9 +38,9 @@
 			<div class="active-entry-action-container">
 				<i class="material-icons close-action-icon">close</i>
 				{% if entry.status == 'Pending' %}
-				<button type="button" class="active-entry-action btn processing">Processing</Button>
+				<button type="button" class="active-entry-action btn processing waves-effect waves-light">Process</Button>
 				{% else %}
-				<button type="button" class="active-entry-action btn done">Done</Button>
+				<button type="button" class="active-entry-action btn done waves-effect waves-light">Done</Button>
 				{% endif %}
 			</div>
 		</div>

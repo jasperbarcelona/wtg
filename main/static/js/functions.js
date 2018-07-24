@@ -174,7 +174,7 @@ function open_transaction(transaction_id) {
   setTimeout(function() {
     $('#modalLoader').show();
   }, 200);
-  /*$.post('/transaction',
+  $.post('/transaction',
   {
     transaction_id:transaction_id
   },
@@ -182,5 +182,5 @@ function open_transaction(transaction_id) {
     $('#transactionInfoModal .modal-body').html(data['body_template']);
     $('#editTransactionTotal').html('PHP ' + data['total']);
     $('#modalLoader').fadeOut();
-  });*/
+  });
 }

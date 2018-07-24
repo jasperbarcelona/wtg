@@ -220,11 +220,11 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .active-entry-name {
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .active-entry-date {
-	font-size: 12px;
+	font-size: 11px;
 }
 
 .active-entry-right {

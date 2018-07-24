@@ -181,6 +181,8 @@ function open_transaction(transaction_id) {
   function(data){
     $('#transactionInfoModal .modal-body').html(data['body_template']);
     $('#editTransactionTotal').html('PHP ' + data['total']);
-    $('#modalLoader').fadeOut();
+    setTimeout(function() {
+      $('#modalLoader').fadeOut();
+    }, 500);
   });
 }

@@ -169,7 +169,7 @@ var substringMatcher = function(strs) {
 };
 
 function open_transaction(transaction_id) {
-  
+  $('.active-entry-action-container').removeClass('visible');
   $('#transactionInfoModal').modal('show');
   setTimeout(function() {
     $('#modalLoader').show();
@@ -185,4 +185,47 @@ function open_transaction(transaction_id) {
       $('#modalLoader').fadeOut();
     }, 500);
   });
+}
+
+function process_transaction(transaction_id) {
+  $('#'+transaction_id+'ActionButton').button('loading');
+  $.post('/transaction/process',
+  {
+    transaction_id:transaction_id
+  },
+  function(data){
+    if (status='success') {
+      $('#'+transaction_id+'EntryRight').html(data['template']);
+      $('#'+transaction_id+'ActionButton').button('complete');
+    }
+  });
+}
+
+function done_transaction(transaction_id) {
+  $('#'+transaction_id+'ActionButton').button('loading');
+  $.post('/transaction/done',
+  {
+    transaction_id:transaction_id
+  },
+  function(data){
+    if (status='success') {
+      $('#'+transaction_id+'EntryRight').html(data['template']);
+      $('#'+transaction_id+'ActionButton').button('complete');
+    }
+  });
+}
+
+function finish_transaction(transaction_id) {
+  $('#'+transaction_id+'ActionButton').button('loading');
+  $('#'+transaction_id+'.entry').fadeOut();
+  /*$.post('/transaction/done',
+  {
+    transaction_id:transaction_id
+  },
+  function(data){
+    if (status='success') {
+      $('#'+transaction_id+'EntryRight').html(data['template']);
+      $('#'+transaction_id+'ActionButton').button('complete');
+    }
+  });*/
 }

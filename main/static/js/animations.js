@@ -35,6 +35,8 @@ $('.active-entry-right').on('click', function () {
 
 $('.close-action-icon').on('click', function (e) {
   e.stopPropagation();
+  button_id = $(this).attr('data-button-id');
+  $('#'+button_id).button('complete');
   $('.active-entry-action-container').removeClass('visible');
 });
 

@@ -260,6 +260,10 @@ input[type=number]::-webkit-outer-spin-button {
 	color: #00B969;
 }
 
+.active-entry-status.done {
+	color: #337AB7;
+}
+
 .active-entry-action-container {
 	position: absolute;
 	right: -110%;
@@ -313,6 +317,10 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: #337AB7;
 }
 
+.active-entry-action.finish {
+	background-color: #A100DF;
+}
+
 .active-entry-action.processing:hover,
 .active-entry-action.processing:active,
 .active-entry-action.processing:focus {
@@ -327,6 +335,14 @@ input[type=number]::-webkit-outer-spin-button {
 	color: #FFFFFF;
 	outline: none !important;
 	background-color: #337AB7;
+}
+
+.active-entry-action.finish:hover,
+.active-entry-action.finish:active,
+.active-entry-action.finish:focus {
+	color: #FFFFFF;
+	outline: none !important;
+	background-color: #A100DF;
 }
 
 .add-btn-container {
@@ -643,6 +659,14 @@ input[type=number]::-webkit-outer-spin-button {
 	border: 1px solid #ccc !important;
 }
 
+.transaction-logs-container {
+	float: left;
+	width: 100%;
+	margin-bottom: 20px;
+	border: 1px solid #ccc !important;
+	font-size: 13px !important;
+}
+
 .service {
 	height: 60px;
 	width: 100%;
@@ -782,6 +806,7 @@ input[type=number]::-webkit-outer-spin-button {
 	height: 100px !important;
 	resize: none;
 	padding: 10px;
+	margin-bottom: 20px !important;
 }
 
 #modalLoader {
@@ -1171,4 +1196,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 button.btn-floating {
   border: none;
+}
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
 }

@@ -29,3 +29,42 @@
 </div>
 <span class="input-group-label">Additional Notes</span>
 <textarea id="transactionNotes" class="form-control notes" value="{{ transaction.notes }}"></textarea>
+<span class="input-group-label">Logs</span>
+<div class="transaction-logs-container">
+    <table id="transactionLogsTable" class="table">
+        <tbody>
+            <tr>
+                <td>Created by</td>
+                <td class="align-right">{{ transaction.cashier_name }}</td>
+            </tr>
+            <tr>
+                <td>Created</td>
+                <td class="align-right">{{ transaction.date }}, {{ transaction.time }}</td>
+            </tr>
+            <tr>
+                <td>Processed</td>
+                {% if transaction.process_date %}
+                <td class="align-right">{{ transaction.process_date }}, {{ transaction.process_time }}</td>
+                {% else %}
+                <td class="align-right">--</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>Done</td>
+                {% if transaction.done_date %}
+                <td class="align-right">{{ transaction.done_date }}, {{ transaction.done_time }}</td>
+                {% else %}
+                <td class="align-right">--</td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td>Picked Up / Delivered</td>
+                {% if transaction.pickup_date %}
+                <td class="align-right">{{ transaction.pickup_date }}, {{ transaction.pickup_time }}</td>
+                {% else %}
+                <td class="align-right">--</td>
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</div>

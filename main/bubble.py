@@ -70,10 +70,10 @@ def index():
     user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
 
     if user.active_sort == 'Alphabetical':
-        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.customer_name).all()
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.customer_name).all()
     else:
-        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.created_at.desc()).all()
-    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').count()
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.created_at.desc()).all()
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').count()
 
     services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name).all()
 
@@ -89,7 +89,7 @@ def index():
 @app.route('/transaction',methods=['GET','POST'])
 def open_transaction():
     transaction_id = flask.request.form.get('transaction_id')
-    transaction = Transaction.query.filter_by(id=transaction_id).first()
+    transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
     transaction_items = TransactionItem.query.filter_by(transaction_id=transaction.id).all()
 
     return jsonify(
@@ -99,6 +99,34 @@ def open_transaction():
             transaction_items=transaction_items
             ),
         total=transaction.total
+        )
+
+
+@app.route('/transaction/process',methods=['GET','POST'])
+def process_transaction():
+    transaction_id = flask.request.form.get('transaction_id')
+    transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
+    transaction.status = 'Processing'
+    transaction.process_date = datetime.datetime.now().strftime('%B %d, %Y')
+    transaction.process_time = time.strftime("%I:%M%p")
+    db.session.commit()
+
+    return jsonify(
+        template = flask.render_template('action_btn.html',entry=transaction)
+        )
+
+
+@app.route('/transaction/done',methods=['GET','POST'])
+def done_transaction():
+    transaction_id = flask.request.form.get('transaction_id')
+    transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
+    transaction.status = 'Done'
+    transaction.done_date = datetime.datetime.now().strftime('%B %d, %Y')
+    transaction.done_time = time.strftime("%I:%M%p")
+    db.session.commit()
+
+    return jsonify(
+        template = flask.render_template('action_btn.html',entry=transaction)
         )
 
 
@@ -143,10 +171,10 @@ def save_transaction():
     user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
 
     if user.active_sort == 'Alphabetical':
-        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.customer_name).all()
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.customer_name).all()
     else:
-        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').order_by(Transaction.created_at.desc()).all()            
-    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Done').count()
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.created_at.desc()).all()            
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').count()
 
     return jsonify(
         template = flask.render_template(

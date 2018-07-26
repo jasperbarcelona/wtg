@@ -6,6 +6,7 @@ $(window).load(function(){
 
 $('.snackbar').hide();
 $('#modalLoader').hide();
+$('#contentLoader').hide();
 
 $('.form-control.floatlabel').floatlabel({
     labelEndTop:'-2px'

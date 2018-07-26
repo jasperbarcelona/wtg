@@ -1,25 +1,25 @@
 function show_active(slice_from) {
+  $('#contentLoader').show();
   $('.nav-item').removeClass('active');
   $('#navActive').addClass('active');
   $('.nav-border').css('margin-left', '0');
-  /*$.get('/history',
-    function(data){
-      $('.content').html(data);
-      $('#searchLoader').addClass('hidden');
-      $('#clearInboundSearch').addClass('hidden');
-    });*/
+  $.get('/transactions',
+  function(data){
+    $('.content').html(data['template']);
+    $('#contentLoader').fadeOut();
+  });
 }
 
 function show_history(slice_from) {
+  $('#contentLoader').show();
   $('.nav-item').removeClass('active');
   $('#navHistory').addClass('active');
   $('.nav-border').css('margin-left', '33.33%');
-  /*$.get('/history',
-    function(data){
-      $('.content').html(data);
-      $('#searchLoader').addClass('hidden');
-      $('#clearInboundSearch').addClass('hidden');
-    });*/
+  $.get('/history',
+  function(data){
+    $('.content').html(data['template']);
+    $('#contentLoader').fadeOut();
+  });
 }
 
 function show_settings(slice_from) {
@@ -194,9 +194,16 @@ function process_transaction(transaction_id) {
     transaction_id:transaction_id
   },
   function(data){
-    if (status='success') {
+    if (data['status']='success') {
       $('#'+transaction_id+'EntryRight').html(data['template']);
       $('#'+transaction_id+'ActionButton').button('complete');
+    }
+    else {
+      $('#ErrorSnackbar .snackbar-message').html(data['message']);
+      $('#ErrorSnackbar').fadeIn();
+      setTimeout(function() {
+        $('#ErrorSnackbar').fadeOut();
+      }, 4000);
     }
   });
 }
@@ -208,24 +215,37 @@ function done_transaction(transaction_id) {
     transaction_id:transaction_id
   },
   function(data){
-    if (status='success') {
+    if (data['status']='success') {
       $('#'+transaction_id+'EntryRight').html(data['template']);
       $('#'+transaction_id+'ActionButton').button('complete');
+    }
+    else {
+      $('#ErrorSnackbar .snackbar-message').html(data['message']);
+      $('#ErrorSnackbar').fadeIn();
+      setTimeout(function() {
+        $('#ErrorSnackbar').fadeOut();
+      }, 4000);
     }
   });
 }
 
 function finish_transaction(transaction_id) {
   $('#'+transaction_id+'ActionButton').button('loading');
-  $('#'+transaction_id+'.entry').fadeOut();
-  /*$.post('/transaction/done',
+  $.post('/transaction/pickup',
   {
     transaction_id:transaction_id
   },
   function(data){
-    if (status='success') {
-      $('#'+transaction_id+'EntryRight').html(data['template']);
+    if (data['status']='success') {
       $('#'+transaction_id+'ActionButton').button('complete');
+      $('#'+transaction_id+'.entry').fadeOut();
     }
-  });*/
+    else {
+      $('#ErrorSnackbar .snackbar-message').html(data['message']);
+      $('#ErrorSnackbar').fadeIn();
+      setTimeout(function() {
+        $('#ErrorSnackbar').fadeOut();
+      }, 4000);
+    }
+  });
 }

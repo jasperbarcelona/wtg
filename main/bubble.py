@@ -38,6 +38,8 @@ import db_conn
 from db_conn import db, app
 from models import *
 
+IPP_URL = 'https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests'
+
 class BubbleAdmin(sqla.ModelView):
     column_display_pk = True
 
@@ -86,6 +88,27 @@ def index():
         user=user
         )
 
+
+@app.route('/transactions',methods=['GET','POST'])
+def transactions():
+    user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
+
+    if user.active_sort == 'Alphabetical':
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.customer_name).all()
+    else:
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.created_at.desc()).all()            
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').count()
+
+    return jsonify(
+        template = flask.render_template(
+            'transactions.html',
+            transactions = transactions,
+            total_entries=total_entries,
+            user=user
+            )
+        )
+
+
 @app.route('/transaction',methods=['GET','POST'])
 def open_transaction():
     transaction_id = flask.request.form.get('transaction_id')
@@ -106,27 +129,127 @@ def open_transaction():
 def process_transaction():
     transaction_id = flask.request.form.get('transaction_id')
     transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
-    transaction.status = 'Processing'
-    transaction.process_date = datetime.datetime.now().strftime('%B %d, %Y')
-    transaction.process_time = time.strftime("%I:%M%p")
-    db.session.commit()
+    client = Client.query.filter_by(client_no=session['client_no']).first()
 
-    return jsonify(
-        template = flask.render_template('action_btn.html',entry=transaction)
-        )
+    message = 'Hi, %s! Your laundry is now being processed. You will receive another message when it\'s ready for pickup/delivery. Thank you.' % transaction.customer_name
+
+    message_options = {
+        'app_id': client.app_id,
+        'app_secret': client.app_secret,
+        'message': message,
+        'address': transaction.customer_msisdn,
+        'passphrase': client.passphrase,
+    }
+
+    try:
+        r = requests.post(IPP_URL%client.shortcode,message_options)           
+        if r.status_code == 201:
+            transaction.status = 'Processing'
+            transaction.process_date = datetime.datetime.now().strftime('%B %d, %Y')
+            transaction.process_time = time.strftime("%I:%M%p")
+            db.session.commit()
+            return jsonify(
+                status = 'success',
+                template = flask.render_template('action_btn.html',entry=transaction)
+                )
+        else:
+            return jsonify(
+                status = 'failed',
+                message = 'There was an error. Please try again.'
+                )
+
+    except requests.exceptions.ConnectionError as e:
+        return jsonify(
+            status = 'failed',
+            message = 'There was an error. Please try again.'
+            )
 
 
 @app.route('/transaction/done',methods=['GET','POST'])
 def done_transaction():
     transaction_id = flask.request.form.get('transaction_id')
     transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
-    transaction.status = 'Done'
-    transaction.done_date = datetime.datetime.now().strftime('%B %d, %Y')
-    transaction.done_time = time.strftime("%I:%M%p")
-    db.session.commit()
+    client = Client.query.filter_by(client_no=session['client_no']).first()
+    
+    message = 'Hi, %s! Your laundry is now ready for pick up/delivery. Thank you.' % transaction.customer_name
+
+    message_options = {
+        'app_id': client.app_id,
+        'app_secret': client.app_secret,
+        'message': message,
+        'address': transaction.customer_msisdn,
+        'passphrase': client.passphrase,
+    }
+
+    try:
+        r = requests.post(IPP_URL%client.shortcode,message_options)           
+        if r.status_code == 201:
+            transaction.status = 'Done'
+            transaction.done_date = datetime.datetime.now().strftime('%B %d, %Y')
+            transaction.done_time = time.strftime("%I:%M%p")
+            db.session.commit()
+            return jsonify(
+                status = 'success',
+                template = flask.render_template('action_btn.html',entry=transaction)
+                )
+        else:
+            return jsonify(
+                status = 'failed',
+                message = 'There was an error. Please try again.'
+                )
+
+    except requests.exceptions.ConnectionError as e:
+        return jsonify(
+            status = 'failed',
+            message = 'There was an error. Please try again.'
+            )
 
     return jsonify(
+        status = 'success',
         template = flask.render_template('action_btn.html',entry=transaction)
+        )
+
+
+@app.route('/transaction/pickup',methods=['GET','POST'])
+def pickup_transaction():
+    transaction_id = flask.request.form.get('transaction_id')
+    transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
+    client = Client.query.filter_by(client_no=session['client_no']).first()
+
+    message = 'Hi, %s! Your laundry has already been picked up/delivered. Thank you.' % transaction.customer_name
+
+    message_options = {
+        'app_id': client.app_id,
+        'app_secret': client.app_secret,
+        'message': message,
+        'address': transaction.customer_msisdn,
+        'passphrase': client.passphrase,
+    }
+
+    try:
+        r = requests.post(IPP_URL%client.shortcode,message_options)           
+        if r.status_code == 201:
+            transaction.status = 'Finished'
+            transaction.pickup_date = datetime.datetime.now().strftime('%B %d, %Y')
+            transaction.pickup_time = time.strftime("%I:%M%p")
+            db.session.commit()
+            return jsonify(
+                status = 'success'
+                )
+        else:
+            return jsonify(
+                status = 'failed',
+                message = 'There was an error. Please try again.'
+                )
+
+    except requests.exceptions.ConnectionError as e:
+        return jsonify(
+            status = 'failed',
+            message = 'There was an error. Please try again.'
+            )
+
+    return jsonify(
+        status = 'success'
         )
 
 
@@ -182,6 +305,23 @@ def save_transaction():
             transactions = transactions,
             total_entries=total_entries,
             user=user
+            )
+        )
+
+
+@app.route('/history',methods=['GET','POST'])
+def history():
+    transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished').order_by(Transaction.created_at.desc()).all()
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished').count()
+
+    total = '{0:.2f}'.format(sum(float(transaction.total) for transaction in transactions))
+
+    return jsonify(
+        template = flask.render_template(
+            'history.html',
+            transactions = transactions,
+            total_entries = total_entries,
+            total = total
             )
         )
 

@@ -6,7 +6,11 @@
 </div>
 <div class="content-header">
 	<div class="content-header-left">
+		{% if total_entries == 1 %}
+		<span class="total-entries">{{ total_entries }} Item</span>
+		{% else %}
 		<span class="total-entries">{{ total_entries }} Items</span>
+		{% endif %}
 	</div>
 	<div class="content-header-right">
 		<strong>Total: PHP {{ total }}</strong>

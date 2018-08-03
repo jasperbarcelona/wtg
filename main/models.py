@@ -80,6 +80,20 @@ class Service(db.Model):
     name = db.Column(db.String(30))
     price = db.Column(db.String(10))
 
+class Report(db.Model, Serializer):
+    id = db.Column(db.Integer,primary_key=True)
+    client_no = db.Column(db.String(32))
+    name = db.Column(db.String(60))
+    report_type = db.Column(db.String(60))
+    from_date = db.Column(db.String(30))
+    to_date = db.Column(db.String(30))
+    generated_by = db.Column(db.String(60))
+    generated_by_id = db.Column(db.Integer())
+    date = db.Column(db.String(50))
+    time = db.Column(db.String(30))
+    status = db.Column(db.String(30),default='Pending')
+    created_at = db.Column(db.String(50))
+
 class TransactionItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_no = db.Column(db.String(32))

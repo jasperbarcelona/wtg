@@ -1,0 +1,38 @@
+
+	<div class="add-btn-container">
+		<a id="addServiceBtn" class="btn-floating btn-large waves-effect waves-light" data-toggle="modal" data-target="#addServiceModal"><i class="material-icons">add</i></a>
+	</div>
+	<div class="search-container">
+		<input type="text" id="searchUser" class="search-text-box form-control" placeholder="Search services">
+	</div>
+	<div class="content-header">
+		<div class="content-header-left">
+			{% if total_entries == 1 %}
+			<span class="total-entries">{{ total_entries }} Item</span>
+			{% else %}
+			<span class="total-entries">{{ total_entries }} Items</span>
+			{% endif %}
+		</div>
+	</div>
+	<div class="service-entry-container">
+		{% for entry in services %}
+		<div onclick="open_service({{ entry.id }})" class="entry">
+			<div class="active-entry-left">
+				<div>
+					<span class="service-entry-name">{{ entry.name }}</span>
+				</div>
+			</div>
+			<div class="active-entry-right">
+				<div class="status-container">
+					<span class="service-entry-price">PHP {{ entry.price }}</span>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	</div>
+
+<script type="text/javascript">
+	$(".datepicker").datepicker({
+	    dateFormat: "MM dd, yy"
+	});
+</script>

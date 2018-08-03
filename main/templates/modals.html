@@ -41,7 +41,7 @@
                     <div id="errorTransactionMsisdn" class="error-icon-container hidden tooltip" title="Must be exactly 11 characters."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <span class="input-group-label">Products & Services</span>
-                <div class="service-container">
+                <div id="addTransactionServiceContainer" class="service-container">
                     {% for service in services %}
                     <div class="service">
                         <div class="service-left">
@@ -74,6 +74,54 @@
                     <span id="transactionTotal">PHP 0.00</span>
                 </div>
                 <button type="button" id="saveTransactionBtn" class="btn btn-primary modal-btn" onclick="save_transaction()" data-loading-text="Saving.." data-complete-text="Done" disabled>Done</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="addServiceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="arrow-back-container" data-dismiss="modal">
+                    <i class="material-icons">
+                        arrow_back_ios
+                    </i>
+                    <span class="modal-title" id="gridSystemModalLabel">New Item/Service</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="addServiceNameContainer" class="input-container whole">
+                    <input type="text" id="addServiceName" data-error="errorServiceName" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control typeahead" data-class="input-label" placeholder="Item/Service name">
+                    <div id="errorServiceName" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container whole">
+                    <input type="number" id="addServicePrice" data-error="errorServicePrice" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control" data-class="input-label" placeholder="Price">
+                    <div id="errorServicePrice" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="saveServiceBtn" class="btn btn-primary modal-btn" onclick="save_service()" data-loading-text="Saving.." data-complete-text="Done" disabled>Done</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="serviceInfoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="arrow-back-container" data-dismiss="modal">
+                    <i class="material-icons">
+                        arrow_back_ios
+                    </i>
+                    <span class="modal-title" id="gridSystemModalLabel">Item/Service Information</span>
+                </div>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="editServiceBtn" class="btn btn-primary modal-btn" onclick="edit_service()" data-loading-text="Saving.." data-complete-text="Save" disabled>Save</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

@@ -18,20 +18,54 @@ function show_history(slice_from) {
   $.get('/history',
   function(data){
     $('.content').html(data['template']);
+    $('#searchHistoryDate').val(data['date']);
     $('#contentLoader').fadeOut();
   });
 }
 
 function show_settings(slice_from) {
+  $('#contentLoader').show();
   $('.nav-item').removeClass('active');
   $('#navSettings').addClass('active');
   $('.nav-border').css('margin-left', '66.66%');
-  /*$.get('/history',
-    function(data){
-      $('.content').html(data);
-      $('#searchLoader').addClass('hidden');
-      $('#clearInboundSearch').addClass('hidden');
-    });*/
+  $.get('/account',
+  function(data){
+    $('.content').html(data['template']);
+    $('#contentLoader').fadeOut();
+  });
+}
+
+function show_service_settings(slice_from) {
+  $('#settingsContentLoader').show();
+  $('.settings-nav-item').removeClass('active');
+  $('#settingsNavService').addClass('active');
+  $.get('/services',
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#settingsContentLoader').fadeOut();
+  });
+}
+
+function show_user_settings(slice_from) {
+  $('#settingsContentLoader').show();
+  $('.settings-nav-item').removeClass('active');
+  $('#settingsNavUser').addClass('active');
+  $.get('/users',
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#settingsContentLoader').fadeOut();
+  });
+}
+
+function show_account_settings(slice_from) {
+  $('#settingsContentLoader').show();
+  $('.settings-nav-item').removeClass('active');
+  $('#settingsNavAccount').addClass('active');
+  $.get('/account',
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#settingsContentLoader').fadeOut();
+  });
 }
 
 function validate_blank(element,value) {
@@ -187,6 +221,23 @@ function open_transaction(transaction_id) {
   });
 }
 
+function open_service(service_id) {
+  $('#serviceInfoModal').modal('show');
+  setTimeout(function() {
+    $('#modalLoader').show();
+  }, 200);
+  $.post('/service',
+  {
+    service_id:service_id
+  },
+  function(data){
+    $('#serviceInfoModal .modal-body').html(data['template']);
+    setTimeout(function() {
+      $('#modalLoader').fadeOut();
+    }, 500);
+  });
+}
+
 function process_transaction(transaction_id) {
   $('#'+transaction_id+'ActionButton').button('loading');
   $.post('/transaction/process',
@@ -237,6 +288,12 @@ function finish_transaction(transaction_id) {
   },
   function(data){
     if (data['status']='success') {
+      if (data['total_entries'] == 1) {
+        $('#activeCount').html(data['total_entries'].toString() + ' Item')
+      }
+      else {
+        $('#activeCount').html(data['total_entries'].toString() + ' Items')
+      }
       $('#'+transaction_id+'ActionButton').button('complete');
       $('#'+transaction_id+'.entry').fadeOut();
     }
@@ -247,5 +304,44 @@ function finish_transaction(transaction_id) {
         $('#ErrorSnackbar').fadeOut();
       }, 4000);
     }
+  });
+}
+
+function save_service() {
+  $('#saveServiceBtn').button('loading');
+  service_name = $('#addServiceName').val();
+  service_price = $('#addServicePrice').val();
+  $.post('/service/save',
+  {
+    service_name:service_name,
+    service_price:service_price
+  },
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#addTransactionServiceContainer').html(data['transaction_template']);
+    $('#saveServiceBtn').button('complete');
+    $('#addServiceModal').modal('hide');
+  });
+}
+
+function edit_service() {
+  $('#editServiceBtn').button('loading');
+  service_name = $('#editServiceName').val();
+  service_price = $('#editServicePrice').val();
+  $.post('/service/edit',
+  {
+    service_name:service_name,
+    service_price:service_price
+  },
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#addTransactionServiceContainer').html(data['transaction_template']);
+    $('#editServiceBtn').button('complete');
+    $('#serviceInfoModal').modal('hide');
+    $('#successSnackbar').find('.snackbar-message').html(data['message']);;
+    $('#successSnackbar').fadeIn();
+    setTimeout(function() {
+      $('#successSnackbar').fadeOut();
+    }, 4000);
   });
 }

@@ -233,8 +233,12 @@ def pickup_transaction():
             transaction.pickup_date = datetime.datetime.now().strftime('%B %d, %Y')
             transaction.pickup_time = time.strftime("%I:%M%p")
             db.session.commit()
+           
+            total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').count()
+
             return jsonify(
-                status = 'success'
+                status = 'success',
+                total_entries = total_entries
                 )
         else:
             return jsonify(
@@ -247,10 +251,6 @@ def pickup_transaction():
             status = 'failed',
             message = 'There was an error. Please try again.'
             )
-
-    return jsonify(
-        status = 'success'
-        )
 
 
 @app.route('/transaction/save',methods=['GET','POST'])
@@ -311,8 +311,8 @@ def save_transaction():
 
 @app.route('/history',methods=['GET','POST'])
 def history():
-    transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished').order_by(Transaction.created_at.desc()).all()
-    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished').count()
+    transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished', Transaction.date == datetime.datetime.now().strftime('%B %d, %Y')).order_by(Transaction.created_at.desc()).all()
+    total_entries = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished', Transaction.date == datetime.datetime.now().strftime('%B %d, %Y')).count()
 
     total = '{0:.2f}'.format(sum(float(transaction.total) for transaction in transactions))
 
@@ -322,6 +322,115 @@ def history():
             transactions = transactions,
             total_entries = total_entries,
             total = total
+            ),
+        date=datetime.datetime.now().strftime('%B %d, %Y')
+        )
+
+
+@app.route('/users',methods=['GET','POST'])
+def users():
+    transactions = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'users.html',
+            users = transactions,
+            total_entries = total_entries,
+            )
+        )
+
+
+@app.route('/services',methods=['GET','POST'])
+def services():
+    services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
+    total_entries = Service.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'services.html',
+            services = services,
+            total_entries = total_entries,
+            )
+        )
+
+
+@app.route('/service/save',methods=['GET','POST'])
+def save_service():
+    data = flask.request.form.to_dict()
+
+    service = Service(
+        client_no=session['client_no'],
+        name=data['service_name'].title(),
+        price='{0:.2f}'.format(float(data['service_price']))
+        )
+
+    db.session.add(service)
+    db.session.commit()
+
+    services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
+    total_entries = Service.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'services_result.html',
+            services = services,
+            total_entries = total_entries
+            ),
+        transaction_template = flask.render_template(
+            'transaction_service.html',
+            services = services
+            )
+        )
+
+
+@app.route('/service/edit',methods=['GET','POST'])
+def edit_service():
+    data = flask.request.form.to_dict()
+
+    service = Service.query.filter_by(id=session['service_id']).first()
+    service.name = data['service_name']
+    service.price = '{0:.2f}'.format(float(data['service_price']))
+    db.session.commit()
+
+    services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
+    total_entries = Service.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'services_result.html',
+            services = services,
+            total_entries = total_entries
+            ),
+        transaction_template = flask.render_template(
+            'transaction_service.html',
+            services = services
+            ),
+        message = 'Changes saved.'
+        )
+
+
+@app.route('/service',methods=['GET','POST'])
+def service_info():
+    data = flask.request.form.to_dict()
+    session['service_id'] = data['service_id']
+    service = Service.query.filter_by(id=session['service_id']).first()
+
+    return jsonify(
+        template = flask.render_template(
+            'service_info.html',
+            service = service
+            )
+        )
+
+
+@app.route('/account',methods=['GET','POST'])
+def account():
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    return jsonify(
+        template = flask.render_template(
+            'account.html',
+            user = user
             )
         )
 
@@ -470,6 +579,17 @@ def rebuild_database():
         total='100'
         )
 
+    report = Report(
+        client_no='bubble',
+        name='Report Sample',
+        report_type='Sales Report',
+        generated_by='Jasper Barcelona',
+        generated_by_id=1,
+        date=datetime.datetime.now().strftime('%B %d, %Y'),
+        time=time.strftime("%I:%M%p"),
+        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
+        )
+
     db.session.add(client)
     db.session.add(user)
     db.session.add(transaction)
@@ -480,6 +600,7 @@ def rebuild_database():
     db.session.add(service1)
     db.session.add(service2)
     db.session.add(transaction_item)
+    db.session.add(report)
     db.session.commit()
 
     return jsonify(

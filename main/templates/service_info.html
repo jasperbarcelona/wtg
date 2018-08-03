@@ -1,0 +1,23 @@
+<div id="editServiceNameContainer" class="input-container whole">
+    <input type="text" id="editServiceName" data-error="errorServiceNameEdit" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control typeahead" data-class="input-label" placeholder="Item/Service name" value="{{ service.name }}">
+    <div id="errorServiceNameEdit" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+</div>
+<div class="input-container whole">
+    <input type="number" id="editServicePrice" data-error="errorServicePriceEdit" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control" data-class="input-label" placeholder="Price" value="{{ service.price }}">
+    <div id="errorServicePriceEdit" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
+</div>
+
+<script type="text/javascript">
+	$('#serviceInfoModal .form-control').on('keyup', function () {
+	  service_name = $('#editServiceName').val();
+	  service_price = $('#editServicePrice').val();
+
+	  if ((service_name != '') && (service_price != '')) {
+	    $('#editServiceBtn').attr('disabled', false);
+	  }
+	  else {
+	    $('#editServiceBtn').attr('disabled', true);
+	  }
+	});
+
+</script>

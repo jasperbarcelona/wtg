@@ -6,7 +6,11 @@
 </div>
 <div class="content-header">
 	<div class="content-header-left">
-		<span class="total-entries">{{ total_entries }} Items</span>
+		{% if total_entries == 1 %}
+		<span id="activeCount" class="total-entries">{{ total_entries }} Item</span>
+		{% else %}
+		<span id="activeCount" class="total-entries">{{ total_entries }} Items</span>
+		{% endif %}
 	</div>
 	<div class="content-header-right">
 		{% if user.active_sort == 'Alphabetical' %}

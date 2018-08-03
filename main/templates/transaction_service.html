@@ -1,0 +1,38 @@
+{% for service in services %}
+<div class="service">
+    <div class="service-left">
+        <div>
+            <span class="service-name">{{ service.name }}</span>
+        </div>
+        <div>
+            <span class="service-price">PHP {{ service.price }}</span>
+        </div>
+    </div>
+    <div class="service-right">
+        <div>
+            <button type="button" class="btn number-operations-btn plus" onclick="add_quantity({{ service.id }})">
+                <i class="material-icons">add</i>
+            </button>
+            <input type="number" id="{{ service.id }}" class="service-quantity-text form-control" value="0" onclick="this.select()">
+            <button type="button" class="btn number-operations-btn minus" onclick="subtract_quantity({{ service.id }})">
+                <i class="material-icons">remove</i>
+            </button>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script type="text/javascript">
+    $('#addTransactionModal .form-control').on('change', function () {
+      customer_name = $('#addTransactionName').val();
+      customer_msisdn = $('#addTransactionMsisdn').val();
+      total = $('#transactionTotal').html();
+
+      if ((customer_name != '') && (customer_msisdn != '') && (customer_msisdn.length == 11) && (total != 'PHP 0.00')) {
+        $('#saveTransactionBtn').attr('disabled', false);
+      }
+      else {
+        $('#saveTransactionBtn').attr('disabled', true);
+      }
+    });
+</script>

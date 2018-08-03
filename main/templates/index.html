@@ -37,10 +37,29 @@
 		</div>
 	</div>
 </div>
+<div id="settingsContentLoader" class="loader">
+	<div class="washing-machine">
+		<div class="controls-container">
+			<div class="controls-align">
+				<div class="wash-controls"></div>
+				<div class="wash-controls"></div>
+			</div>
+		</div>
+		<div class="washing-machine-body">
+			<div class="washing-machine-lid"></div>
+		</div>
+	</div>
+</div>
 <div id="ErrorSnackbar" class="snackbar snackbar-error">
 	<div>
 		<span class="snackbar-message">There was an error, please try again.</span>
 		<i id="closeReplyError" class="material-icons">&#xE5CD;</i>
+	</div>
+</div>
+<div id="successSnackbar" class="snackbar snackbar-success">
+	<div>
+		<span class="snackbar-message">There was an error, please try again.</span>
+		<i id="closeReplySuccess" class="material-icons">&#xE5CD;</i>
 	</div>
 </div>
 <div class="content">
@@ -55,7 +74,11 @@
 	</div>
 	<div class="content-header">
 		<div class="content-header-left">
-			<span class="total-entries">{{ total_entries }} Items</span>
+			{% if total_entries == 1 %}
+			<span id="activeCount" class="total-entries">{{ total_entries }} Item</span>
+			{% else %}
+			<span id="activeCount" class="total-entries">{{ total_entries }} Items</span>
+			{% endif %}
 		</div>
 		<div class="content-header-right">
 			{% if user.active_sort == 'Alphabetical' %}

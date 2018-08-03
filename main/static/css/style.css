@@ -178,6 +178,15 @@ input[type=number]::-webkit-outer-spin-button {
 	width: 100%;
 }
 
+.user-entry-container,
+.service-entry-container,
+.report-entry-container,
+.account-entry-container {
+	float: left;
+	padding-bottom: 150px !important;
+	width: 100%;
+}
+
 .history-entry-container {
 	float: left;
 	padding-bottom: 100px !important;
@@ -231,6 +240,26 @@ input[type=number]::-webkit-outer-spin-button {
 
 .active-entry-date {
 	font-size: 11px;
+}
+
+.user-entry-name {
+	font-size: 14px;
+}
+
+.user-entry-email {
+	font-size: 11px;
+}
+
+.user-entry-role {
+	font-size: 12px;
+}
+
+.service-entry-name {
+	font-size: 14px;
+}
+
+.service-entry-price {
+	font-size: 14px;
 }
 
 .active-entry-right {
@@ -351,15 +380,22 @@ input[type=number]::-webkit-outer-spin-button {
 	background-color: #A100DF;
 }
 
-.add-btn-container {
+.add-btn-container:not(#addUserBtn):not(#addServiceBtn) {
 	position: fixed;
 	z-index: 20 !important;
 	right: 20px;
 	bottom: 20px;
 }
 
-#addTransactionBtn {
+#addTransactionBtn,
+#addUserBtn,
+#addServiceBtn {
 	background-color: #337AB7 !important;
+}
+
+#addUserBtn,
+#addServiceBtn {
+	bottom: 60px;
 }
 
 .content-header {
@@ -478,8 +514,14 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #addTransactionModal,
+#addServiceModal,
+#serviceInfoModal,
 #addTransactionModal .modal-dialog,
+#serviceInfoModal .modal-dialog,
+#addServiceModal .modal-dialog,
 #addTransactionModal .modal-content,
+#serviceInfoModal .modal-content,
+#addServiceModal .modal-content,
 #transactionInfoModal,
 #transactionInfoModal .modal-dialog,
 #transactionInfoModal .modal-content {
@@ -490,11 +532,15 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #addTransactionModal .modal-title,
+#serviceInfoModal .modal-title,
+#addServiceModal .modal-title,
 #transactionInfoModal .modal-title {
 	padding-top: 3px !important;
 }
 
 #addTransactionModal .modal-body,
+#addServiceModal .modal-body,
+#serviceInfoModal .modal-body,
 #transactionInfoModal .modal-body {
 	height: calc(100vh - 115px) !important;
 	width: 100% !important;
@@ -504,18 +550,23 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #addTransactionModal .btn-primary,
+#addServiceModal .btn-primary,
+#serviceInfoModal .btn-primary,
 #transactionInfoModal .btn-primary {
 	background-color: #337AB7 !important;
 	width: 200px !important;
 }
 
 #addTransactionModal .form-control,
+#addServiceModal .form-control,
+#serviceInfoModal .form-control,
 #transactionInfoModal .form-control {
 	text-transform: capitalize;
 	height: 45px;
 }
 
 #addTransactionNameContainer,
+#addServiceNameContainer,
 #editTransactionNameContainer {
 	margin-top: 10px;
 }
@@ -840,6 +891,25 @@ input[type=number]::-webkit-outer-spin-button {
 	left: 0;
 	width: 100%;
 	height: calc(100% - 95px);
+	background-color: #FFFFFF;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+
+#settingsContentLoader {
+	position: fixed;
+	z-index: 99999;
+	top: 95px;
+	left: 0;
+	width: 100%;
+	height: calc(100% - 155px);
 	background-color: #FFFFFF;
 	display: -webkit-flex;
 	display: flex;
@@ -1277,4 +1347,44 @@ button.btn-floating {
 
 .snackbar-message {
 	margin-right: 100px;
+}
+
+#settingsNavContainer {
+	position: fixed;
+	z-index: 30;
+	left: 0;
+	bottom: 0;
+	height: 60px;
+	width: 100%;
+	background-color: #FFFFFF;
+}
+
+.settings-nav-item {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	cursor: pointer;
+	height: 100%;
+	float: left;
+	background-color: #FFFFFF;
+	border-right: 1px solid #ccc;
+}
+
+.settings-nav-item:last-of-type {
+	border-right: none !important;
+}
+
+.settings-nav-item.active {
+	background-color: #337AB7 !important;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.account-container {
+	padding: 12px;
 }

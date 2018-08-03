@@ -7,6 +7,7 @@ $(window).load(function(){
 $('.snackbar').hide();
 $('#modalLoader').hide();
 $('#contentLoader').hide();
+$('#settingsContentLoader').hide();
 
 $('.form-control.floatlabel').floatlabel({
     labelEndTop:'-2px'
@@ -32,6 +33,14 @@ $('.tooltip').tooltipster({
 $('.active-entry-right').on('click', function () {
   $('.active-entry-action-container').removeClass('visible');
   $(this).find('.active-entry-action-container').addClass('visible');
+});
+
+$('#closeReplyError').on('click', function () {
+  $('#ErrorSnackbar').fadeOut();
+});
+
+$('#closeReplySuccess').on('click', function () {
+  $('#successSnackbar').fadeOut();
 });
 
 $('.close-action-icon').on('click', function (e) {
@@ -66,6 +75,18 @@ $('#addTransactionModal .form-control').on('keyup', function () {
   }
 });
 
+$('#addServiceModal .form-control').on('keyup', function () {
+  service_name = $('#addServiceName').val();
+  service_price = $('#addServicePrice').val();
+
+  if ((service_name != '') && (service_price != '')) {
+    $('#saveServiceBtn').attr('disabled', false);
+  }
+  else {
+    $('#saveServiceBtn').attr('disabled', true);
+  }
+});
+
 $('#addTransactionModal .form-control').on('change', function () {
   customer_name = $('#addTransactionName').val();
   customer_msisdn = $('#addTransactionMsisdn').val();
@@ -94,12 +115,42 @@ $('#addTransactionModal').on('hidden.bs.modal', function () {
   }, 500);
 });
 
+$('#addServiceModal').on('hidden.bs.modal', function () {
+  $('#addServiceModal .error-icon-container').addClass('hidden');
+  $('#addServiceName').val('');
+  $('#addServicePrice').val('');
+  $('#addServiceModal .form-control').change();
+  $('#addServiceName').css('border','1px solid #ccc');
+  $('#addServicePrice').css('border','1px solid #ccc');
+  $('#saveServiceBtn').button('complete');
+  setTimeout(function() {
+    $('#saveServiceBtn').attr('disabled', true);
+  }, 500);
+});
+
+$('#serviceInfoModal').on('hidden.bs.modal', function () {
+  $('#serviceInfoModal .error-icon-container').addClass('hidden');
+  $('#editServiceName').val('');
+  $('#editServicePrice').val('');
+  $('#serviceInfoModal .form-control').change();
+  $('#editServiceName').css('border','1px solid #ccc');
+  $('#editServicePrice').css('border','1px solid #ccc');
+  $('#editServiceBtn').button('complete');
+  setTimeout(function() {
+    $('#editServiceBtn').attr('disabled', true);
+  }, 500);
+});
+
 $('#transactionInfoModal').on('hidden.bs.modal', function () {
   $('#modalLoader').hide();
 });
 
 $('#addTransactionModal').on('shown.bs.modal', function () {
   $('#addTransactionName').focus();
+});
+
+$('#addServiceModal').on('shown.bs.modal', function () {
+  $('#addServiceName').focus();
 });
 
 $('.typeahead').on('typeahead:selected', function(evt, item) {

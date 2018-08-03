@@ -1,14 +1,17 @@
 version: '3'
 services:
-  # nginx:
-  #   restart: always
-  #   build: ./nginx
-  #   depends_on: 
-  #     - main
-  #   ports:
-  #     - "80:80"
-  #   links:
-  #     - main:main
+  nginx:
+    restart: always
+    build: ./nginx
+    volumes:
+      - ./nginx/SSL:/etc/nginx/SSL/
+    depends_on: 
+      - main
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - main:main
 
   db:
     restart: always

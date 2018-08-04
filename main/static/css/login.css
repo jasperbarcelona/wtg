@@ -77,7 +77,8 @@ body{
 
 #logo-container {
   color: #FFFFFF;
-  font-size: 28px;
+  font-size: 48px;
+  font-family: Chicle;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;

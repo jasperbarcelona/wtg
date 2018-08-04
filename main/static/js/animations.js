@@ -115,6 +115,18 @@ $('#addTransactionModal').on('hidden.bs.modal', function () {
   }, 500);
 });
 
+$('#addUserModal').on('hidden.bs.modal', function () {
+  $('#addUserRole').prop('selectedIndex',0);
+  $('#addUserModal .form-control').val('');
+  $('#addUserModal .form-control').change();
+  $('#addUserModal .error-icon-container').addClass('hidden');
+  $('#addUserModal .form-control').css('border','1px solid #ccc');
+  $('#saveUserBtn').button('complete');
+  setTimeout(function() {
+    $('#saveUserBtn').attr('disabled', true);
+  }, 500);
+});
+
 $('#addServiceModal').on('hidden.bs.modal', function () {
   $('#addServiceModal .error-icon-container').addClass('hidden');
   $('#addServiceName').val('');
@@ -157,4 +169,36 @@ $('.typeahead').on('typeahead:selected', function(evt, item) {
   
 });
 
+});
+
+$('#addUserModal .form-control').on('keyup', function () {
+  name = $('#addUserName').val();
+  email = $('#addUserEmail').val();
+  temp_pw = $('#addUserPassword').val();
+  role = $('#addUserRole').val();
+
+  if ((name != '') && (email != '') && (temp_pw != '') && (role != undefined)) {
+    $('#saveUserBtn').attr('disabled',false);
+  }
+  else {
+    $('#saveUserBtn').attr('disabled',true);
+  }
+});
+
+$('#addUserModal .form-control').on('change', function () {
+  name = $('#addUserName').val();
+  email = $('#addUserEmail').val();
+  temp_pw = $('#addUserPassword').val();
+  role = $('#addUserRole').val();
+
+  if ((name != '') && (email != '') && (temp_pw != '') && (role != undefined)) {
+    $('#saveUserBtn').attr('disabled',false);
+  }
+  else {
+    $('#saveUserBtn').attr('disabled',true);
+  }
+});
+
+$('#addUserModal').on('shown.bs.modal', function () {
+    $('#addUserName').focus();
 });

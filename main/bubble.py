@@ -329,13 +329,13 @@ def history():
 
 @app.route('/users',methods=['GET','POST'])
 def users():
-    transactions = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
     total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
 
     return jsonify(
         template = flask.render_template(
             'users.html',
-            users = transactions,
+            users = users,
             total_entries = total_entries,
             )
         )
@@ -420,6 +420,76 @@ def service_info():
         template = flask.render_template(
             'service_info.html',
             service = service
+            )
+        )
+
+
+@app.route('/user',methods=['GET','POST'])
+def user_info():
+    data = flask.request.form.to_dict()
+    session['open_user_id'] = data['user_id']
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+
+    return jsonify(
+        template = flask.render_template(
+            'user_info.html',
+            user = user
+            )
+        )
+
+
+@app.route('/user/edit',methods=['GET','POST'])
+def edit_user():
+    data = flask.request.form.to_dict()
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+
+    user.name = data['name'].title()
+    user.email = data['email']
+    user.role = data['role'].title()
+
+    db.session.commit()
+
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'users.html',
+            users = users,
+            total_entries = total_entries,
+            ),
+        message = 'Changes saved.'
+        )
+
+
+@app.route('/user/add',methods=['GET','POST'])
+def add_user():
+    data = flask.request.form.to_dict()
+
+    new_user = AdminUser(
+        client_no=session['client_no'],
+        email=data['email'],
+        password=data['temp_pw'],
+        temp_pw=data['temp_pw'],
+        name=data['name'].title(),
+        role=data['role'],
+        added_by_id=session['user_id'],
+        added_by_name=session['user_name'],
+        join_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'users.html',
+            users = users,
+            total_entries = total_entries,
             )
         )
 

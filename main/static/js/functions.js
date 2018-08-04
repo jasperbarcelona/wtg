@@ -238,6 +238,23 @@ function open_service(service_id) {
   });
 }
 
+function open_user(user_id) {
+  $('#userInfoModal').modal('show');
+  setTimeout(function() {
+    $('#modalLoader').show();
+  }, 200);
+  $.post('/user',
+  {
+    user_id:user_id
+  },
+  function(data){
+    $('#userInfoModal .modal-body').html(data['template']);
+    setTimeout(function() {
+      $('#modalLoader').fadeOut();
+    }, 500);
+  });
+}
+
 function process_transaction(transaction_id) {
   $('#'+transaction_id+'ActionButton').button('loading');
   $.post('/transaction/process',
@@ -343,5 +360,111 @@ function edit_service() {
     setTimeout(function() {
       $('#successSnackbar').fadeOut();
     }, 4000);
+  });
+}
+
+function edit_user() {
+  $('#editUserBtn').button('loading');
+  name = $('#editUserName').val();
+  email = $('#editUserEmail').val();
+  role = $('#editUserRole').val();
+
+  $.post('/user/edit',
+  {
+    name:name,
+    email:email,
+    role:role
+  },
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#editUserBtn').button('complete');
+    $('#userInfoModal').modal('hide');
+    $('#successSnackbar').find('.snackbar-message').html(data['message']);;
+    $('#successSnackbar').fadeIn();
+    setTimeout(function() {
+      $('#successSnackbar').fadeOut();
+    }, 4000);
+  });
+}
+
+function validate_password(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  if ((value != '') && (value.length >= 8)) {
+    $(element).css("border", "1px solid #ccc");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function validate_password_confirm(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  password = $('#changePasswordText').val();
+  password_confirm = $('#changePasswordConfirmText').val();
+  if (password == password_confirm) {
+    $(element).css("border", "1px solid #ccc");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function validate_temp_pass(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  password = $('#addUserPassword').val();
+  password_confirm = $('#addUserPasswordConfirm').val();
+  if (password == password_confirm) {
+    $(element).css("border", "1px solid #ccc");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function validate_password_reset(element,value) {
+  error_icon_id = $(element).attr('data-error');
+  password = $('#resetPasswordText').val();
+  password_confirm = $('#resetPasswordConfirmText').val();
+  if (password == password_confirm) {
+    $(element).css("border", "1px solid #ccc");
+    $('#'+error_icon_id).addClass('hidden');
+    $('#'+error_icon_id).addClass('tooltip');
+  }
+  else {
+    $(element).css("border", "1px solid #d9534f");
+    $('#'+error_icon_id).removeClass('hidden');
+    $('#'+error_icon_id).removeClass('tooltip');
+  }
+}
+
+function save_user() {
+  $('#saveUserBtn').button('loading');
+  name = $('#addUserName').val();
+  email = $('#addUserEmail').val();
+  temp_pw = $('#addUserPassword').val();
+  role = $('#addUserRole').val();
+
+  $.post('/user/add',
+  {
+    name:name,
+    email:email,
+    temp_pw:temp_pw,
+    role:role
+  },
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#addUserModal').modal('hide');
   });
 }

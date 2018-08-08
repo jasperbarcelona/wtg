@@ -1,11 +1,29 @@
-<form action="your-server-side-code" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="pk_test_1ORodJ8I63nxzzy91HsUVUcR"
-    data-amount="999"
-    data-name="Demo Site"
-    data-description="Example charge"
-    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-    data-locale="auto">
-  </script>
-</form>
+<div id="billContainer">
+	<button type="button" id="downloadTransactionBtn" class="btn btn-primary">Download Transaction List</button>
+	{% if bill.receipt_path == '' %}
+	<form id="uploadFileForm" method="post" enctype="multipart/form-data">
+		<button type="button" id="uploadReceiptTrigger" class="btn btn-primary">Upload Payment Receipt</button>
+		<input type="file" id="file" name="file" class="hidden">
+	</form>
+	{% endif %}
+</div>
+{% if bill.receipt_path != '' %}
+<span class="input-group-label">Receipt</span>
+<img src="../{{ bill.receipt_path }}" class="bill-receipt-image" />
+{% endif %}
+
+<script type="text/javascript">
+	$('#uploadReceiptTrigger').on('click', function () {
+		$('#file').trigger('click');
+	});
+
+	$('#file').on('change', function () {
+    	$('#uploadFileForm').submit();
+	});
+
+	$('#uploadFileForm').on('submit', function (e) {
+	    e.preventDefault();
+	    $('#uploadReceiptTrigger').button('loading');
+	    upload_file();
+	});
+</script>

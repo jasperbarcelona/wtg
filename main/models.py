@@ -113,3 +113,4 @@ class Bill(db.Model):
     transactions = db.Column(db.Integer())
     price = db.Column(db.String(30))
     created_at = db.Column(db.String(50))
+    receipt_path = db.Column(db.Text(), default='')

@@ -39,6 +39,8 @@ from db_conn import db, app
 from models import *
 
 IPP_URL = 'https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests'
+UPLOAD_FOLDER = 'static/receipts'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class BubbleAdmin(sqla.ModelView):
     column_display_pk = True
@@ -350,8 +352,8 @@ def usage():
 
 @app.route('/bill',methods=['GET','POST'])
 def bill_info():
-    bill_id = flask.request.form.get('bill_id')
-    bill = Bill.query.filter_by(client_no=session['client_no'], id=bill_id).first()
+    session['bill_id'] = flask.request.form.get('bill_id')
+    bill = Bill.query.filter_by(client_no=session['client_no'], id=session['bill_id']).first()
 
     return jsonify(
         template = flask.render_template(
@@ -633,6 +635,20 @@ def authenticate_user():
     session['client_no'] = client.client_no
     session['client_name'] = client.name
     return jsonify(status='success', error=''),200
+
+
+@app.route('/bill/receipt/upload', methods=['GET', 'POST'])
+def upload_receipt():
+    file = flask.request.files['file']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    bill = Bill.query.filter_by(id=session['bill_id'], client_no=session['client_no']).first()
+    bill.receipt_path = 'static/receipts/%s' % filename
+    db.session.commit()
+
+    return jsonify(
+        template = flask.render_template('bill_info.html', bill=bill)
+        ),201
 
 
 @app.route('/db/rebuild',methods=['GET','POST'])

@@ -571,3 +571,19 @@ function delete_user() {
     }, 4000);
   });
 }
+
+function upload_file() {
+  var form_data = new FormData($('#uploadFileForm')[0]);
+  $.ajax({
+      type: 'POST',
+      url: '/bill/receipt/upload',
+      data: form_data,
+      contentType: false,
+      cache: false,
+      processData: false,
+      async: false,
+      success: function(data) {
+        $('#billInfoModal .modal-body').html(data['template']);
+      },
+  });
+}

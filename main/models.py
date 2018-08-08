@@ -37,6 +37,7 @@ class Client(db.Model):
     app_id = db.Column(db.Text())
     app_secret = db.Column(db.Text())
     passphrase = db.Column(db.Text())
+    pricing = db.Column(db.String(10))
     shortcode = db.Column(db.String(30))
     created_at = db.Column(db.String(50))
 
@@ -103,3 +104,12 @@ class TransactionItem(db.Model):
     quantity = db.Column(db.String(10))
     price = db.Column(db.String(10))
     total = db.Column(db.String(10))
+
+class Bill(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    client_no = db.Column(db.String(32))
+    date = db.Column(db.String(60))
+    year = db.Column(db.String(10))
+    transactions = db.Column(db.Integer())
+    price = db.Column(db.String(30))
+    created_at = db.Column(db.String(50))

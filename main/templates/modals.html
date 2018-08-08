@@ -120,19 +120,19 @@
             </div>
             <div class="modal-body">
                 <div class="input-container whole">
-                    <input type="text" id="addUserName" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorUserName" class="form-control floatlabel" data-class="input-label" placeholder="Full Name">
+                    <input type="text" id="addUserName" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorUserName" class="form-control" data-class="input-label" placeholder="Full Name">
                     <div id="errorUserName" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="text" id="addUserEmail" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorUserEmail" class="form-control floatlabel" data-class="input-label" placeholder="Email">
+                    <input type="text" id="addUserEmail" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorUserEmail" class="form-control" data-class="input-label" placeholder="Email">
                     <div id="errorUserEmail" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="password" id="addUserPassword" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorUserPassword" class="form-control floatlabel" data-class="input-label" placeholder="Temporary Password">
+                    <input type="password" id="addUserPassword" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorUserPassword" class="form-control" data-class="input-label" placeholder="Temporary Password">
                     <div id="errorUserPassword" class="error-icon-container hidden tooltip" title="Must be atleast 8 characters." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="password" id="addUserPasswordConfirm" onblur="validate_temp_pass(this,this.value)" onchange="validate_temp_pass(this,this.value)" data-error="errorUserPasswordConfirm" class="form-control floatlabel" data-class="input-label" placeholder="Confirm Temporary Password">
+                    <input type="password" id="addUserPasswordConfirm" onblur="validate_temp_pass(this,this.value)" onchange="validate_temp_pass(this,this.value)" data-error="errorUserPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm Temporary Password">
                     <div id="errorUserPasswordConfirm" class="error-icon-container hidden tooltip" title="Passwords don't match." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
@@ -160,6 +160,26 @@
                         arrow_back_ios
                     </i>
                     <span class="modal-title" id="gridSystemModalLabel">New User</span>
+                </div>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="editUserBtn" class="btn btn-primary modal-btn" onclick="edit_user()" data-loading-text="Saving.." data-complete-text="Save" disabled>Save</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="billInfoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="arrow-back-container" data-dismiss="modal">
+                    <i class="material-icons">
+                        arrow_back_ios
+                    </i>
+                    <span class="modal-title" id="gridSystemModalLabel">Bill actions</span>
                 </div>
             </div>
             <div class="modal-body">
@@ -221,11 +241,11 @@
             </div>
             <div class="modal-body">
                 <div class="input-container whole">
-                    <input type="password" id="resetPasswordText" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorResetPassword" class="form-control floatlabel" data-class="input-label" placeholder="New Password">
+                    <input type="password" id="resetPasswordText" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorResetPassword" class="form-control" data-class="input-label" placeholder="New Password">
                     <div id="errorResetPassword" class="error-icon-container hidden tooltip" title="Must be atleast 8 characters."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="password" id="resetPasswordConfirmText" onblur="validate_password_reset(this,this.value)" onchange="validate_password_reset(this,this.value)" data-error="errorResetPasswordConfirm" class="form-control floatlabel" data-class="input-label" placeholder="Confirm New Password">
+                    <input type="password" id="resetPasswordConfirmText" onblur="validate_password_reset(this,this.value)" onchange="validate_password_reset(this,this.value)" data-error="errorResetPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm New Password">
                     <div id="errorResetPasswordConfirm" class="error-icon-container hidden tooltip" title="Passwords don't match."><i class="material-icons">&#xE001;</i></div>
                 </div>
             </div>
@@ -249,6 +269,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
                 <button type="button" id="deleteUserBtn" class="btn btn-primary modal-btn" onclick="delete_user()" data-loading-text="Deleting.." data-complete-text="Delete">Delete</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Change Password</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-container whole">
+                    <input type="password" id="changePasswordText" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorPassword" class="form-control" data-class="input-label" placeholder="Password">
+                    <div id="errorPassword" class="error-icon-container hidden tooltip" title="Must be atleast 8 characters."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container whole">
+                    <input type="password" id="changePasswordConfirmText" onblur="validate_password_confirm(this,this.value)" onchange="validate_password_confirm(this,this.value)" data-error="errorPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm Password">
+                    <div id="errorPasswordConfirm" class="error-icon-container hidden tooltip" title="Passwords don't match."><i class="material-icons">&#xE001;</i></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="savePasswordBtn" type="button" class="btn btn-primary modal-btn" onclick="save_password()" disabled  data-loading-text="Saving.." data-complete-text="Save">Save</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

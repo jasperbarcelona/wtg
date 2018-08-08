@@ -1,0 +1,63 @@
+<div class="search-container">
+	<select id="searchUsageYear" class="form-control search-select" data-size="10>
+		{% if year == '2018' %}
+		<option value="2018" selected>2018</option>
+		{% else %}
+		<option value="2018">2018</option>
+		{% endif %}
+
+		{% if year == '2019' %}
+		<option value="2019" selected>2019</option>
+		{% else %}
+		<option value="2019">2019</option>
+		{% endif %}
+
+		{% if year == '2020' %}
+		<option value="2020" selected>2020</option>
+		{% else %}
+		<option value="2020">2020</option>
+		{% endif %}
+
+		{% if year == '2021' %}
+		<option value="2021" selected>2021</option>
+		{% else %}
+		<option value="2021">2021</option>
+		{% endif %}
+
+		{% if year == '2022' %}
+		<option value="2022" selected>2022</option>
+		{% else %}
+		<option value="2022">2022</option>
+		{% endif %}
+
+		{% if year == '2023' %}
+		<option value="2023" selected>2023</option>
+		{% else %}
+		<option value="2023">2023</option>
+		{% endif %}
+	</select>
+</div>
+<div class="content-header"></div>
+<div class="history-entry-container">
+	{% for entry in bills %}
+	<div onclick="open_bill({{ entry.id }})" class="entry">
+		<div class="active-entry-left">
+			<div>
+				<span class="active-usage-date">{{ entry.date }}</span>
+			</div>
+			<div>
+				{% if entry.transactions == 1 %}
+				<span class="active-usage-transactions">{{ entry.transactions }} transaction</span>
+				{% else %}
+				<span class="active-usage-transactions">{{ entry.transactions }} transactions</span>
+				{% endif %}
+			</div>
+		</div>
+		<div class="active-entry-right">
+			<div class="status-container">
+				<span class="active-usage-price">PHP {{ entry.price }}</span>
+			</div>
+		</div>
+	</div>
+{% endfor %}
+</div>

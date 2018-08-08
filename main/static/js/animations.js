@@ -202,3 +202,39 @@ $('#addUserModal .form-control').on('change', function () {
 $('#addUserModal').on('shown.bs.modal', function () {
     $('#addUserName').focus();
 });
+
+$('#resetPasswordModal').on('hidden.bs.modal', function () {
+  $('#resetPasswordModal .form-control').val('');
+  $('#resetPasswordModal .form-control').change();
+  $('#resetPasswordModal .error-icon-container').addClass('hidden');
+  $('#resetPasswordModal .form-control').css('border','1px solid #ccc');
+});
+
+$('#resetPasswordModal .form-control').on('keyup', function () {
+  temp_pw = $('#resetPasswordText').val();
+  temp_pw_confirm = $('#resetPasswordConfirmText').val();
+  role = $('#addUserRole').val();
+
+  if ((temp_pw != '') && (temp_pw_confirm != '') && (temp_pw.length >= 8) && (temp_pw_confirm.length >= 8) && (temp_pw_confirm == temp_pw)) {
+    $('#resetPasswordBtn').attr('disabled',false);
+  }
+  else {
+    $('#resetPasswordBtn').attr('disabled',true);
+  }
+});
+
+$('#changePasswordModal').on('shown.bs.modal', function () {
+    $('#changePasswordText').focus();
+});
+
+$('#changePasswordModal .form-control').keyup(function(e){
+  password = $('#changePasswordText').val();
+  password_confirm = $('#changePasswordConfirmText').val();
+
+  if ((password != '') && (password_confirm != '') && (password == password_confirm)) {
+    $('#savePasswordBtn').attr('disabled',false);
+  }
+  else {
+    $('#savePasswordBtn').attr('disabled',true);
+  }
+});

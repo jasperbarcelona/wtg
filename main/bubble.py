@@ -49,6 +49,7 @@ admin.add_view(BubbleAdmin(AdminUser, db.session))
 admin.add_view(BubbleAdmin(Transaction, db.session))
 admin.add_view(BubbleAdmin(TransactionItem, db.session))
 admin.add_view(BubbleAdmin(Service, db.session))
+admin.add_view(BubbleAdmin(Bill, db.session))
 # admin.add_view(BubbleAdmin(Service, db.session))
 
 def nocache(view):
@@ -71,6 +72,11 @@ def index():
 
     user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
 
+    if user.password == user.temp_pw:
+        change_pw = 'yes'
+    else:
+        change_pw = 'no'
+
     if user.active_sort == 'Alphabetical':
         transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.customer_name).all()
     else:
@@ -85,7 +91,8 @@ def index():
         transactions=transactions,
         total_entries=total_entries,
         services=services,
-        user=user
+        user=user,
+        change_pw=change_pw
         )
 
 
@@ -291,6 +298,25 @@ def save_transaction():
             db.session.add(transaction_item)
             db.session.commit()
 
+    client = Client.query.filter_by(client_no=session['client_no']).first()
+    bill = Bill.query.filter_by(date=datetime.datetime.now().strftime('%B, %Y'), client_no=session['client_no']).first()
+
+    if not bill or bill == None:
+        bill = Bill(
+            date=datetime.datetime.now().strftime('%B, %Y'),
+            year=datetime.datetime.now().strftime('%Y'),
+            client_no=session['client_no'],
+            created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f'),
+            transactions=0,
+            price='0',
+            )
+        db.session.add(bill)
+        db.session.commit()
+
+    bill.price = '{0:.2f}'.format(float(bill.price) + float(client.pricing))
+    bill.transactions += 1
+    db.session.commit()
+
     user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
 
     if user.active_sort == 'Alphabetical':
@@ -305,6 +331,32 @@ def save_transaction():
             transactions = transactions,
             total_entries=total_entries,
             user=user
+            )
+        )
+
+
+@app.route('/usage',methods=['GET','POST'])
+def usage():
+    bills = Bill.query.filter_by(client_no=session['client_no'], year=datetime.datetime.now().strftime('%Y')).order_by(Bill.created_at.desc())
+
+    return jsonify(
+        template = flask.render_template(
+            'usage.html',
+            bills = bills,
+            year = datetime.datetime.now().strftime('%Y')
+            )
+        )
+
+
+@app.route('/bill',methods=['GET','POST'])
+def bill_info():
+    bill_id = flask.request.form.get('bill_id')
+    bill = Bill.query.filter_by(client_no=session['client_no'], id=bill_id).first()
+
+    return jsonify(
+        template = flask.render_template(
+            'bill_info.html',
+            bill = bill
             )
         )
 
@@ -462,6 +514,27 @@ def edit_user():
         )
 
 
+@app.route('/user/password/reset',methods=['GET','POST'])
+def reset_user_password():
+    password = flask.request.form.get('password')
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    user.password = password
+    user.temp_pw = password
+    db.session.commit()
+    return jsonify(status='success', message=''),201
+
+
+@app.route('/user/password/save',methods=['GET','POST'])
+def save_password():
+    password = flask.request.form.get('password')
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
+    if user.password == password:
+        return jsonify(status='failed', message='The password you entered is the same as your temporary password, please enter a different one.')
+    user.password = password
+    db.session.commit()
+    return jsonify(status='success', message='Password successfully changed.')
+
+
 @app.route('/user/add',methods=['GET','POST'])
 def add_user():
     data = flask.request.form.to_dict()
@@ -480,6 +553,24 @@ def add_user():
         )
 
     db.session.add(new_user)
+    db.session.commit()
+
+    users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
+    total_entries = AdminUser.query.filter_by(client_no=session['client_no']).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'users.html',
+            users = users,
+            total_entries = total_entries,
+            )
+        )
+
+
+@app.route('/user/delete',methods=['GET','POST'])
+def delete_user():
+    user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    db.session.delete(user)
     db.session.commit()
 
     users = AdminUser.query.filter_by(client_no=session['client_no']).order_by(AdminUser.name)
@@ -556,6 +647,7 @@ def rebuild_database():
         app_secret='f3e1ab30e23ea7a58105f058318785ae236378d1d9ebac58fe8b42e1e239e1c3',
         passphrase='24BUubukMQ',
         shortcode='21588479',
+        pricing='5',
         created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 

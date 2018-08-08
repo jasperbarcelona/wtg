@@ -68,6 +68,17 @@ function show_account_settings(slice_from) {
   });
 }
 
+function show_usage_settings(slice_from) {
+  $('#settingsContentLoader').show();
+  $('.settings-nav-item').removeClass('active');
+  $('#settingsNavUsage').addClass('active');
+  $.get('/usage',
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#settingsContentLoader').fadeOut();
+  });
+}
+
 function validate_blank(element,value) {
   error_icon_id = $(element).attr('data-error')
   if (value == '') {
@@ -238,6 +249,23 @@ function open_service(service_id) {
   });
 }
 
+function open_bill(bill_id) {
+  $('#billInfoModal').modal('show');
+  setTimeout(function() {
+    $('#modalLoader').show();
+  }, 200);
+  $.post('/bill',
+  {
+    bill_id:bill_id
+  },
+  function(data){
+    $('#billInfoModal .modal-body').html(data['template']);
+    setTimeout(function() {
+      $('#modalLoader').fadeOut();
+    }, 500);
+  });
+}
+
 function open_user(user_id) {
   $('#userInfoModal').modal('show');
   setTimeout(function() {
@@ -363,6 +391,28 @@ function edit_service() {
   });
 }
 
+function reset_password() {
+  $('#saveResetPasswordBtn').button('complete');
+  password = $('#resetPasswordText').val();
+  $.post('/user/password/reset',
+  {
+    password:password
+  },
+  function(data){
+    $('#resetPasswordModal .form-control').change();
+    $('#resetPasswordModal .form-control').val('');
+    $('#resetPasswordModal .error-icon-container').addClass('hidden');
+    $('#resetPasswordModal .form-control').css('border','1px solid #ccc');
+    $('#saveResetPasswordBtn').button('complete');
+    $('#resetPasswordModal').modal('hide');
+    $('#successSnackbar .snackbar-message').html('Password successfully reset.');
+    $('#successSnackbar').fadeIn();
+    setTimeout(function() {
+      $('#successSnackbar').fadeOut();
+    }, 4000);
+  });
+}
+
 function edit_user() {
   $('#editUserBtn').button('loading');
   name = $('#editUserName').val();
@@ -384,6 +434,13 @@ function edit_user() {
     setTimeout(function() {
       $('#successSnackbar').fadeOut();
     }, 4000);
+  });
+}
+
+function change_password() {
+  $('#changePasswordModal').modal({
+    backdrop: 'static',
+    keyboard: false
   });
 }
 
@@ -466,5 +523,51 @@ function save_user() {
   function(data){
     $('#settingsContent').html(data['template']);
     $('#addUserModal').modal('hide');
+  });
+}
+
+function save_password() {
+  $('#savePasswordBtn').button('loading');
+  password = $('#changePasswordText').val();
+
+  $.post('/user/password/save',
+  {
+    password:password
+  },
+  function(data){
+    if (data['status'] == 'success') {
+      $('#changePasswordModal').modal('hide');
+      $('#successSnackbar').find('.snackbar-message').html(data['message']);;
+      $('#successSnackbar').fadeIn();
+      setTimeout(function() {
+        $('#successSnackbar').fadeOut();
+      }, 4000);
+    }
+    else {
+      $('#ErrorSnackbar .snackbar-message').html(data['message']);
+      $('#ErrorSnackbar').fadeIn();
+      $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
+      setTimeout(function() {
+        $('#ErrorSnackbar').fadeOut();
+      }, 4000);
+    }
+    $('#savePasswordBtn').button('complete');
+  });
+}
+
+function delete_user() {
+  $('#deleteUserBtn').button('loading');
+  $.post('/user/delete',
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#deleteUserBtn').button('complete');
+    $('#editUserModal').modal('hide');
+    $('#deleteUserModal').modal('hide');
+    $('#userInfoModal').modal('hide');
+    $('#successSnackbar .snackbar-message').html('User successfully deleted.');
+    $('#successSnackbar').fadeIn();
+    setTimeout(function() {
+      $('#successSnackbar').fadeOut();
+    }, 4000);
   });
 }

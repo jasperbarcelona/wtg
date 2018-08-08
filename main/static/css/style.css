@@ -160,7 +160,8 @@ input[type=number]::-webkit-outer-spin-button {
 	border-bottom: 1px solid #D9D9D9;
 }
 
-.search-text-box {
+.search-text-box,
+.search-select {
 	height: 100% !important;
 	width: 100% !important;
 	padding-left: 12px !important;
@@ -260,6 +261,18 @@ input[type=number]::-webkit-outer-spin-button {
 
 .service-entry-price {
 	font-size: 14px;
+}
+
+.active-usage-date {
+	font-size: 14px;
+}
+
+.active-usage-price {
+	font-size: 14px;
+}
+
+.active-usage-transactions {
+	font-size: 12px;
 }
 
 .active-entry-right {
@@ -517,15 +530,18 @@ input[type=number]::-webkit-outer-spin-button {
 #addServiceModal,
 #serviceInfoModal,
 #addUserModal,
+#billInfoModal,
 #userInfoModal,
 #addTransactionModal .modal-dialog,
 #userInfoModal .modal-dialog,
+#billInfoModal .modal-dialog,
 #addUserModal .modal-dialog,
 #serviceInfoModal .modal-dialog,
 #addServiceModal .modal-dialog,
 #addTransactionModal .modal-content,
 #userInfoModal .modal-content,
 #addUserModal .modal-content,
+#billInfoModal .modal-content,
 #serviceInfoModal .modal-content,
 #addServiceModal .modal-content,
 #transactionInfoModal,
@@ -541,6 +557,7 @@ input[type=number]::-webkit-outer-spin-button {
 #addUserModal .modal-title,
 #userInfoModal .modal-title,
 #serviceInfoModal .modal-title,
+#billInfoModal .modal-title,
 #addServiceModal .modal-title,
 #transactionInfoModal .modal-title {
 	padding-top: 3px !important;
@@ -550,6 +567,7 @@ input[type=number]::-webkit-outer-spin-button {
 #addServiceModal .modal-body,
 #addUserModal .modal-body,
 #userInfoModal .modal-body,
+#billInfoModal .modal-body,
 #serviceInfoModal .modal-body,
 #transactionInfoModal .modal-body {
 	height: calc(100vh - 115px) !important;
@@ -563,17 +581,44 @@ input[type=number]::-webkit-outer-spin-button {
 #addServiceModal .btn-primary,
 #addUserModal .btn-primary,
 #userInfoModal .btn-primary,
+#billInfoModal .btn-primary,
 #serviceInfoModal .btn-primary,
+#resetPasswordModal .btn-primary,
+#deleteUserModal .btn-primary,
+#changePasswordModal .btn-primary,
 #transactionInfoModal .btn-primary {
 	background-color: #337AB7 !important;
 	width: 200px !important;
 }
+
+#addTransactionModal .btn-danger,
+#addServiceModal .btn-danger,
+#addUserModal .btn-danger,
+#userInfoModal .btn-danger,
+#serviceInfoModal .btn-danger,
+#billInfoModal .btn-danger,
+#resetPasswordModal .btn-danger,
+#changePasswordModal .btn-danger,
+#deleteUserModal .btn-danger,
+#transactionInfoModal .btn-danger {
+	background-color: #d9534f !important;
+}
+
+.btn:active,
+.btn:focus,
+.btn:hover {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+
 
 #addTransactionModal .form-control,
 #addServiceModal .form-control,
 #addUserModal .form-control:not(#addUserEmail),
 #userInfoModal .form-control:not(#editUserEmail),
 #serviceInfoModal .form-control,
+#billInfoModal .form-control,
 #transactionInfoModal .form-control {
 	text-transform: capitalize;
 	height: 45px;

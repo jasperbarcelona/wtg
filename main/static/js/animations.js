@@ -2,6 +2,9 @@ $(document).ready(function(){
   
 $(window).load(function(){
   initialize_page();
+  setTimeout(function() {
+    $('#mainPreloader').fadeOut();
+  }, 3000);
 });
 
 $('.snackbar').hide();

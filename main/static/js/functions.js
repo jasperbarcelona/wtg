@@ -193,9 +193,6 @@ function initialize_page() {
       name: 'states',
       source: substringMatcher(states)
     });
-    setTimeout(function() {
-      $('#mainPreloader').fadeOut();
-    }, 3000);
   });
 }
 

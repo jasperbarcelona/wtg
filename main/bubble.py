@@ -487,7 +487,8 @@ def user_info():
     return jsonify(
         template = flask.render_template(
             'user_info.html',
-            user = user
+            user = user,
+            current_user_id = session['user_id']
             )
         )
 
@@ -520,6 +521,16 @@ def edit_user():
 def reset_user_password():
     password = flask.request.form.get('password')
     user = AdminUser.query.filter_by(id=session['open_user_id']).first()
+    user.password = password
+    user.temp_pw = password
+    db.session.commit()
+    return jsonify(status='success', message=''),201
+
+
+@app.route('/user/password/reset/logged_in',methods=['GET','POST'])
+def reset_logged_in_user_password():
+    password = flask.request.form.get('password')
+    user = AdminUser.query.filter_by(id=session['user_id']).first()
     user.password = password
     user.temp_pw = password
     db.session.commit()

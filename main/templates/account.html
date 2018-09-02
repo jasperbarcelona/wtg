@@ -1,14 +1,14 @@
 {% if user.role == 'Administrator' %}
 <div id="settingsNavContainer">
 	<div id="settingsNavAccount" class="settings-nav-item col-xs-3 active" onclick="show_account_settings()">Account</div>
-	<div id="settingsNavAccount" class="settings-nav-item col-xs-3" onclick="show_usage_settings()">Usage</div>
+	<div id="settingsNavUsage" class="settings-nav-item col-xs-3" onclick="show_usage_settings()">Usage</div>
 	<div id="settingsNavService" class="settings-nav-item col-xs-3" onclick="show_service_settings()">Services</div>
 	<div id="settingsNavUser" class="settings-nav-item col-xs-3" onclick="show_user_settings()">Users</div>
 </div>
 {% else %}
 <div id="settingsNavContainer">
 	<div id="settingsNavAccount" class="settings-nav-item col-xs-6 active" onclick="show_account_settings()">Account</div>
-	<div id="settingsNavAccount" class="settings-nav-item col-xs-6" onclick="show_usage_settings()">Usage</div>
+	<div id="settingsNavUsage" class="settings-nav-item col-xs-6" onclick="show_usage_settings()">Usage</div>
 </div>
 {% endif %}
 <div id="settingsContent">
@@ -17,5 +17,10 @@
 		<input type="text" id="userName" class="form-control" placeholder="Full Name" value="{{ user.name }}">
 		<span class="input-group-label">Email</span>
 		<input type="text" id="userEmail" class="form-control" placeholder="Email address" value="{{ user.email }}">
+		<div class="account-btn-container">
+		<button type="button" class="btn btn-primary" data-loading-text="Saving" data-complete-text="Save Changes" disabled>Save Changes</button>
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#resetUserPasswordModal">Reset Password</button>
+		<a href="/logout"><button type="button" class="btn btn-danger">Logout</button></a>
+		</div>
 	</div>
 </div>

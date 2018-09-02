@@ -257,6 +257,30 @@
     </div><!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="resetUserPasswordModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Reset Password</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-container whole">
+                    <input type="password" id="resetPasswordText" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorResetPassword" class="form-control" data-class="input-label" placeholder="New Password">
+                    <div id="errorResetPassword" class="error-icon-container hidden tooltip" title="Must be atleast 8 characters."><i class="material-icons">&#xE001;</i></div>
+                </div>
+                <div class="input-container whole">
+                    <input type="password" id="resetPasswordConfirmText" onblur="validate_password_reset(this,this.value)" onchange="validate_password_reset(this,this.value)" data-error="errorResetPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm New Password">
+                    <div id="errorResetPasswordConfirm" class="error-icon-container hidden tooltip" title="Passwords don't match."><i class="material-icons">&#xE001;</i></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelPasswordResetBtn" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" id="resetUserPasswordBtn" class="btn btn-primary modal-btn" disabled onclick="reset_user_password()" data-loading-text="Saving.." data-complete-text="Reset">Reset</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 <div class="modal fade confirm-delete-modal" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

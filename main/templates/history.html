@@ -1,8 +1,12 @@
-<div class="search-container">
-	<input type="text" id="searchHistoryDate" class="search-text-box form-control datepicker" placeholder="Date" value="{{ date }}">
+<div id="chartToggleContainer" class="search-container">
+	<span id="chartToggle">Chart</span><i id="historyToggleIcon" class="material-icons">keyboard_arrow_right</i>
 </div>
+<canvas id="historyChart" class="hidden"></canvas>
 <div class="search-container">
 	<input type="text" id="searchHistory" class="search-text-box form-control" placeholder="Search history">
+</div>
+<div class="search-container">
+	<input type="text" id="searchHistoryDate" class="search-text-box form-control datepicker" placeholder="Date" value="{{ date }}">
 </div>
 <div class="content-header">
 	<div class="content-header-left">
@@ -37,7 +41,47 @@
 </div>
 
 <script type="text/javascript">
-	$(".datepicker").datepicker({
-	    dateFormat: "MM dd, yy"
-	});
+$('#chartToggleContainer').on('click', function () {
+	if ($('#historyChart').hasClass('hidden')) {
+		$('#historyChart').removeClass('hidden');
+		$('#historyToggleIcon').html('keyboard_arrow_down')
+	}
+	else {
+		$('#historyChart').addClass('hidden');
+		$('#historyToggleIcon').html('keyboard_arrow_right')
+	}
+});
+
+$(".datepicker").datepicker({
+    dateFormat: "MM dd, yy"
+});
+
+var ctx = document.getElementById("historyChart").getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+        datasets: [{
+            label: 'Revenue',
+            data: [15000, 5000, 23000, 14000, 17000, 15000, 5000, 23000, 14000, 17000, 14000, 17000],
+            backgroundColor: [
+                'rgba(51,122,183, 0.8)'
+            ],
+            borderColor: [
+                'rgba(51,122,183, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
 </script>
+

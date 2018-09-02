@@ -392,7 +392,7 @@ function edit_service() {
 }
 
 function reset_password() {
-  $('#saveResetPasswordBtn').button('complete');
+  $('#resetPasswordBtn').button('complete');
   password = $('#resetPasswordText').val();
   $.post('/user/password/reset',
   {
@@ -403,7 +403,29 @@ function reset_password() {
     $('#resetPasswordModal .form-control').val('');
     $('#resetPasswordModal .error-icon-container').addClass('hidden');
     $('#resetPasswordModal .form-control').css('border','1px solid #ccc');
-    $('#saveResetPasswordBtn').button('complete');
+    $('#resetPasswordBtn').button('complete');
+    $('#resetPasswordModal').modal('hide');
+    $('#successSnackbar .snackbar-message').html('Password successfully reset.');
+    $('#successSnackbar').fadeIn();
+    setTimeout(function() {
+      $('#successSnackbar').fadeOut();
+    }, 4000);
+  });
+}
+
+function reset_user_password() {
+  $('#resetUserPasswordBtn').button('complete');
+  password = $('#resetPasswordText').val();
+  $.post('/user/password/reset/logged_in',
+  {
+    password:password
+  },
+  function(data){
+    $('#resetPasswordModal .form-control').change();
+    $('#resetPasswordModal .form-control').val('');
+    $('#resetPasswordModal .error-icon-container').addClass('hidden');
+    $('#resetPasswordModal .form-control').css('border','1px solid #ccc');
+    $('#resetUserPasswordBtn').button('complete');
     $('#resetPasswordModal').modal('hide');
     $('#successSnackbar .snackbar-message').html('Password successfully reset.');
     $('#successSnackbar').fadeIn();

@@ -681,7 +681,7 @@ def rebuild_database():
     user = AdminUser(
         client_no='bubble',
         email='jasper@pisara.tech',
-        password='ratmaxi8',
+        password='password123',
         name='Jasper Barcelona',
         role='Administrator',
         active_sort='Alphabetical',

@@ -1,4 +1,4 @@
-f$(document).ready(function(){
+$(document).ready(function(){
 
 $('#login-error-container').hide();
 

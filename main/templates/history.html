@@ -4,6 +4,11 @@
 <canvas id="historyChart" class="hidden"></canvas>
 <div class="search-container">
 	<input type="text" id="searchHistory" class="search-text-box form-control" placeholder="Search history">
+	<div id="clearHistorySearchBtn" class="clear-search hidden">
+		<div>
+			<span>Clear Search</span>
+		</div>
+	</div>
 </div>
 <div class="search-container">
 	<input type="text" id="searchHistoryDate" class="search-text-box form-control datepicker" placeholder="Date" value="{{ date }}">
@@ -11,13 +16,13 @@
 <div class="content-header">
 	<div class="content-header-left">
 		{% if total_entries == 1 %}
-		<span class="total-entries">{{ total_entries }} Item</span>
+		<span id="historyCount" class="total-entries">{{ total_entries }} Item</span>
 		{% else %}
-		<span class="total-entries">{{ total_entries }} Items</span>
+		<span id="historyCount" class="total-entries">{{ total_entries }} Items</span>
 		{% endif %}
 	</div>
 	<div class="content-header-right">
-		<strong>Total: PHP {{ total }}</strong>
+		<strong id="historyTotal">Total: PHP {{ total }}</strong>
 	</div>
 </div>
 <div class="history-entry-container">
@@ -56,6 +61,35 @@ $(".datepicker").datepicker({
     dateFormat: "MM dd, yy"
 });
 
+(function($) {
+$.fn.donetyping = function(callback){
+    var _this = $(this);
+    var x_timer;    
+    _this.keyup(function (){
+        clearTimeout(x_timer);
+        x_timer = setTimeout(clear_timer, 500);
+    }); 
+
+    function clear_timer(){
+        clearTimeout(x_timer);
+        callback.call(_this);
+    }
+}
+})(jQuery);
+
+$('#searchHistory').donetyping(function(callback){
+  search_history($(this).val());
+});
+
+$('#clearHistorySearchBtn').on('click', function () {
+  $('#searchHistory').val('');
+  search_history('');
+});
+
+$('#searchHistoryDate').on('change', function () {
+	search_history($('#searchHistory').val());
+});
+
 var ctx = document.getElementById("historyChart").getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'line',
@@ -63,7 +97,7 @@ var myChart = new Chart(ctx, {
         labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
         datasets: [{
             label: 'Revenue',
-            data: [15000, 5000, 23000, 14000, 17000, 15000, 5000, 23000, 14000, 17000, 14000, 17000],
+            data: [{{january}}, {{february}}, {{march}}, {{april}}, {{may}}, {{june}}, {{july}}, {{august}}, {{september}}, {{october}}, {{november}}, {{december}}],
             backgroundColor: [
                 'rgba(51,122,183, 0.8)'
             ],

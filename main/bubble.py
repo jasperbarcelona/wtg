@@ -33,9 +33,9 @@ from email.mime.text import MIMEText as text
 import os
 import schedule
 from werkzeug.utils import secure_filename
-from tasks import send_notification
 import db_conn
 from db_conn import db, app
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import *
 
 IPP_URL = 'https://devapi.globelabs.com.ph/smsmessaging/v1/outbound/%s/requests'
@@ -74,11 +74,6 @@ def index():
 
     user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
 
-    if user.password == user.temp_pw:
-        change_pw = 'yes'
-    else:
-        change_pw = 'no'
-
     if user.active_sort == 'Alphabetical':
         transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.customer_name).all()
     else:
@@ -94,7 +89,52 @@ def index():
         total_entries=total_entries,
         services=services,
         user=user,
-        change_pw=change_pw
+        change_pw=session['change_pw']
+        )
+
+
+@app.route('/active/search',methods=['GET','POST'])
+def search_active_transactions():
+    keyword = flask.request.form.get('keyword')
+    user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
+    if keyword != '':
+        transactions = Transaction.query.filter(Transaction.customer_name.ilike('%'+keyword+'%'), Transaction.status!='Finished').order_by(Transaction.customer_name).all()
+    else:
+        if user.active_sort == 'Alphabetical':
+            transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.customer_name).all()
+        else:
+            transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status!='Finished').order_by(Transaction.created_at.desc()).all()
+    total_entries = Transaction.query.filter(Transaction.customer_name.ilike('%'+keyword+'%'), Transaction.status!='Finished').order_by(Transaction.customer_name).count()
+
+    return jsonify(
+        template = flask.render_template(
+            'transactions_result.html',
+            transactions = transactions,
+            user=user
+            ),
+        total_entries = total_entries
+        )
+
+
+@app.route('/history/search',methods=['GET','POST'])
+def search_history():
+    data = flask.request.form.to_dict()
+    user = AdminUser.query.filter_by(client_no=session['client_no'],id=session['user_id']).first()
+    if data['keyword'] != '':
+        transactions = Transaction.query.filter(Transaction.customer_name.ilike('%'+data['keyword']+'%'), Transaction.status=='Finished', Transaction.date==data['date']).order_by(Transaction.customer_name).all()
+    else:
+        transactions = Transaction.query.filter(Transaction.client_no==session['client_no'], Transaction.status=='Finished', Transaction.date==data['date']).order_by(Transaction.created_at.desc()).all()
+    total_entries = Transaction.query.filter(Transaction.customer_name.ilike('%'+data['keyword']+'%'), Transaction.status=='Finished', Transaction.date==data['date']).order_by(Transaction.customer_name).count()
+    total = '{0:.2f}'.format(sum(float(transaction.total) for transaction in transactions))
+
+    return jsonify(
+        template = flask.render_template(
+            'history_result.html',
+            transactions = transactions
+            ),
+        total_entries = total_entries,
+        total = total,
+        date=datetime.datetime.now().strftime('%B %d, %Y')
         )
 
 
@@ -270,6 +310,7 @@ def save_transaction():
         client_no=session['client_no'],
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
+        month_year=datetime.datetime.now().strftime('%B %Y'),
         status='Pending',
         cashier_id=session['user_id'],
         cashier_name=session['user_name'].title(),
@@ -370,12 +411,62 @@ def history():
 
     total = '{0:.2f}'.format(sum(float(transaction.total) for transaction in transactions))
 
+    year = datetime.datetime.now().strftime('%Y')
+
+    january_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='January %s' % year).all()
+    january = '{0:.2f}'.format(sum(float(transaction.total) for transaction in january_transactions))
+
+    february_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='February %s' % year).all()
+    february = '{0:.2f}'.format(sum(float(transaction.total) for transaction in february_transactions))
+
+    march_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='March %s' % year).all()
+    march = '{0:.2f}'.format(sum(float(transaction.total) for transaction in march_transactions))
+
+    april_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='April %s' % year).all()
+    april = '{0:.2f}'.format(sum(float(transaction.total) for transaction in april_transactions))
+
+    may_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='May %s' % year).all()
+    may = '{0:.2f}'.format(sum(float(transaction.total) for transaction in may_transactions))
+
+    june_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='June %s' % year).all()
+    june = '{0:.2f}'.format(sum(float(transaction.total) for transaction in june_transactions))
+
+    july_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='July %s' % year).all()
+    july = '{0:.2f}'.format(sum(float(transaction.total) for transaction in july_transactions))
+
+    august_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='August %s' % year).all()
+    august = '{0:.2f}'.format(sum(float(transaction.total) for transaction in august_transactions))
+
+    september_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='September %s' % year).all()
+    september = '{0:.2f}'.format(sum(float(transaction.total) for transaction in september_transactions))
+
+    october_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='October %s' % year).all()
+    october = '{0:.2f}'.format(sum(float(transaction.total) for transaction in october_transactions))
+
+    november_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='November %s' % year).all()
+    november = '{0:.2f}'.format(sum(float(transaction.total) for transaction in november_transactions))
+
+    december_transactions = Transaction.query.filter_by(client_no=session['client_no'], month_year='December %s' % year).all()
+    december = '{0:.2f}'.format(sum(float(transaction.total) for transaction in december_transactions))
+
     return jsonify(
         template = flask.render_template(
             'history.html',
             transactions = transactions,
             total_entries = total_entries,
-            total = total
+            total = total,
+            january=january,
+            february=february,
+            march=march,
+            april=april,
+            may=may,
+            june=june,
+            july=july,
+            august=august,
+            september=september,
+            october=october,
+            november=november,
+            december=december
             ),
         date=datetime.datetime.now().strftime('%B %d, %Y')
         )
@@ -400,12 +491,24 @@ def services():
     services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
     total_entries = Service.query.filter_by(client_no=session['client_no']).count()
 
+    service_names = []
+    service_frequencies = []
+
+    for service in services:
+        service_names.append(service.name)
+        count = TransactionItem.query.filter_by(client_no=session['client_no'],service_id=service.id).count()
+        service_frequencies.append(count)
+
     return jsonify(
         template = flask.render_template(
             'services.html',
             services = services,
             total_entries = total_entries,
-            )
+            service_frequencies = service_frequencies,
+            service_names = service_names
+            ),
+        service_frequencies = service_frequencies,
+        service_names = service_names
         )
 
 
@@ -425,6 +528,11 @@ def save_service():
     services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
     total_entries = Service.query.filter_by(client_no=session['client_no']).count()
 
+    for service in services:
+        service_names.append(service.name)
+        count = TransactionItem.query.filter_by(client_no=session['client_no'],service_id=service.id).count()
+        service_frequencies.append(count)
+
     return jsonify(
         template = flask.render_template(
             'services_result.html',
@@ -434,7 +542,10 @@ def save_service():
         transaction_template = flask.render_template(
             'transaction_service.html',
             services = services
-            )
+            ),
+        total_entries = total_entries,
+        service_names = service_names,
+        service_frequencies = service_frequencies
         )
 
 
@@ -450,6 +561,11 @@ def edit_service():
     services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
     total_entries = Service.query.filter_by(client_no=session['client_no']).count()
 
+    for service in services:
+        service_names.append(service.name)
+        count = TransactionItem.query.filter_by(client_no=session['client_no'],service_id=service.id).count()
+        service_frequencies.append(count)
+
     return jsonify(
         template = flask.render_template(
             'services_result.html',
@@ -460,7 +576,10 @@ def edit_service():
             'transaction_service.html',
             services = services
             ),
-        message = 'Changes saved.'
+        message = 'Changes saved.',
+        total_entries = total_entries,
+        service_names = service_names,
+        service_frequencies = service_frequencies
         )
 
 
@@ -488,6 +607,7 @@ def user_info():
         template = flask.render_template(
             'user_info.html',
             user = user,
+            permissions = user.permissions.split(","),
             current_user_id = session['user_id']
             )
         )
@@ -496,11 +616,12 @@ def user_info():
 @app.route('/user/edit',methods=['GET','POST'])
 def edit_user():
     data = flask.request.form.to_dict()
+    permissions = flask.request.form.getlist('edit_permissions[]')
     user = AdminUser.query.filter_by(id=session['open_user_id']).first()
 
     user.name = data['name'].title()
     user.email = data['email']
-    user.role = data['role'].title()
+    user.permissions = ",".join(permissions)
 
     db.session.commit()
 
@@ -521,8 +642,8 @@ def edit_user():
 def reset_user_password():
     password = flask.request.form.get('password')
     user = AdminUser.query.filter_by(id=session['open_user_id']).first()
-    user.password = password
-    user.temp_pw = password
+    user.password = generate_password_hash(password)
+    user.temp_pw = generate_password_hash(password)
     db.session.commit()
     return jsonify(status='success', message=''),201
 
@@ -531,8 +652,8 @@ def reset_user_password():
 def reset_logged_in_user_password():
     password = flask.request.form.get('password')
     user = AdminUser.query.filter_by(id=session['user_id']).first()
-    user.password = password
-    user.temp_pw = password
+    user.password = generate_password_hash(password)
+    user.temp_pw = generate_password_hash(password)
     db.session.commit()
     return jsonify(status='success', message=''),201
 
@@ -541,24 +662,26 @@ def reset_logged_in_user_password():
 def save_password():
     password = flask.request.form.get('password')
     user = AdminUser.query.filter_by(id=session['user_id']).first()
-    if user.password == password:
+    if check_password_hash(user.password, password) == True:
         return jsonify(status='failed', message='The password you entered is the same as your temporary password, please enter a different one.')
-    user.password = password
+    user.password = generate_password_hash(password)
     db.session.commit()
+    session['change_pw'] = 'no'
     return jsonify(status='success', message='Password successfully changed.')
 
 
 @app.route('/user/add',methods=['GET','POST'])
 def add_user():
     data = flask.request.form.to_dict()
+    permissions = flask.request.form.getlist('permissions[]')
 
     new_user = AdminUser(
         client_no=session['client_no'],
         email=data['email'],
-        password=data['temp_pw'],
-        temp_pw=data['temp_pw'],
+        password=generate_password_hash(data['temp_pw']),
+        temp_pw=generate_password_hash(data['temp_pw']),
         name=data['name'].title(),
-        role=data['role'],
+        permissions=",".join(permissions),
         added_by_id=session['user_id'],
         added_by_name=session['user_name'],
         join_date=datetime.datetime.now().strftime('%B %d, %Y'),
@@ -604,7 +727,8 @@ def account():
     return jsonify(
         template = flask.render_template(
             'account.html',
-            user = user
+            user = user,
+            permissions = user.permissions.split(",")
             )
         )
 
@@ -637,9 +761,17 @@ def states():
 @app.route('/user/authenticate',methods=['GET','POST'])
 def authenticate_user():
     data = flask.request.form.to_dict()
-    user = AdminUser.query.filter_by(email=data['user_email'],password=data['user_password']).first()
+    user = AdminUser.query.filter_by(email=data['user_email']).first()
     if not user or user == None:
-        return jsonify(status='failed', error='Invalid email or password.')
+        return jsonify(status='failed', error='Invalid username.')
+    if check_password_hash(user.password, data['user_password']) == False:
+        return jsonify(status='failed', error='Invalid password.')
+
+    if check_password_hash(user.temp_pw, data['user_password']) == True:
+        session['change_pw'] = 'yes'
+    else:
+        session['change_pw'] = 'no'
+
     client = Client.query.filter_by(client_no=user.client_no).first()
     session['user_name'] = user.name
     session['user_id'] = user.id
@@ -680,10 +812,12 @@ def rebuild_database():
 
     user = AdminUser(
         client_no='bubble',
-        email='jasper@pisara.tech',
-        password='password123',
-        name='Jasper Barcelona',
+        email='stevenbuenafe',
+        password=generate_password_hash('password123'),
+        temp_pw=generate_password_hash('password123'),
+        name='Sample Cashier',
         role='Administrator',
+        permissions='Services,Users',
         active_sort='Alphabetical',
         join_date=datetime.datetime.now().strftime('%B %d, %Y'),
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
@@ -693,10 +827,11 @@ def rebuild_database():
         client_no='bubble',
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
+        month_year=datetime.datetime.now().strftime('%B %Y'),
         status='Pending',
         cashier_id=1,
-        cashier_name='Jasper Barcelona',
-        customer_name='Vhing Barcelona',
+        cashier_name='Sample Cashier',
+        customer_name='Steven Buenafe',
         customer_msisdn='09176214704',
         total='4000.00',
         notes='Sample notes.',
@@ -707,34 +842,11 @@ def rebuild_database():
         client_no='bubble',
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
+        month_year=datetime.datetime.now().strftime('%B %Y'),
         status='Processing',
         cashier_id=1,
-        cashier_name='Jasper Barcelona',
-        customer_name='Leanza Etorma',
-        customer_msisdn='09176214704',
-        total='4000.00',
-        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
-        )
-    transaction2 = Transaction(
-        client_no='bubble',
-        date=datetime.datetime.now().strftime('%B %d, %Y'),
-        time=time.strftime("%I:%M%p"),
-        status='Processing',
-        cashier_id=1,
-        cashier_name='Jasper Barcelona',
-        customer_name='Tobie Delos Reyes',
-        customer_msisdn='09176214704',
-        total='4000.00',
-        created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
-        )
-    transaction3 = Transaction(
-        client_no='bubble',
-        date=datetime.datetime.now().strftime('%B %d, %Y'),
-        time=time.strftime("%I:%M%p"),
-        status='Pending',
-        cashier_id=1,
-        cashier_name='Jasper Barcelona',
-        customer_name='Janno Armamento',
+        cashier_name='Sample Cashier',
+        customer_name='Sample Customer',
         customer_msisdn='09176214704',
         total='4000.00',
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
@@ -772,7 +884,7 @@ def rebuild_database():
         client_no='bubble',
         name='Report Sample',
         report_type='Sales Report',
-        generated_by='Jasper Barcelona',
+        generated_by='Sample Cashier',
         generated_by_id=1,
         date=datetime.datetime.now().strftime('%B %d, %Y'),
         time=time.strftime("%I:%M%p"),
@@ -782,9 +894,9 @@ def rebuild_database():
     db.session.add(client)
     db.session.add(user)
     db.session.add(transaction)
-    db.session.add(transaction1)
-    db.session.add(transaction2)
-    db.session.add(transaction3)
+    # db.session.add(transaction1)
+    # db.session.add(transaction2)
+    # db.session.add(transaction3)
     db.session.add(service)
     db.session.add(service1)
     db.session.add(service2)

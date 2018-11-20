@@ -1,3 +1,6 @@
+var permissions = [];
+var edit_permissions = [];
+
 function show_active(slice_from) {
   $('#contentLoader').show();
   $('.nav-item').removeClass('active');
@@ -43,6 +46,37 @@ function show_service_settings(slice_from) {
   function(data){
     $('#settingsContent').html(data['template']);
     $('#settingsContentLoader').fadeOut();
+    var ctx = document.getElementById("servicesChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data['service_names'],
+            datasets: [{
+                label: 'Frequency',
+                data: data['service_frequencies'],
+                backgroundColor: [
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                ],
+                borderColor: [
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
   });
 }
 
@@ -293,9 +327,9 @@ function process_transaction(transaction_id) {
     }
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
-      $('#ErrorSnackbar').fadeIn();
+      $('#ErrorSnackbar').removeClass('hidden');
       setTimeout(function() {
-        $('#ErrorSnackbar').fadeOut();
+        $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
     }
   });
@@ -314,9 +348,9 @@ function done_transaction(transaction_id) {
     }
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
-      $('#ErrorSnackbar').fadeIn();
+      $('#ErrorSnackbar').removeClass('hidden');
       setTimeout(function() {
-        $('#ErrorSnackbar').fadeOut();
+        $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
     }
   });
@@ -341,9 +375,9 @@ function finish_transaction(transaction_id) {
     }
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
-      $('#ErrorSnackbar').fadeIn();
+      $('#ErrorSnackbar').removeClass('hidden');
       setTimeout(function() {
-        $('#ErrorSnackbar').fadeOut();
+        $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
     }
   });
@@ -359,10 +393,47 @@ function save_service() {
     service_price:service_price
   },
   function(data){
-    $('#settingsContent').html(data['template']);
+    $('.service-entry-container').html(data['template']);
     $('#addTransactionServiceContainer').html(data['transaction_template']);
     $('#saveServiceBtn').button('complete');
     $('#addServiceModal').modal('hide');
+    if (data['total_entries'] == 1) {
+      $('#serviceTotal').html(data['total_entries'] + ' Item');
+    }
+    else {
+      $('#serviceTotal').html(data['total_entries'] + ' Items');
+    }
+    var ctx = document.getElementById("servicesChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data['service_names'],
+            datasets: [{
+                label: 'Frequency',
+                data: data['service_frequencies'],
+                backgroundColor: [
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                ],
+                borderColor: [
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
   });
 }
 
@@ -376,14 +447,51 @@ function edit_service() {
     service_price:service_price
   },
   function(data){
-    $('#settingsContent').html(data['template']);
+    $('.service-entry-container').html(data['template']);
     $('#addTransactionServiceContainer').html(data['transaction_template']);
     $('#editServiceBtn').button('complete');
     $('#serviceInfoModal').modal('hide');
     $('#successSnackbar').find('.snackbar-message').html(data['message']);;
-    $('#successSnackbar').fadeIn();
+    $('#successSnackbar').addClass('hidden');
+    if (data['total_entries'] == 1) {
+      $('#serviceTotal').html(data['total_entries'] + ' Item');
+    }
+    else {
+      $('#serviceTotal').html(data['total_entries'] + ' Items');
+    }
+    var ctx = document.getElementById("servicesChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data['service_names'],
+            datasets: [{
+                label: 'Frequency',
+                data: data['service_frequencies'],
+                backgroundColor: [
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                ],
+                borderColor: [
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
     setTimeout(function() {
-      $('#successSnackbar').fadeOut();
+      $('#successSnackbar').addClass('hidden');
     }, 4000);
   });
 }
@@ -403,16 +511,16 @@ function reset_password() {
     $('#resetPasswordBtn').button('complete');
     $('#resetPasswordModal').modal('hide');
     $('#successSnackbar .snackbar-message').html('Password successfully reset.');
-    $('#successSnackbar').fadeIn();
+    $('#successSnackbar').addClass('hidden');
     setTimeout(function() {
-      $('#successSnackbar').fadeOut();
+      $('#successSnackbar').addClass('hidden');
     }, 4000);
   });
 }
 
 function reset_user_password() {
   $('#resetUserPasswordBtn').button('complete');
-  password = $('#resetPasswordText').val();
+  password = $('#resetUserPasswordText').val();
   $.post('/user/password/reset/logged_in',
   {
     password:password
@@ -425,9 +533,9 @@ function reset_user_password() {
     $('#resetUserPasswordBtn').button('complete');
     $('#resetPasswordModal').modal('hide');
     $('#successSnackbar .snackbar-message').html('Password successfully reset.');
-    $('#successSnackbar').fadeIn();
+    $('#successSnackbar').addClass('hidden');
     setTimeout(function() {
-      $('#successSnackbar').fadeOut();
+      $('#successSnackbar').addClass('hidden');
     }, 4000);
   });
 }
@@ -436,22 +544,21 @@ function edit_user() {
   $('#editUserBtn').button('loading');
   name = $('#editUserName').val();
   email = $('#editUserEmail').val();
-  role = $('#editUserRole').val();
 
   $.post('/user/edit',
   {
     name:name,
     email:email,
-    role:role
+    edit_permissions:edit_permissions
   },
   function(data){
     $('#settingsContent').html(data['template']);
     $('#editUserBtn').button('complete');
     $('#userInfoModal').modal('hide');
     $('#successSnackbar').find('.snackbar-message').html(data['message']);;
-    $('#successSnackbar').fadeIn();
+    $('#successSnackbar').addClass('hidden');
     setTimeout(function() {
-      $('#successSnackbar').fadeOut();
+      $('#successSnackbar').addClass('hidden');
     }, 4000);
   });
 }
@@ -537,9 +644,10 @@ function save_user() {
     name:name,
     email:email,
     temp_pw:temp_pw,
-    role:role
+    permissions:permissions
   },
   function(data){
+    permissions = []
     $('#settingsContent').html(data['template']);
     $('#addUserModal').modal('hide');
   });
@@ -557,17 +665,17 @@ function save_password() {
     if (data['status'] == 'success') {
       $('#changePasswordModal').modal('hide');
       $('#successSnackbar').find('.snackbar-message').html(data['message']);;
-      $('#successSnackbar').fadeIn();
+      $('#successSnackbar').removeClass('hidden');
       setTimeout(function() {
-        $('#successSnackbar').fadeOut();
+        $('#successSnackbar').addClass('hidden');
       }, 4000);
     }
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
-      $('#ErrorSnackbar').fadeIn();
+      $('#ErrorSnackbar').removeClass('hidden');
       $("html, body").animate({ scrollTop: $(document).height()-$(window).height() });
       setTimeout(function() {
-        $('#ErrorSnackbar').fadeOut();
+        $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
     }
     $('#savePasswordBtn').button('complete');
@@ -584,9 +692,9 @@ function delete_user() {
     $('#deleteUserModal').modal('hide');
     $('#userInfoModal').modal('hide');
     $('#successSnackbar .snackbar-message').html('User successfully deleted.');
-    $('#successSnackbar').fadeIn();
+    $('#successSnackbar').addClass('hidden');
     setTimeout(function() {
-      $('#successSnackbar').fadeOut();
+      $('#successSnackbar').addClass('hidden');
     }, 4000);
   });
 }
@@ -604,5 +712,92 @@ function upload_file() {
       success: function(data) {
         $('#billInfoModal .modal-body').html(data['template']);
       },
+  });
+}
+
+function toggle_permission(element) {
+  $(element).toggleClass('active');
+  if ($(element).hasClass('active')) {
+    permissions.push($(element).attr('data-value'));
+  }
+  else {
+    permissions = jQuery.grep(permissions, function(value) {
+      return value != $(element).attr('data-value');
+    });
+  }
+}
+
+function toggle_edit_permission(element) {
+  $(element).toggleClass('active');
+  if ($(element).hasClass('active')) {
+    edit_permissions.push($(element).attr('data-value'));
+  }
+  else {
+    edit_permissions = jQuery.grep(edit_permissions, function(value) {
+      return value != $(element).attr('data-value');
+    });
+  }
+}
+
+function search_active_transactions(keyword) {
+  $.post('/active/search',
+  {
+    keyword:keyword
+  },
+  function(data){
+    $('.active-entry-container').html(data['template']);
+    if (keyword != '') {
+      $('.sort-options').addClass('hidden');
+      $('#clearActiveSearchBtn').removeClass('hidden');
+      if (data['total_entries'] == 1) {
+        $('#activeCount').html(data['total_entries'] + ' Result')
+      }
+      else {
+        $('#activeCount').html(data['total_entries'] + ' Results')
+      }
+    }
+    else {
+      $('.sort-options').removeClass('hidden');
+      $('#clearActiveSearchBtn').addClass('hidden');
+      if (data['total_entries'] == 1) {
+        $('#activeCount').html(data['total_entries'] + ' Item')
+      }
+      else {
+        $('#activeCount').html(data['total_entries'] + ' Items')
+      }
+    }
+    
+  });
+}
+
+function search_history(keyword) {
+  date = $('#searchHistoryDate').val();
+  $.post('/history/search',
+  {
+    keyword:keyword,
+    date:date
+  },
+  function(data){
+    $('.history-entry-container').html(data['template']);
+    $('#historyTotal').html('Total: PHP '+data['total']);
+    if (keyword != '') {
+      $('#clearHistorySearchBtn').removeClass('hidden');
+      if (data['total_entries'] == 1) {
+        $('#historyCount').html(data['total_entries'] + ' Result')
+      }
+      else {
+        $('#historyCount').html(data['total_entries'] + ' Results')
+      }
+    }
+    else {
+      $('#clearHistorySearchBtn').addClass('hidden');
+      if (data['total_entries'] == 1) {
+        $('#historyCount').html(data['total_entries'] + ' Item')
+      }
+      else {
+        $('#historyCount').html(data['total_entries'] + ' Items')
+      }
+    }
+    
   });
 }

@@ -3,7 +3,7 @@ $(document).ready(function(){
 $('#login-error-container').hide();
 
 $(window).load(function() {
-	$("#client_no").focus();
+	$("#user_email").focus();
     $('#login-intro').hide();
 });
 

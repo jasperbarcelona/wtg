@@ -124,7 +124,7 @@
                     <div id="errorUserName" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="text" id="addUserEmail" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorUserEmail" class="form-control" data-class="input-label" placeholder="Email">
+                    <input type="text" id="addUserEmail" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value)" data-error="errorUserEmail" class="form-control" data-class="input-label" placeholder="Username">
                     <div id="errorUserEmail" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
@@ -135,14 +135,10 @@
                     <input type="password" id="addUserPasswordConfirm" onblur="validate_temp_pass(this,this.value)" onchange="validate_temp_pass(this,this.value)" data-error="errorUserPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm Temporary Password">
                     <div id="errorUserPasswordConfirm" class="error-icon-container hidden tooltip" title="Passwords don't match." title="This field is required."><i class="material-icons">&#xE001;</i></div>
                 </div>
-                <div class="input-container whole">
-                    <select class="form-control" id="addUserRole" onblur="validate_blank(this,this.value)" onchange="validate_blank(this,this.value);" data-error="errorUserRole" class="form-control">
-                        <option value="" selected disabled>Role</option>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Normal User">Normal User</option>
-                    </select>
-                    <div id="errorUserRole" class="error-icon-container hidden tooltip" title="This field is required." title="This field is required."><i class="material-icons">&#xE001;</i></div>
-                </div>
+                <span class="input-group-label">Permissions</span>
+                <!-- <div class="permission-picker" data-value="Usage" onclick="toggle_permission(this)">Usage</div> -->
+                <div class="permission-picker with-margin" data-value="Services" onclick="toggle_permission(this)">Services</div>
+                <div class="permission-picker" data-value="Users" onclick="toggle_permission(this)">Users</div>
             </div>
             <div class="modal-footer">
                 <button type="button" id="saveUserBtn" class="btn btn-primary modal-btn" onclick="save_user()" data-loading-text="Saving.." data-complete-text="Done" disabled>Done</button>
@@ -159,7 +155,7 @@
                     <i class="material-icons">
                         arrow_back_ios
                     </i>
-                    <span class="modal-title" id="gridSystemModalLabel">New User</span>
+                    <span class="modal-title" id="gridSystemModalLabel">User Info</span>
                 </div>
             </div>
             <div class="modal-body">
@@ -265,11 +261,11 @@
             </div>
             <div class="modal-body">
                 <div class="input-container whole">
-                    <input type="password" id="resetPasswordText" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorResetPassword" class="form-control" data-class="input-label" placeholder="New Password">
+                    <input type="password" id="resetUserPasswordText" onblur="validate_password(this,this.value)" onchange="validate_password(this,this.value)" data-error="errorResetPassword" class="form-control" data-class="input-label" placeholder="New Password">
                     <div id="errorResetPassword" class="error-icon-container hidden tooltip" title="Must be atleast 8 characters."><i class="material-icons">&#xE001;</i></div>
                 </div>
                 <div class="input-container whole">
-                    <input type="password" id="resetPasswordConfirmText" onblur="validate_password_reset(this,this.value)" onchange="validate_password_reset(this,this.value)" data-error="errorResetPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm New Password">
+                    <input type="password" id="resetUserPasswordConfirmText" onblur="validate_password_reset(this,this.value)" onchange="validate_password_reset(this,this.value)" data-error="errorResetPasswordConfirm" class="form-control" data-class="input-label" placeholder="Confirm New Password">
                     <div id="errorResetPasswordConfirm" class="error-icon-container hidden tooltip" title="Passwords don't match."><i class="material-icons">&#xE001;</i></div>
                 </div>
             </div>

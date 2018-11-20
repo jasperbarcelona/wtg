@@ -17,7 +17,7 @@ body, html{
 
 body{
   color: #373A3C !important;
-  font-family: Lato;
+  font-family: sans-serif;
   background-color: #337AB7;
   display: -webkit-flex;
   display: flex;
@@ -27,10 +27,6 @@ body{
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  background-image:url('../images/assets/test.jpg');
-  background-repeat:no-repeat;
-  background-size:cover;
-  background-position:center;
 }
 
 .main {
@@ -78,7 +74,6 @@ body{
 #logo-container {
   color: #FFFFFF;
   font-size: 48px;
-  font-family: Chicle;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -87,6 +82,11 @@ body{
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
+}
+
+.brand-desc {
+  color: #FFFFFF;
+  font-size: 22px;
   margin-bottom: 20px;
 }
 
@@ -109,7 +109,7 @@ body{
 
 .login-sub-brand {
   color: #FFFFFF;
-  font-size: 22px;
+  font-size: 18px;
 }
 
 .container {
@@ -118,24 +118,7 @@ body{
 }
 
 .form-control {
-  width: 100%;
-  height: 40px;
-  margin-bottom: 20px;
-  background: transparent !important;
-  outline: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-bottom: 1px solid #FFFFFF !important;
-  font-size: 16px;
-  color: #FFFFFF;
-}
-
-.form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: #FFFFFF;
-    opacity: 1; /* Firefox */
+  margin-bottom: 10px;
 }
 
 .input-label{
@@ -149,15 +132,10 @@ body{
   width: 100%;
   height: 50px;
   margin-top: 10px;
-  background: transparent;
-  box-shadow: none !important;
-  border: 2px solid #FFFFFF !important;
-  font-size: 16px;
-}
-
-#login-btn:active {
-  background-color: #FFFFFF;
+  background: #FFFFFF;
   color: #337AB7;
+  box-shadow: none !important;
+  font-size: 16px;
 }
 
 .forgot-password {

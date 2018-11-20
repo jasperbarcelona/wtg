@@ -7,7 +7,6 @@ $(window).load(function(){
   }, 3000);
 });
 
-$('.snackbar').hide();
 $('#modalLoader').hide();
 $('#contentLoader').hide();
 $('#settingsContentLoader').hide();
@@ -37,6 +36,17 @@ $('.active-entry-right').on('click', function () {
   $('.active-entry-action-container').removeClass('visible');
   $(this).find('.active-entry-action-container').addClass('visible');
 });
+
+$('#clearActiveSearchBtn').on('click', function () {
+  $('#searchActive').val('');
+  search_active_transactions('');
+});
+
+$('#clearHistorySearchBtn').on('click', function () {
+  $('#searchHistory').val('');
+  search_history('');
+});
+
 
 $('#closeReplyError').on('click', function () {
   $('#ErrorSnackbar').fadeOut();
@@ -180,7 +190,7 @@ $('#addUserModal .form-control').on('keyup', function () {
   temp_pw = $('#addUserPassword').val();
   role = $('#addUserRole').val();
 
-  if ((name != '') && (email != '') && (temp_pw != '') && (role != undefined)) {
+  if ((name != '') && (email != '') && (temp_pw != '')) {
     $('#saveUserBtn').attr('disabled',false);
   }
   else {
@@ -194,7 +204,7 @@ $('#addUserModal .form-control').on('change', function () {
   temp_pw = $('#addUserPassword').val();
   role = $('#addUserRole').val();
 
-  if ((name != '') && (email != '') && (temp_pw != '') && (role != undefined)) {
+  if ((name != '') && (email != '') && (temp_pw != '')) {
     $('#saveUserBtn').attr('disabled',false);
   }
   else {
@@ -240,4 +250,28 @@ $('#changePasswordModal .form-control').keyup(function(e){
   else {
     $('#savePasswordBtn').attr('disabled',true);
   }
+});
+
+(function($) {
+$.fn.donetyping = function(callback){
+    var _this = $(this);
+    var x_timer;    
+    _this.keyup(function (){
+        clearTimeout(x_timer);
+        x_timer = setTimeout(clear_timer, 500);
+    }); 
+
+    function clear_timer(){
+        clearTimeout(x_timer);
+        callback.call(_this);
+    }
+}
+})(jQuery);
+
+$('#searchActive').donetyping(function(callback){
+  search_active_transactions($(this).val());
+});
+
+$('#searchHistory').donetyping(function(callback){
+  search_history($(this).val());
 });

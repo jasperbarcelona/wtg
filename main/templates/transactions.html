@@ -3,6 +3,11 @@
 </div>
 <div class="search-container">
 	<input type="text" id="searchActive" class="search-text-box form-control" placeholder="Search active transactions">
+	<div id="clearActiveSearchBtn" class="clear-search hidden">
+		<div>
+			<span>Clear Search</span>
+		</div>
+	</div>
 </div>
 <div class="content-header">
 	<div class="content-header-left">
@@ -65,5 +70,30 @@
 	$('.close-action-icon').on('click', function (e) {
 	  e.stopPropagation();
 	  $('.active-entry-action-container').removeClass('visible');
+	});
+
+	(function($) {
+	$.fn.donetyping = function(callback){
+	    var _this = $(this);
+	    var x_timer;    
+	    _this.keyup(function (){
+	        clearTimeout(x_timer);
+	        x_timer = setTimeout(clear_timer, 500);
+	    }); 
+
+	    function clear_timer(){
+	        clearTimeout(x_timer);
+	        callback.call(_this);
+	    }
+	}
+	})(jQuery);
+
+	$('#searchActive').donetyping(function(callback){
+	  search_active_transactions($(this).val());
+	});
+
+	$('#clearActiveSearchBtn').on('click', function () {
+	  $('#searchActive').val('');
+	  search_active_transactions('');
 	});
 </script>

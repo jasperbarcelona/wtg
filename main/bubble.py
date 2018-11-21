@@ -45,7 +45,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 class BubbleAdmin(sqla.ModelView):
     column_display_pk = True
 
-admin = Admin(app, name='bubble')
+admin = Admin(app, name='Wasg It')
 admin.add_view(BubbleAdmin(Client, db.session))
 admin.add_view(BubbleAdmin(AdminUser, db.session))
 admin.add_view(BubbleAdmin(Transaction, db.session))
@@ -64,6 +64,25 @@ def nocache(view):
         response.headers['Expires'] = '-1'
         return response    
     return update_wrapper(no_cache, view)
+
+def send_email(email_address,customer_name):
+    try:
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+        myGmail = 'washitlaundryservices@gmail.com'
+        myGMPasswd = 'Password123_'
+        message = text(('Hi, %s!\r\n \r\nWe\'re happy to let you know that your laundy is now ready for pickup. Thank you.'
+                   '\r\n \r\nBest Regards,\r\nWash It') % customer_name)
+        message['Subject'] = 'Your Laundry is Ready'
+        message['From'] = 'Wash It'
+        message['To'] = '%s <%s>' % (email_address, email_address)
+
+        s.starttls()
+        s.login(myGmail, myGMPasswd)
+        s.sendmail(myGmail,[email_address],message.as_string())
+        s.quit()
+        return True
+    except:
+        return False
 
 
 @app.route('/',methods=['GET','POST'])
@@ -196,15 +215,20 @@ def done_transaction():
     transaction = Transaction.query.filter_by(client_no=session['client_no'],id=transaction_id).first()
     client = Client.query.filter_by(client_no=session['client_no']).first()
 
-    transaction.status = 'Done'
-    transaction.done_date = datetime.datetime.now().strftime('%B %d, %Y')
-    transaction.done_time = time.strftime("%I:%M%p")
-    db.session.commit()
+    if send_email(transaction.customer_email,transaction.customer_name):
+        transaction.status = 'Done'
+        transaction.done_date = datetime.datetime.now().strftime('%B %d, %Y')
+        transaction.done_time = time.strftime("%I:%M%p")
+        db.session.commit()
+        return jsonify(
+            status = 'success',
+            template = flask.render_template('action_btn.html',entry=transaction)
+            )
     return jsonify(
-        status = 'success',
-        template = flask.render_template('action_btn.html',entry=transaction)
+        status = 'failed',
+        message= 'Something went wrong. Please try again.'
         )
-    
+        
 
 @app.route('/transaction/pickup',methods=['GET','POST'])
 def pickup_transaction():
@@ -239,6 +263,7 @@ def save_transaction():
         cashier_name=session['user_name'].title(),
         customer_name=data['customer_name'].title(),
         customer_msisdn=data['customer_msisdn'],
+        customer_email=data['customer_email'],
         total=data['total'],
         notes=data['notes'],
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
@@ -644,6 +669,40 @@ def delete_user():
         )
 
 
+@app.route('/service/delete',methods=['GET','POST'])
+def delete_service():
+    service = Service.query.filter_by(id=session['service_id']).first()
+    db.session.delete(service)
+    db.session.commit()
+
+    services = Service.query.filter_by(client_no=session['client_no']).order_by(Service.name)
+    total_entries = Service.query.filter_by(client_no=session['client_no']).count()
+
+    service_names = []
+    service_frequencies = []
+
+    for service in services:
+        service_names.append(service.name)
+        count = TransactionItem.query.filter_by(client_no=session['client_no'],service_id=service.id).count()
+        service_frequencies.append(count)
+
+    return jsonify(
+        template = flask.render_template(
+            'services.html',
+            services = services,
+            total_entries = total_entries,
+            service_frequencies = service_frequencies,
+            service_names = service_names
+            ),
+        transaction_template = flask.render_template(
+            'transaction_service.html',
+            services = services
+            ),
+        service_frequencies = service_frequencies,
+        service_names = service_names
+        )
+
+
 @app.route('/account',methods=['GET','POST'])
 def account():
     user = AdminUser.query.filter_by(id=session['user_id']).first()
@@ -756,6 +815,7 @@ def rebuild_database():
         cashier_name='Sample Cashier',
         customer_name='Steven Buenafe',
         customer_msisdn='09176214704',
+        customer_email='barcelona.jasperoliver@gmail.com',
         total='4000.00',
         notes='Sample notes.',
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
@@ -771,6 +831,7 @@ def rebuild_database():
         cashier_name='Sample Cashier',
         customer_name='Sample Customer',
         customer_msisdn='09176214704',
+        customer_email='barcelona.jasperoliver@gmail.com',
         total='4000.00',
         created_at=datetime.datetime.now().strftime('%Y-%m`-%d %H:%M:%S:%f')
         )
@@ -817,7 +878,7 @@ def rebuild_database():
     db.session.add(client)
     db.session.add(user)
     db.session.add(transaction)
-    # db.session.add(transaction1)
+    db.session.add(transaction1)
     # db.session.add(transaction2)
     # db.session.add(transaction3)
     db.session.add(service)

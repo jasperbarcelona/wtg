@@ -1,8 +1,14 @@
 <div id="editransactionNameContainer" class="input-container whole">
-        <input type="text" id="editTransactionName" class="form-control" placeholder="Customer's name" value="{{ transaction.customer_name }}">
+    <input type="text" id="editTransactionName" class="form-control" data-error="errorEditTransactionName" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" placeholder="Customer's name" value="{{ transaction.customer_name }}">
+    <div id="errorEditTransactionName" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
 </div>
 <div class="input-container whole">
-    <input type="text" id="editTransactionMsisdn" class="form-control" placeholder="Customer's mobile number" value="{{ transaction.customer_msisdn }}">
+    <input type="text" id="editTransactionMsisdn" class="form-control" data-error="errorEditTransactionMsisdn" onblur="validate_blank(this,this.value); validate_msisdn(this,this.value);" placeholder="Customer's mobile number" value="{{ transaction.customer_msisdn }}">
+    <div id="errorEditTransactionMsisdn" class="error-icon-container hidden tooltip" title="Must be exactly 11 characters."><i class="material-icons">&#xE001;</i></div>
+</div>
+<div class="input-container whole">
+    <input type="email" id="editTransactionEmail" data-error="errorEditTransactionEmail" onblur="validate_blank(this,this.value)" class="form-control" data-class="input-label" placeholder="Customer's email address" value="{{ transaction.customer_email }}">
+    <div id="errorEditTransactionEmail" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
 </div>
 <span class="input-group-label">Items/Services</span>
 <div class="transaction-service-container">

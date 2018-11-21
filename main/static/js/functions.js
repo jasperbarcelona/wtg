@@ -188,6 +188,7 @@ function save_transaction() {
   items = {};
   customer_name = $('#addTransactionName').val();
   customer_msisdn = $('#addTransactionMsisdn').val();
+  customer_email = $('#addTransactionEmail').val();
   total = $('#transactionTotal').html().substring(4);
   notes = $('#transactionNotes').html().substring(4);
   $('.service').each(function() {
@@ -206,6 +207,7 @@ function save_transaction() {
   items['notes'] = notes;
   items['customer_name'] = customer_name;
   items['customer_msisdn'] = customer_msisdn;
+  items['customer_email'] = customer_email;
   $.post('/transaction/save',
   items
   ,
@@ -321,13 +323,14 @@ function process_transaction(transaction_id) {
     transaction_id:transaction_id
   },
   function(data){
-    if (data['status']='success') {
+    if (data['status']=='success') {
       $('#'+transaction_id+'EntryRight').html(data['template']);
       $('#'+transaction_id+'ActionButton').button('complete');
     }
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
       $('#ErrorSnackbar').removeClass('hidden');
+      $('#'+transaction_id+'ActionButton').button('complete');
       setTimeout(function() {
         $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
@@ -342,13 +345,14 @@ function done_transaction(transaction_id) {
     transaction_id:transaction_id
   },
   function(data){
-    if (data['status']='success') {
+    if (data['status']=='success') {
       $('#'+transaction_id+'EntryRight').html(data['template']);
       $('#'+transaction_id+'ActionButton').button('complete');
     }
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
       $('#ErrorSnackbar').removeClass('hidden');
+      $('#'+transaction_id+'ActionButton').button('complete');
       setTimeout(function() {
         $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
@@ -363,7 +367,7 @@ function finish_transaction(transaction_id) {
     transaction_id:transaction_id
   },
   function(data){
-    if (data['status']='success') {
+    if (data['status']=='success') {
       if (data['total_entries'] == 1) {
         $('#activeCount').html(data['total_entries'].toString() + ' Item')
       }
@@ -376,6 +380,7 @@ function finish_transaction(transaction_id) {
     else {
       $('#ErrorSnackbar .snackbar-message').html(data['message']);
       $('#ErrorSnackbar').removeClass('hidden');
+      $('#'+transaction_id+'ActionButton').button('complete');
       setTimeout(function() {
         $('#ErrorSnackbar').addClass('hidden');
       }, 4000);
@@ -693,6 +698,55 @@ function delete_user() {
     $('#userInfoModal').modal('hide');
     $('#successSnackbar .snackbar-message').html('User successfully deleted.');
     $('#successSnackbar').addClass('hidden');
+    setTimeout(function() {
+      $('#successSnackbar').addClass('hidden');
+    }, 4000);
+  });
+}
+
+function delete_service() {
+  $('#deleteServiceBtn').button('loading');
+  $.post('/service/delete',
+  function(data){
+    $('#settingsContent').html(data['template']);
+    $('#addTransactionServiceContainer').html(data['transaction_template']);
+    $('#deleteServiceBtn').button('complete');
+    $('#editServiceModal').modal('hide');
+    $('#deleteServiceModal').modal('hide');
+    $('#serviceInfoModal').modal('hide');
+    $('#successSnackbar .snackbar-message').html('Service successfully deleted.');
+    $('#successSnackbar').addClass('hidden');
+    var ctx = document.getElementById("servicesChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data['service_names'],
+            datasets: [{
+                label: 'Frequency',
+                data: data['service_frequencies'],
+                backgroundColor: [
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                    'rgba(51,122,183, 0.8)',
+                ],
+                borderColor: [
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                    'rgba(51,122,183, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
+            }
+        }
+    });
     setTimeout(function() {
       $('#successSnackbar').addClass('hidden');
     }, 4000);

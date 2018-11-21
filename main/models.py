@@ -66,6 +66,7 @@ class Transaction(db.Model):
     cashier_id = db.Column(db.Integer())
     cashier_name = db.Column(db.String(60))
     customer_name = db.Column(db.String(60), nullable=True)
+    customer_email = db.Column(db.String(60), nullable=True)
     customer_msisdn = db.Column(db.String(30), nullable=True)
     process_date = db.Column(db.String(30), default='')
     process_time = db.Column(db.String(10), default='')

@@ -6,6 +6,7 @@
     <input type="number" id="editServicePrice" data-error="errorServicePriceEdit" onblur="validate_blank(this,this.value)" onkeyup="validate_blank(this,this.value)" class="form-control" data-class="input-label" placeholder="Price" value="{{ service.price }}">
     <div id="errorServicePriceEdit" class="error-icon-container hidden tooltip" title="This field is required."><i class="material-icons">&#xE001;</i></div>
 </div>
+<button type="button" id="resetPasswordToggle" class="btn btn-danger" data-toggle="modal" data-target="#deleteServiceModal">Delete Service</button>
 
 <script type="text/javascript">
 	$('#serviceInfoModal .form-control').on('keyup', function () {

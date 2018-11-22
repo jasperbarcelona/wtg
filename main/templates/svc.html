@@ -1,2 +1,26 @@
-<span class="svc-instructions">We sent a one time verification code to {{ msisdn }}. Please enter the code below.</span>
-<input type="text" id="svc" class="form-control" placeholder="6 digit verification code">
+<form id="svc-form" class="col-xs-12 col-sm-10 col-lg-8">
+	<span class="svc-instructions">We sent a one time verification code to {{ msisdn }}. Please enter the code below. <span class="underlined">Click here to resend the code.</span></span>
+	<div id="svc-error" class="hidden">
+		<span>Invalid verifiaction code.</span>
+	</div>
+	<input type="text" id="svc" class="form-control" placeholder="6 digit verification code">
+	<button type="submit" id="svc-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Submit" disabled>Submit</button>
+	<button type="button" id="back-to-signup-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Back" onclick="go_to_signup()">Back</button>
+</form>
+
+<script type="text/javascript">
+	$('#svc').on('keyup', function () {
+		if ($(this).val() == '') {
+			$('#svc-btn').attr('disabled', true);
+		}
+		else {
+			$('#svc-btn').attr('disabled', false);
+		}
+	});
+
+	$('#svc-form').on('submit', function(e){
+	  e.preventDefault();
+	  verify_svc();
+	});
+
+</script>

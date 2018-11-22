@@ -41,14 +41,13 @@ function go_to_login() {
 }
 
 function sign_up() {
-  name = $('addUserName').val();
-  email = $('addUserEmail').val();
-  msisdn = $('addUserMsisdn').val();
-  password = $('addUserPassword').val();
-  confirm_password = $('addUserConfirmPassword').val();
-
   $('#signup-btn').button('loading');
-  $.post('/signup',
+  name = $('#name').val();
+  email = $('#user_email').val();
+  msisdn = $('#msisdn').val();
+  password = $('#user_password').val();
+  confirm_password = $('#user_password_confirm').val();
+  $.post('/user/signup',
     {
       name:name,
       email:email,
@@ -58,6 +57,28 @@ function sign_up() {
     },
   function(data){
     $('.form-container').html(data);
+    $('#svc').focus();
     $('#signup-btn').button('complete');
+  });
+}
+
+function verify_svc() {
+  $('#svc-error').addClass('hidden');
+  $('#svc-btn').button('loading');
+  svc = $('#svc').val();
+  $.post('/svc/verify',
+    {
+      svc:svc
+    },
+  function(data){
+    if (data['status'] == 'success') {
+      $(location).attr('href', '/');
+    }
+    else {
+      $('#svc').val('');
+      $('#svc').focus();
+      $('#svc-error').removeClass('hidden');
+      $('#svc-btn').button('complete');
+    }
   });
 }

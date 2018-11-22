@@ -15,13 +15,9 @@
                 <!--<script src="//fast.eager.io/sgP7QN5AJL.js"></script>
                 <script src="//fast.eager.io/nH76uFjaDI.js"></script> -->
                 <link rel="shortcut icon" href="../static/images/logos/favicon.ico" type="image/x-icon">
-                <title>Dashboard | {{client_name}}</title>
+                <title>Home | App Name</title>
         </head>
-        {% if change_pw == 'yes' %}
-        <body onload="change_password()">
-        {% else %}
         <body>
-        {% endif %}
                 {% include 'modals.html' %}
                 {% block content %} 
                 {% endblock %}

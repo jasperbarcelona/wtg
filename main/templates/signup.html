@@ -7,7 +7,7 @@
 		<div id="login-form-loader" class="loading hidden">
 		</div>
 		<input type="text" data-class="input-label" id="name" class="form-control" placeholder="Full Name" autocomplete="off" />
-		<input type="email" data-class="input-label" id="user_email" class="form-control" placeholder="Username" autocomplete="off" />
+		<input type="email" data-class="input-label" id="user_email" class="form-control" placeholder="Email" autocomplete="off" />
 		<input type="text" data-class="input-label" id="msisdn" class="form-control" placeholder="Mobile Number" autocomplete="off" />
 		<input type="password" data-class="input-label" id="user_password" class="form-control" placeholder="Password"/>
 		<input type="password" data-class="input-label" id="user_password_confirm" class="form-control" placeholder="Confirm Password"/>
@@ -15,3 +15,14 @@
 	<button type="submit" id="signup-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Sign Up">Sign up</button>
 	<button type="button" id="goto-login-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Have an account? Log in" onclick="go_to_login()">Have an account? Log in</button>
 </form>
+
+<script type="text/javascript">
+	$('.form-control').floatlabel({
+	    labelEndTop:'-2px'
+	});
+	
+	$('#signup-form').on('submit', function(e){
+		e.preventDefault();
+		sign_up();
+	});
+</script>

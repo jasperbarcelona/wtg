@@ -90,7 +90,7 @@ body {
 
 #login-error {
   font-size: 16px;
-  color: #FFFFFF;
+  color: #d9534f;
 }
 
 .login-sub-brand {
@@ -136,7 +136,7 @@ body {
   margin-top: 10px;
   width: 100%;
   height: 45px;
-  background: #5cb85c;
+  background: #00BB95;
   color: #FFFFFF;
   box-shadow: none !important;
   font-size: 16px;
@@ -148,7 +148,19 @@ body {
   margin-top: 10px;
   width: 100%;
   height: 45px;
-  background: #5cb85c;
+  background: #00BB95;
+  color: #FFFFFF;
+  box-shadow: none !important;
+  font-size: 16px;
+  border: none !important;
+}
+
+#svc-btn {
+  margin-bottom: 30px;
+  margin-top: 10px;
+  width: 100%;
+  height: 45px;
+  background: #00BB95;
   color: #FFFFFF;
   box-shadow: none !important;
   font-size: 16px;
@@ -174,6 +186,16 @@ body {
   font-size: 16px;
   border: 2px solid #FFFFFF !important;
   margin-left: 10px;
+}
+
+#back-to-signup-btn {
+  width: 100%;
+  height: 40px;
+  background: transparent;
+  color: #FFFFFF;
+  box-shadow: none !important;
+  font-size: 16px;
+  border: 2px solid #FFFFFF !important;
 }
 
 .form-container {
@@ -223,4 +245,25 @@ body {
 .svc-instructions {
   color: #FFFFFF;
   font-size: 16px;
+  margin-top: 20px;
+}
+
+#svc {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+#svc-error {
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+#svc-error span {
+  font-size: 16px;
+  color: #d9534f;
 }

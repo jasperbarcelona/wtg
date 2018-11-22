@@ -7,7 +7,7 @@ $(window).load(function() {
     $('#login-intro').hide();
 });
 
-$('#login-form .form-control').floatlabel({
+$('.form-control').floatlabel({
     labelEndTop:'-2px'
 });
 

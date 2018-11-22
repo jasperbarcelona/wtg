@@ -6,10 +6,21 @@
 	<div id="login-input-container">
 		<div id="login-form-loader" class="loading hidden">
 		</div>
-		<input type="text" data-class="input-label" id="user_email" class="form-control" placeholder="Username" autocomplete="off" />
+		<input type="text" data-class="input-label" id="user_email" class="form-control" placeholder="Email" autocomplete="off" />
 		<input type="password" data-class="input-label" id="user_password" class="form-control" placeholder="Password"/>
 	</div>
 	<button type="submit" id="login-btn" class="btn btn-primary" data-loading-text="Logging you in.." data-complete-text="Log In">Log in</button>
 	<button type="button" id="facebook-login-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Log in with Facebook">Facebook log in</button>
 	<button type="button" id="goto-signup-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Sign Up" onclick="go_to_signup()">Sign up</button>
 </form>
+
+<script type="text/javascript">
+	$('.form-control').floatlabel({
+		labelEndTop:'-2px'
+	});
+
+	$('#login-form').on('submit', function(e){
+	  e.preventDefault();
+	  login();
+	});
+</script>

@@ -35,8 +35,16 @@ class User(db.Model):
     name = db.Column(db.String(100))
     email = db.Column(db.String(100))
     msisdn = db.Column(db.String(20))
-    password = db.Column(db.String(30))
+    password = db.Column(db.Text())
+    status = db.Column(db.String(20),default='inactive')
+    active_sort = db.Column(db.String(30),default='top_rated')
     img = db.Column(db.Text())
+
+class SVC(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    user_id = db.Column(db.Integer())
+    token = db.Column(db.String(10))
+    created_at = db.Column(db.String(50))
 
 class Destination(db.Model):
     id = db.Column(db.Integer,primary_key=True)
@@ -50,6 +58,7 @@ class Destination(db.Model):
     review_count = db.Column(db.Integer())
     added_by_id = db.Column(db.Integer())
     added_by_name = db.Column(db.String(100))
+    img = db.Column(db.Text())
     created_at = db.Column(db.String(50))
 
 class Rating(db.Model):

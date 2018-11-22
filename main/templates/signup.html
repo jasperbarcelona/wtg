@@ -1,0 +1,17 @@
+<form id="signup-form" class="col-xs-12 col-sm-10 col-lg-8">
+	<div class="sub-brand-container">
+		<span class="login-sub-brand">Sign up</span>
+		<div id="login-error-container"><span id="login-error"></span></div>
+	</div>
+	<div id="login-input-container">
+		<div id="login-form-loader" class="loading hidden">
+		</div>
+		<input type="text" data-class="input-label" id="name" class="form-control" placeholder="Full Name" autocomplete="off" />
+		<input type="email" data-class="input-label" id="user_email" class="form-control" placeholder="Username" autocomplete="off" />
+		<input type="text" data-class="input-label" id="msisdn" class="form-control" placeholder="Mobile Number" autocomplete="off" />
+		<input type="password" data-class="input-label" id="user_password" class="form-control" placeholder="Password"/>
+		<input type="password" data-class="input-label" id="user_password_confirm" class="form-control" placeholder="Confirm Password"/>
+	</div>
+	<button type="submit" id="signup-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Sign Up">Sign up</button>
+	<button type="button" id="goto-login-btn" class="btn btn-primary" data-loading-text="Loading.." data-complete-text="Have an account? Log in" onclick="go_to_login()">Have an account? Log in</button>
+</form>

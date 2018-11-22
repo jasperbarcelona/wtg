@@ -15,36 +15,21 @@ body, html{
   width: 100%;
 }
 
-body{
+body {
   color: #373A3C !important;
   font-family: sans-serif;
-  background-color: #337AB7;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
+  background-image:url('../images/assets/bg.jpg');
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
 }
 
 .main {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  align-items: center;
-  -webkit-justify-content: center;
-  justify-content: center;
+  height: 100vh;
   height: 100vh;
   width: 100%;
-  background-color: rgba(51,122,183, 0.3);
-  height: 100vh;
-}
-
-.container {
+  overflow-y: scroll;
+  background-color: rgba(0,0,0, 0.5);
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
@@ -72,6 +57,7 @@ body{
 }
 
 #logo-container {
+  margin-top: 100px;
   color: #FFFFFF;
   font-size: 48px;
   display: -webkit-flex;
@@ -99,7 +85,7 @@ body{
   align-items: center;
   -webkit-justify-content: center;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 #login-error {
@@ -112,13 +98,30 @@ body{
   font-size: 18px;
 }
 
-.container {
-  padding-bottom: 20px;
-  text-align: center;
+.form-control {
+  margin-bottom: 20px;
+  height: 50px;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid #FFFFFF;
+  box-shadow: none;
+  border-radius: 0 !important;
+  outline: none;
+  color: #FFFFFF;
+  background-color: transparent;
 }
 
-.form-control {
-  margin-bottom: 10px;
+.form-control::placeholder {
+    color: #FFFFFF;
+    opacity: 1; 
+}
+
+.form-control:active,
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border-bottom: 2px solid #FFFFFF;
 }
 
 .input-label{
@@ -129,13 +132,71 @@ body{
 }
 
 #login-btn {
-  width: 100%;
-  height: 50px;
+  margin-bottom: 30px;
   margin-top: 10px;
-  background: #FFFFFF;
-  color: #337AB7;
+  width: 100%;
+  height: 45px;
+  background: #5cb85c;
+  color: #FFFFFF;
   box-shadow: none !important;
   font-size: 16px;
+  border: none !important;
+}
+
+#signup-btn {
+  margin-bottom: 30px;
+  margin-top: 10px;
+  width: 100%;
+  height: 45px;
+  background: #5cb85c;
+  color: #FFFFFF;
+  box-shadow: none !important;
+  font-size: 16px;
+  border: none !important;
+}
+
+#goto-login-btn {
+  width: 100%;
+  height: 40px;
+  background: transparent;
+  color: #FFFFFF;
+  box-shadow: none !important;
+  font-size: 16px;
+  border: 2px solid #FFFFFF !important;
+}
+
+#goto-signup-btn {
+  width: calc(50% - 10px);
+  height: 40px;
+  background: transparent;
+  color: #FFFFFF;
+  box-shadow: none !important;
+  font-size: 16px;
+  border: 2px solid #FFFFFF !important;
+  margin-left: 10px;
+}
+
+.form-container {
+  width: 100%;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  align-items: center;
+  margin-bottom: 80px;
+}
+
+#facebook-login-btn {
+  width: calc(50% - 10px);
+  float: left;
+  height: 40px;
+  background: transparent;
+  color: #FFFFFF;
+  box-shadow: none !important;
+  font-size: 16px;
+  border: 2px solid #FFFFFF !important;
+  margin-right: 10px;
 }
 
 .forgot-password {
@@ -157,4 +218,9 @@ body{
   width: 100%;
   background: transparent;
   z-index: 10;
+}
+
+.svc-instructions {
+  color: #FFFFFF;
+  font-size: 16px;
 }

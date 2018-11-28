@@ -220,12 +220,12 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .destination-img {
-	height: calc(100% - 200px);
+	height: calc(100% - 270px);
 	width: 100%;
 }
 
 .destination-info-container {
-	height: 120px;
+	height: 270px;
 	width: 100%;
 	padding: 10px;
 }
@@ -320,6 +320,16 @@ input[type=number]::-webkit-outer-spin-button {
 	align-items: center;
 	-webkit-justify-content: center;
 	justify-content: center;
+}
+
+.destination-events-container {
+	float: left;
+	width: 100%;
+	position: relative;
+	margin-top: 30px;
+	margin-bottom: 20px;
+	overflow: hidden;
+	height: 17px;
 }
 
 .read-more {
@@ -422,4 +432,23 @@ input[type=number]::-webkit-outer-spin-button {
 
 #logoutBtn {
 	width: 200px;
+}
+
+.favorite-btn {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	color: #FFFFFF;
+	font-weight: bold;
+	font-size: 40px !important;
+}
+
+.destination-events-label {
+	color: #d9534f;
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+.destination-events-text {
+	font-style: italic; 
 }

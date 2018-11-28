@@ -58,6 +58,7 @@ class Destination(db.Model):
     review_count = db.Column(db.Integer())
     added_by_id = db.Column(db.Integer())
     added_by_name = db.Column(db.String(100))
+    upcoming_events = db.Column(db.Text(),default='')
     img = db.Column(db.Text())
     created_at = db.Column(db.String(50))
 

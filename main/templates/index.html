@@ -48,6 +48,7 @@
 		<div class="destinations-container">
 			{% for entry in destinations %}
 			<div class="destination col-xs-12 col-sm-6 col-lg-4">
+				<i id="entry.id" class="material-icons favorite-btn">favorite_border</i>
 				<img class="destination-img" src="{{ entry.img }}">
 				<div class="destination-info-container">
 					<div class="destination-name-container">
@@ -74,6 +75,14 @@
 						<p class="destination-desc">
 							{{ entry.description }}
 						</p>
+					</div>
+					<div class="destination-events-container">
+						{% if entry.upcoming_events == '' %}
+						<span class="destination-events-text">No upcoming events.</span>
+						{% else %}
+						<span class="destination-events-label">Upcoming events:</span>
+						<span class="destination-events-text">Sample, Another sample, Sample, Another sample, Sample, Another sample</span>
+						{% endif %}
 					</div>
 					<div class="destination-expand-container">
 						<span class="read-more">Read more</span>

@@ -50,7 +50,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 class BubbleAdmin(sqla.ModelView):
     column_display_pk = True
 
-admin = Admin(app, name='App Name')
+admin = Admin(app, name='Where2Go')
 admin.add_view(BubbleAdmin(User, db.session))
 admin.add_view(BubbleAdmin(SVC, db.session))
 admin.add_view(BubbleAdmin(Destination, db.session))
@@ -195,9 +195,9 @@ def rebuild_database():
 
     user = User(
         name='Jasper Barcelona',
-        email='jasper@pisara.tech',
+        email='test@gmail.com',
         msisdn='09176214704',
-        password=generate_password_hash('ratmaxi8'),
+        password=generate_password_hash('password123'),
         status='active',
         img='../static/images/users/default.png',
         active_sort='top',

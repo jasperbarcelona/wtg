@@ -1,6 +1,10 @@
 $(document).ready(function(){
 
-$('.destination').height($('.destination').width()+100);
+$('.destination').height($('.destination').width()+130);
+
+$(window).resize(function(){
+  $('.destination').height($('.destination').width()+130);
+});
   
 $(window).load(function(){
   setTimeout(function() {

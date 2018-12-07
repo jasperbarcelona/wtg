@@ -1,0 +1,18 @@
+<table id="adminDestinations" class="table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>City</th>
+			<th>Rating</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for entry in destinations %}
+		<tr>
+			<td>{{ entry.name }}</td>
+			<td>{{ entry.city }}</td>
+			<td>{{ entry.rating_avg }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>

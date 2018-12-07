@@ -40,6 +40,19 @@ class User(db.Model):
     active_sort = db.Column(db.String(30),default='top_rated')
     img = db.Column(db.Text())
 
+class AdminUser(db.Model):
+    id = db.Column(db.Integer,primary_key=True)
+    email = db.Column(db.String(60))
+    password = db.Column(db.Text())
+    temp_pw = db.Column(db.Text())
+    name = db.Column(db.String(100))
+    role = db.Column(db.String(30))
+    active_sort = db.Column(db.String(30))
+    added_by_id = db.Column(db.Integer)
+    added_by_name = db.Column(db.String(100))
+    join_date = db.Column(db.String(50))
+    created_at = db.Column(db.String(50))
+
 class SVC(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     user_id = db.Column(db.Integer())
@@ -57,6 +70,8 @@ class Destination(db.Model):
     rating_count = db.Column(db.Integer())
     review_count = db.Column(db.Integer())
     added_by_id = db.Column(db.Integer())
+    added_date = db.Column(db.String(50))
+    added_time = db.Column(db.String(50))
     added_by_name = db.Column(db.String(100))
     upcoming_events = db.Column(db.Text(),default='')
     img = db.Column(db.Text())

@@ -1,0 +1,26 @@
+<div class="search-container">
+	<input type="text" id="searchDestinations" class="form-control" placeholder="Search destinations">
+</div>
+<div class="button-container">
+	<button id="addDestinationBtn" class="btn control-btn" data-toggle="modal" data-target="#addDestinationInfoModal">Add Destination</button>
+</div>
+<div id="destinationsContent">
+	<table id="adminDestinations" class="table">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>City</th>
+				<th>Rating</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for entry in destinations %}
+			<tr onclick="show_destination({{ entry.id }})">
+				<td>{{ entry.name }}</td>
+				<td>{{ entry.city }}</td>
+				<td>{{ entry.rating_avg }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

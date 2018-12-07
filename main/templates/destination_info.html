@@ -1,0 +1,45 @@
+<div class="admin-destionation-info-container">
+	<div class="admin-destination-info-header">
+		<div class="destination-header-left">
+			<span class="destination-info-name">{{ destination.name }}</span>
+		</div>
+		<div class="distination-header-right">
+			<div>
+				<span class="destination-creator">Created by <strong>{{ destination.added_by_name }}</strong></span>
+				<span class="destination-date">on {{ destination.added_date }} | {{ destination.added_time }}</span>
+			</div>
+		</div>
+	</div>	
+	<span class="input-group-container first">Destination Info</span>
+	<label for="editDestinationName">Name</label>
+	<input type="text" id="editDestinationName" class="form-control" placeholder="Destination Name" value="{{ destination.name }}">
+
+	<label for="editDestinationDesc">Description</label>
+	<textarea id="editDestinationDesc" class="form-control" placeholder="Description">{{ destination.description }}</textarea>
+
+	<label for="editDestinationAddress">Address</label>
+	<textarea id="editDestinationAddress" class="form-control" placeholder="Address">{{ destination.address }}</textarea>
+
+	<label for="editDestinationCity">City</label>
+	<input type="text" id="editDestinationCity" class="form-control" placeholder="City" value="{{ destination.city }}">
+
+	<label for="editDestinationLink">Map Link</label>
+	<input type="text" id="editDestinationLink" class="form-control" placeholder="Map Link" value="{{ destination.map_link }}">
+
+	<span class="input-group-container first">Photos</span>
+	<div class="image-selector">
+		<i class="material-icons">add_circle</i>
+	</div>
+	<div class="image-selector">
+		<i class="material-icons">add_circle</i>
+	</div>
+	<div class="image-selector">
+		<i class="material-icons">add_circle</i>
+	</div>
+	<div class="image-selector">
+		<i class="material-icons">add_circle</i>
+	</div>
+	<div class="image-selector">
+		<i class="material-icons">add_circle</i>
+	</div>
+</div>

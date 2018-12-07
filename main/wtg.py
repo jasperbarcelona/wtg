@@ -94,12 +94,96 @@ def index():
         )
 
 
+@app.route('/adminpanel',methods=['GET','POST'])
+@nocache
+def admin_page():
+    if not session or 'admin_id' not in session:
+        return redirect('/adminpanel/login')
+    admin = AdminUser.query.filter_by(id=session['admin_id']).first()
+    destinations = Destination.query.order_by(Destination.name)
+    user_count = User.query.count()
+    destination_count = Destination.query.count()
+    admin_count = AdminUser.query.count()
+    return flask.render_template(
+        'admin.html',
+        admin=admin,
+        destinations=destinations,
+        user_count=user_count,
+        destination_count=destination_count,
+        admin_count=admin_count
+        )
+
+
+@app.route('/adminpanel/destinations',methods=['GET','POST'])
+def admin_page_destinations():
+    admin = AdminUser.query.filter_by(id=session['admin_id']).first()
+    destinations = Destination.query.order_by(Destination.name)
+    destination_count = Destination.query.count()
+    return flask.render_template(
+        'admin_destinations.html',
+        admin=admin,
+        destinations=destinations,
+        destination_count=destination_count,
+        )
+
+
+@app.route('/adminpanel/destination/info',methods=['GET','POST'])
+def destination():
+    destination_id = flask.request.form.get('destination_id')
+
+    destination = Destination.query.filter_by(id=destination_id).first()
+
+    return jsonify(
+        template=flask.render_template(
+            'destination_info.html',
+            destination=destination
+            )
+        )
+
+
+@app.route('/adminpanel/destination/save',methods=['GET','POST'])
+def save_destination():
+    data = flask.request.form.to_dict()
+
+    destination = Destination(
+        name = data['name'],
+        description = data['desc'],
+        address = data['address'],
+        city = data['city'],
+        map_link = data['link'],
+        added_by_id = session['admin_id'],
+        added_by_name = session['admin_name'],
+        added_date = datetime.datetime.now().strftime('%B %d, %Y'),
+        added_time = time.strftime("%I:%M%p"),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+        )
+    db.session.add(destination)
+    db.session.commit()
+
+    session['open_destination'] = destination.id
+
+    return jsonify(
+        template = flask.render_template(
+            'destination_info.html',
+            destination=destination
+            )
+        )
+
+
 @app.route('/login',methods=['GET','POST'])
 @nocache
 def user_login():
     if session and 'user_id' in session:
         return redirect('/')
     return flask.render_template('login.html')
+
+
+@app.route('/adminpanel/login',methods=['GET','POST'])
+@nocache
+def admin_login():
+    if session and 'admin_id' in session:
+        return redirect('/admin')
+    return flask.render_template('admin_login.html')
 
 
 @app.route('/signup',methods=['GET','POST'])
@@ -188,6 +272,20 @@ def authenticate_user():
     return jsonify(status='success', error=''),200
 
 
+@app.route('/user/admin/authenticate',methods=['GET','POST'])
+def authenticate_admin():
+    data = flask.request.form.to_dict()
+    admin = AdminUser.query.filter_by(email=data['user_email']).first()
+    if not admin or admin == None:
+        return jsonify(status='failed', error='Invalid username.')
+    if check_password_hash(admin.password, data['user_password']) == False:
+        return jsonify(status='failed', error='Invalid password.')
+
+    session['admin_name'] = admin.name
+    session['admin_id'] = admin.id
+    return jsonify(status='success', error=''),200
+
+
 @app.route('/db/rebuild',methods=['GET','POST'])
 def rebuild_database():
     db.drop_all()
@@ -201,6 +299,19 @@ def rebuild_database():
         status='active',
         img='../static/images/users/default.png',
         active_sort='top',
+        )
+
+    admin = AdminUser(
+        email='jasper@pisara.tech',
+        password=generate_password_hash('password123'),
+        temp_pw=generate_password_hash('password123'),
+        name='Jasper Barcelona',
+        role='Administrator',
+        active_sort='Alphabetical',
+        added_by_id=1,
+        added_by_name='Super User',
+        join_date=datetime.datetime.now().strftime('%B %d, %Y'),
+        created_at=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
         )
 
     destination = Destination(
@@ -252,6 +363,7 @@ def rebuild_database():
     db.session.add(destination)
     db.session.add(destination1)
     db.session.add(destination2)
+    db.session.add(admin)
     db.session.commit()
 
     return jsonify(

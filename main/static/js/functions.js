@@ -1,11 +1,47 @@
-function show_active(slice_from) {
-  $('#contentLoader').show();
+function show_destinations() {
+  $('#contentLoader').removeClass('hidden');
   $('.nav-item').removeClass('active');
-  $('#navActive').addClass('active');
-  $('.nav-border').css('margin-left', '0');
-  $.get('/transactions',
+  $('#navDestinations').addClass('active');
+  $.get('/adminpanel/destinations',
   function(data){
-    $('.content').html(data['template']);
-    $('#contentLoader').fadeOut();
+    $('.admin-content').html(data);
+    $('#contentLoader').addClass('hidden');
   });
+}
+
+function save_destination_info() {
+	$('#saveDestinationInfoBtn').button('loading');
+
+	name = $('#addDestinationName').val();
+	desc = $('#addDestinationDesc').val();
+	address = $('#addDestinationAddress').val();
+	city = $('#addDestinationCity').val();
+	link = $('#addDestinationLink').val();
+
+	$.post('/adminpanel/destination/save',
+	{
+		name:name,
+		desc:desc,
+		address:address,
+		city:city,
+		link:link
+	},
+	function(data){
+		$('.admin-content').html(data['template']);
+		$('#addDestinationInfoModal').modal('hide');
+		$('#saveDestinationInfoBtn').button('complete');
+		setTimeout(function() {
+			$('#saveDestinationInfoBtn').attr('disabled', true);
+		}, 200);
+	});
+}
+
+function show_destination(destination_id) {
+	$.post('/adminpanel/destination/info',
+	{
+		destination_id:destination_id
+	},
+	function(data){
+		$('.admin-content').html(data['template']);
+	});
 }

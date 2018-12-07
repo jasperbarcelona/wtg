@@ -1,0 +1,366 @@
+@font-face{
+	font-family: OpenSans;
+	src:url('../fonts/OpenSans-Regular.ttf');
+}
+
+@font-face {
+  	font-family: 'Lato';
+  	src:url('../fonts/Lato-Regular.eot') format('eot'),
+    	url('../fonts/Lato-Regular.woff') format('woff'),
+    	url('../fonts/Lato-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  	font-family: 'Lato-Thin';
+  	src:url('../fonts/Lato-Thin.woff2') format('woff2'),
+		url('../fonts/Lato-Thin.ttf') format('truetype');
+}
+
+/*::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
+}*/
+
+html {
+	height: 100vh;
+	width: 100%;
+}
+
+body {
+	min-height: 100%;
+	width: 100%;
+	color: #373A3C !important;
+	font-family: Lato;
+	background-color: #ddd;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-webkit-user-select: none;
+  	-moz-user-select: none;
+  	-ms-user-select: none;
+}
+
+textarea {
+	resize: none;
+}
+
+select {
+	cursor: pointer !important;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.align-right {
+	text-align: right;
+}
+
+.form-control {
+	width: 100% !important;
+}
+
+.admin-content {
+	width: 100%;
+	min-width: 500px;
+}
+
+#header {
+	position: fixed;
+	z-index: 5;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 80px;
+	background-color: #00BB95;
+}
+
+.left-panel {
+	position: fixed;
+	z-index: 5;
+	top: 80px;
+	left: 0;
+	border-right: 1px solid #ddd;
+	background-color: #FFFFFF;
+	width: 250px;
+	height: calc(100vh - 80px);
+}
+
+#header > div {
+	float: left;
+	height: 100%;
+	width: 50%;
+	color: #FFFFFF;
+	padding: 20px;
+}
+
+.header-left, .header-right {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+	justify-content: left;
+	font-size: 24px;
+}
+
+.header-right > div {
+	width: 100%;
+	text-align: right;
+}
+
+#headerUserName,
+#logoutBtn {
+	font-size: 16px;
+}
+
+#logoutBtn {
+	cursor: pointer;
+}
+
+.navigation {
+	float: left;
+	width: 100%;
+	margin-top: 30px;
+}
+
+.nav-item {
+	float: left;
+	width: 100%;
+	padding: 10px 20px;
+	cursor: pointer;
+}
+
+.nav-item.active {
+	color: #FFFFFF;
+	background-color: #00BB95;
+}
+
+.nav-item:not(.active):hover {
+	background-color: #f2f2f2 !important;
+}
+
+.admin-content {
+	padding-left: 280px;
+	padding-top: 110px;
+	padding-right: 30px;
+}
+
+.counter {
+	float: left;
+	margin-right: 20px;
+	height: 120px;
+	width: 30%;
+	background-color: #FFFFFF;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+.counter-count {
+	font-size: 34px;
+}
+
+.counter-label {
+	font-size: 13px;
+	letter-spacing: 1px;
+	font-weight: bold;
+	color: #00BB95;
+	text-transform: uppercase;
+}
+
+.stat-label {
+	float: left;
+	width: 100%;
+	font-size: 18px;
+	margin-top: 30px;
+	margin-bottom: 10px;
+}
+
+#topDestinationChart {
+	width: 100%;
+	height: 300px;
+	margin-bottom: 30px;
+}
+
+.table {
+	background-color: #FFFFFF;
+}
+
+td {
+	padding-top: 20px !important;
+	padding-bottom: 20px !important;
+	cursor: pointer;
+}
+
+tr:hover {
+	background-color: #F2F2F2 !important;
+}
+
+#contentLoader {
+	position: fixed;
+	top: 80px;
+	left: 250px;
+	height: calc(100vh - 80px);
+	font-size: 18px;
+	width: calc(100% - 250px);
+	background-color: #FFFFFF;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+}
+
+#adminDestinations {
+	float: left;
+	margin-top: 20px;
+}
+
+.search-container {
+	float: left;
+	width: 50%;
+	height: 40px !important;
+}
+
+.search-container > .form-control {
+	height: 100% !important;
+}
+
+.button-container {
+	position: relative;
+	float: left;
+	width: 50%;
+	height: 40px !important;
+}
+
+.control-btn,
+.control-btn:active,
+.control-btn:focus,
+.control-btn:hover {
+	float: right;
+	background-color: #00BB95;
+	color: #FFFFFF;
+	height: 100% !important;
+	outline: none !important;
+	border: none !important;
+}
+
+#addDestinationInfoModal .form-control {
+	margin-bottom: 20px;
+}
+
+.modal-footer .btn {
+	width: 100px;
+}
+
+.btn-primary {
+	background-color: #00BB95 !important;
+}
+
+.admin-destionation-info-container {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	padding-left: 280px;
+	padding-top: 110px;
+	padding-right: 30px;
+	min-height: 100%;
+	width: 100%;
+	background-color: #FFFFFF;
+}
+
+.admin-destination-info-header {
+	height: 30px;
+	width: 100%;
+	margin-bottom: 40px;
+}
+
+.admin-destination-info-header > div {
+	width: 50%;
+	float: left;
+	height: 100%;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: left;
+}
+
+.distination-header-right > div {
+	width: 100%;
+	text-align: right;
+}
+
+.admin-destionation-info-container .form-control {
+	margin-bottom: 20px;
+}
+
+.admin-destionation-info-container textarea {
+	height: 100px;
+}
+
+.destination-info-name {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.destination-creator,
+.destination-date {
+	display: block;
+}
+
+.input-group-container {
+	font-size: 18px;
+	display: block;
+	margin-bottom: 10px;
+}
+
+.input-group-container:not(.first) {
+	margin-top: 30px;
+}
+
+.image-selector {
+	float: left;
+	height: 100px;
+	width: 100px;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	background-color: #ddd;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-align-items: center;
+	align-items: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+.image-selector:hover {
+	border: 1px solid #00BB95;
+}
+
+.image-selector:hover > i {
+	color: #00BB95;
+}
+
+.image-selector > i {
+	font-size: 30px !important;
+	color: #FFFFFF;
+}

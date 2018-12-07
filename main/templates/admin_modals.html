@@ -1,0 +1,25 @@
+<div class="modal fade" id="addDestinationInfoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <span class="modal-title" id="gridSystemModalLabel">New Destination</span>
+            </div>
+            <div class="modal-body">
+                <label for="addDestinationName">Name</label>
+                <input type="text" id="addDestinationName" class="form-control" placeholder="Destination Name">
+                <label for="addDestinationDesc">Description</label>
+                <textarea id="addDestinationDesc" class="form-control" placeholder="Description"></textarea>
+                <label for="addDestinationAddress">Address</label>
+                <textarea id="addDestinationAddress" class="form-control" placeholder="Address"></textarea>
+                <label for="addDestinationCity">City</label>
+                <input type="text" id="addDestinationCity" class="form-control" placeholder="City">
+                <label for="addDestinationLink">Map Link</label>
+                <input type="text" id="addDestinationLink" class="form-control" placeholder="Map Link">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger modal-btn" data-dismiss="modal">Cancel</button>
+                <button type="button" id="saveDestinationInfoBtn" class="btn btn-primary modal-btn" onclick="save_destination_info()" data-loading-text="Saving.." data-complete-text="Next" disabled>Next</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
